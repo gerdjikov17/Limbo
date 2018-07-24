@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Limbo.xcworkspace">
+      location = "group:Limbo.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Limbo.xcodeproj">
+      location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>
