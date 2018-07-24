@@ -13,3 +13,7 @@ protocol NearbyUsersDelegate {
     func didFindNewUser(user: UserModel, peerID: MCPeerID)
     func didLostUser(user: UserModel, peerID: MCPeerID)
 }
+
+protocol LoginDelegate {
+    func didLogin(userModel: UserModel)
+}

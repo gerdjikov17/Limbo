@@ -7,4 +7,5 @@ target 'Limbo' do
 
   # Pods for Limbo
   pod 'RealmSwift'
+  pod 'DZNEmptyDataSet'
 end

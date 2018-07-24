@@ -15,6 +15,10 @@
 		060FC5432107336E00E5D6BB /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC5422107336E00E5D6BB /* UserModel.swift */; };
 		060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */; };
 		060FC5482107435500E5D6BB /* NearbyUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC5472107435500E5D6BB /* NearbyUsers.swift */; };
+		06262FCB21075E7A003C6A1E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FCA21075E79003C6A1E /* Constants.swift */; };
+		06262FCD21075E9E003C6A1E /* DZNEmptyDataSet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */; };
+		06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FCE210762B6003C6A1E /* LoginViewController.swift */; };
+		06262FD121076B08003C6A1E /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FD021076B08003C6A1E /* RegisterViewController.swift */; };
 		069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361F92107459900D02D22 /* UsersConnectivity.swift */; };
 		069361FD210745DC00D02D22 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361FC210745DC00D02D22 /* Protocols.swift */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
@@ -31,6 +35,10 @@
 		060FC5422107336E00E5D6BB /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyDeviceCollectionViewCell.swift; sourceTree = "<group>"; };
 		060FC5472107435500E5D6BB /* NearbyUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyUsers.swift; sourceTree = "<group>"; };
+		06262FCA21075E79003C6A1E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = DZNEmptyDataSet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		06262FCE210762B6003C6A1E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		06262FD021076B08003C6A1E /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		069361F92107459900D02D22 /* UsersConnectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersConnectivity.swift; sourceTree = "<group>"; };
 		069361FC210745DC00D02D22 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -43,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06262FCD21075E9E003C6A1E /* DZNEmptyDataSet.framework in Frameworks */,
 				3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -88,6 +97,8 @@
 			children = (
 				060FC53F210732DF00E5D6BB /* NearbyUsersViewController.swift */,
 				060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */,
+				06262FCE210762B6003C6A1E /* LoginViewController.swift */,
+				06262FD021076B08003C6A1E /* RegisterViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -106,6 +117,7 @@
 				060FC5472107435500E5D6BB /* NearbyUsers.swift */,
 				069361F92107459900D02D22 /* UsersConnectivity.swift */,
 				069361FC210745DC00D02D22 /* Protocols.swift */,
+				06262FCA21075E79003C6A1E /* Constants.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -113,6 +125,7 @@
 		1DC3AF52497DCF1AF8048988 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */,
 				9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */,
 			);
 			name = Frameworks;
@@ -203,11 +216,13 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Limbo/Pods-Limbo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 			);
@@ -241,6 +256,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */,
+				06262FD121076B08003C6A1E /* RegisterViewController.swift in Sources */,
 				060FC52B21071DE700E5D6BB /* AppDelegate.swift in Sources */,
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,
 				069361FD210745DC00D02D22 /* Protocols.swift in Sources */,
@@ -248,6 +265,7 @@
 				060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */,
 				069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */,
 				060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */,
+				06262FCB21075E7A003C6A1E /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,7 +413,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XFNQF25BM4;
 				INFOPLIST_FILE = Limbo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.nemetschek.Limbo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -411,7 +432,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XFNQF25BM4;
 				INFOPLIST_FILE = Limbo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.nemetschek.Limbo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

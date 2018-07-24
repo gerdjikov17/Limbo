@@ -11,9 +11,8 @@ import MultipeerConnectivity
 
 class UsersConnectivity: NSObject {
     
-    private let colorServiceType = "color-service"
-
-    private let myPeerID = MCPeerID(displayName: UIDevice.current.name)
+    private var userModel: UserModel
+    private var myPeerID: MCPeerID
     private let serviceAdvertiser: MCNearbyServiceAdvertiser
     private let serviceBrowser: MCNearbyServiceBrowser
     
@@ -26,9 +25,11 @@ class UsersConnectivity: NSObject {
     var delegate: NearbyUsersDelegate?
     
     
-    override init() {
-        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: nil, serviceType:self.colorServiceType)
-        self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: self.colorServiceType)
+    init(userModel: UserModel) {
+        self.userModel = userModel
+        self.myPeerID = MCPeerID(displayName: userModel.username)
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["state": userModel.state], serviceType:Constants.MCServiceType)
+        self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
         
         super.init()
         
