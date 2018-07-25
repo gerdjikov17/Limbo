@@ -39,7 +39,6 @@ class UserModel: Object {
             } catch {
                 print(error.localizedDescription)
             }
-            
         }
     }
     
@@ -50,13 +49,42 @@ class UserModel: Object {
         self.username = username
         self.password = password
     }
-    convenience init(username: String) {
+    convenience init(username: String, state: String) {
         self.init()
         self.username = username
+        self.state = state
     }
     
     override class func primaryKey() -> String? {
         return "username"
+    }
+    
+    func setState(batteryLevel: Float) {
+        let batteryLevel = batteryLevel * 100
+        var state: String
+        state = "Ghost"
+        if batteryLevel > 5 {
+            state = "Undead"
+            if batteryLevel > 10 {
+                state = "Hollow"
+                if batteryLevel > 25 {
+                    state = "Dying"
+                    if batteryLevel > 50 {
+                        state = "Human"
+                    }
+                }
+            }
+        }
+        self.state = state;
+    }
+    
+    func toJSONDict() -> Dictionary<String, Any> {
+        let jsonDict = [
+            "userID": self.userID,
+            "username": self.username
+            
+        ] as [String: Any]
+        return jsonDict
     }
     
 }

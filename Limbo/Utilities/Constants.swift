@@ -12,6 +12,6 @@ struct Constants {
     
     struct UserDefaults {
         static let isLoged = "UserDefaultsIsLogged"
-        static let loggedUserName = "UserDefaultsLoggedUserName"
+        static let loggedUserID = "UserDefaultsLoggedUserID"
     }
 }

@@ -12,10 +12,10 @@ import RealmSwift
 
 class LoginViewController: UIViewController {
     
-    @IBOutlet var usernameTextField: UITextField?
-    @IBOutlet var passwordTextField: UITextField?
-    @IBOutlet var loginButton: UIButton?
-    @IBOutlet var signUpLabel: UILabel?
+    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var signUpLabel: UILabel!
     
     var loginDelegate: LoginDelegate?
     

@@ -23,13 +23,16 @@ class UsersConnectivity: NSObject {
     }()
     
     var delegate: NearbyUsersDelegate?
+    var chatDelegates: [ChatDelegate]?
     
     
     init(userModel: UserModel) {
         self.userModel = userModel
+        self.userModel.setState(batteryLevel: UIDevice.current.batteryLevel)
         self.myPeerID = MCPeerID(displayName: userModel.username)
-        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["state": userModel.state], serviceType:Constants.MCServiceType)
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["state": self.userModel.state], serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
+        self.chatDelegates = Array()
         
         super.init()
         
@@ -62,6 +65,24 @@ class UsersConnectivity: NSObject {
     
 }
 
+extension UsersConnectivity: UsersConnectivityDelegate {
+    func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID) {
+        if !session.connectedPeers.contains(toPeerID) {
+            self.serviceBrowser.invitePeer(toPeerID, to: session, withContext: nil, timeout: 10)
+        }
+        do {
+            let data = NSKeyedArchiver.archivedData(withRootObject: messageModel.toDictionary())
+            try self.session.send(data, toPeers: [toPeerID], with: .reliable)
+        }
+        catch let error {
+            NSLog("%@", "Error for sending: \(error)")
+        }
+    }
+    
+    
+    
+}
+
 extension UsersConnectivity: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
         NSLog("%@", "didNotStartAdvertisingPeer: \(error)")
@@ -82,15 +103,18 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
-        let userModel: UserModel! = UserModel(username: peerID.displayName)
-        self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
-//        browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+        if let userState = info!["state"] {
+            let userModel: UserModel! = UserModel(username: peerID.displayName, state: userState)
+            self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
+        }
+        
+        
+        browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
-        let userModel: UserModel! = UserModel(username: peerID.displayName)
-        self.delegate?.didLostUser(user: userModel, peerID: peerID)
+        self.delegate?.didLostUser(peerID: peerID)
     }
     
 }
@@ -104,8 +128,11 @@ extension UsersConnectivity : MCSessionDelegate {
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
-//        let str = String(data: data, encoding: .utf8)!
-//        self.delegate?.didFindNewUser(user: <#T##UserModel#>)
+        let dataDict = NSKeyedUnarchiver.unarchiveObject(with: data) as! Dictionary<String, Any>
+        let messageModel = MessageModel(withDictionary: dataDict)
+        for chatDelegate in self.chatDelegates! {
+            chatDelegate.didReceiveMessage(messageModel: messageModel, fromPeerID: peerID)
+        }
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {

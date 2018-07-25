@@ -33,6 +33,7 @@ class RegisterViewController: UIViewController {
                     let user: UserModel! = UserModel()
                     user.username = username
                     user.password = password
+                    user.userID = realm.objects(UserModel.self).count
                     realm.beginWrite()
                     realm.add(user)
                     try! realm.commitWrite()

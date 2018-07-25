@@ -11,12 +11,12 @@ import UIKit
 
 class NearbyDevicesCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet var avatarImageView: UIImageView!
-    @IBOutlet var usernameLabel: UILabel!
-    @IBOutlet var state: UILabel!
+    @IBOutlet weak var avatarImageView: UIImageView!
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var state: UILabel!
     
-    func displayContent(avatar: UIImage, userModel: UserModel) {
-        self.avatarImageView.image = avatar
-        self.usernameLabel.text = userModel.username
+    func setCellContent(user: UserModel) {
+        self.usernameLabel.text = user.username
+        self.state.text = user.state
     }
 }

@@ -11,9 +11,17 @@ import MultipeerConnectivity
 
 protocol NearbyUsersDelegate {
     func didFindNewUser(user: UserModel, peerID: MCPeerID)
-    func didLostUser(user: UserModel, peerID: MCPeerID)
+    func didLostUser(peerID: MCPeerID)
+}
+
+protocol UsersConnectivityDelegate {
+    func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID)
 }
 
 protocol LoginDelegate {
     func didLogin(userModel: UserModel)
+}
+
+protocol ChatDelegate {
+    func didReceiveMessage(messageModel: MessageModel, fromPeerID: MCPeerID)
 }
