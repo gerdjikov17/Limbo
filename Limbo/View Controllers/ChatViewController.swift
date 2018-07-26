@@ -27,6 +27,7 @@ class ChatViewController: UIViewController {
         self.messages = Array()
         self.chatTableView.dataSource = self
         self.chatTableView.delegate = self
+        self.messageTextField.delegate = self;
         self.navigationItem.title = self.userChattingWith?.username
     }
     
@@ -48,7 +49,7 @@ class ChatViewController: UIViewController {
         let keyboardSize = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let keyboardHeight: CGFloat = keyboardSize.height
         let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
-        UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
+        UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             if (self.messageTextFieldBottomConstraint.constant < 50) {
                 self.messageTextFieldBottomConstraint.constant += keyboardHeight
             }
@@ -71,8 +72,6 @@ class ChatViewController: UIViewController {
                     let messageModel = MessageModel()
                     messageModel.messageString = message
                     messageModel.sender = self.currentUser
-                    
-                
                     
                     self.messages.append(messageModel)
                     let indexOfMessage = self.messages.count - 1
@@ -99,5 +98,14 @@ extension ChatViewController: ChatDelegate {
             }
         }
     }
+}
+
+extension ChatViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.sendButtonTap()
+        return true
+    }
+    
+    
 }
 
