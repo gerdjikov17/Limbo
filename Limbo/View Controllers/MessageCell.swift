@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 class MessageCell: UITableViewCell {
-    @IBOutlet weak var receivedMessageLabel: UILabel!
-    @IBOutlet weak var sentMessageLabel: UILabel!
+    @IBOutlet weak var receivedMessage: UITextView!
+    @IBOutlet weak var sentMessage: UITextView!
     @IBOutlet weak var sentMessageTimestampLabel: UILabel!
     @IBOutlet weak var receivedMessageTimestampLabel: UILabel!
 }

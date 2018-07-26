@@ -20,6 +20,7 @@ class ChatViewController: UIViewController {
     var peerIDChattingWith: MCPeerID?
     var currentUser: UserModel?
     var messages: [MessageModel]!
+    var selectedIndexPathForTimeStamp: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,34 +66,17 @@ class ChatViewController: UIViewController {
     @objc func didTapOnMessage(recognizer: UITapGestureRecognizer) {
         let touchPoint = recognizer.location(in: self.chatTableView)
         let indexPath: IndexPath = self.chatTableView.indexPathForRow(at: touchPoint)!
-        let messageModel = self.messages[indexPath.row]
-        let cell: MessageCell
-        if (messageModel.sender == self.currentUser) {
-            cell = self.chatTableView.cellForRow(at: indexPath) as! MessageCell
-            if cell.sentMessageTimestampLabel.alpha == 1.0 {
-                UIView.animate(withDuration: 0.5) {
-                    cell.sentMessageTimestampLabel.alpha = 0.0
-                }
-            }
-            else {
-                UIView.animate(withDuration: 0.5) {
-                    cell.sentMessageTimestampLabel.alpha = 1.0
-                }
-            }
+        
+        self.chatTableView.beginUpdates()
+        
+        if self.selectedIndexPathForTimeStamp == indexPath {
+            self.selectedIndexPathForTimeStamp = nil
         }
         else {
-            cell = self.chatTableView.cellForRow(at: indexPath) as! MessageCell
-            if cell.receivedMessageTimestampLabel.alpha == 1.0  {
-                UIView.animate(withDuration: 0.5) {
-                    cell.receivedMessageTimestampLabel.alpha = 0.0
-                }
-            }
-            else {
-                UIView.animate(withDuration: 0.5) {
-                    cell.receivedMessageTimestampLabel.alpha = 1.0
-                }
-            }
+            self.selectedIndexPathForTimeStamp = indexPath
         }
+        
+        self.chatTableView.endUpdates()
     }
     
     @IBAction func sendButtonTap() {
@@ -145,22 +129,20 @@ extension ChatViewController: UITableViewDataSource {
         let cell: MessageCell
         if (messageModel.sender == self.currentUser) {
             cell = tableView.dequeueReusableCell(withIdentifier: "sentMessageCell", for: indexPath) as! MessageCell
-            cell.sentMessageLabel.text = self.messages[indexPath.row].messageString
-            cell.sentMessageTimestampLabel.alpha = 0.0
+            cell.sentMessage.text = self.messages[indexPath.row].messageString
             cell.sentMessageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
-            cell.sentMessageLabel.layer.masksToBounds = true;
-            cell.sentMessageLabel.layer.cornerRadius = 5
-            cell.sentMessageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+            cell.sentMessage.layer.masksToBounds = true;
+            cell.sentMessage.layer.cornerRadius = 5
+            cell.sentMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
             
         }
         else {
             cell = tableView.dequeueReusableCell(withIdentifier: "receivedMessageCell", for: indexPath) as! MessageCell
-            cell.receivedMessageLabel.text = self.messages[indexPath.row].messageString
-            cell.receivedMessageTimestampLabel.alpha = 0.0
+            cell.receivedMessage.text = self.messages[indexPath.row].messageString
             cell.receivedMessageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
-            cell.receivedMessageLabel.layer.masksToBounds = true;
-            cell.receivedMessageLabel.layer.cornerRadius = 5
-            cell.receivedMessageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+            cell.receivedMessage.layer.masksToBounds = true;
+            cell.receivedMessage.layer.cornerRadius = 5
+            cell.receivedMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
         }
         
         return cell;
@@ -171,19 +153,25 @@ extension ChatViewController: UITableViewDelegate {
     func calculateHeight(forMessage message: MessageModel) -> CGFloat {
         
         let messageString = message.messageString
-        let attributes: [NSAttributedStringKey : Any] = [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 17.0)]
+        let attributes: [NSAttributedStringKey : Any] = [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14.0)]
         
         let attributedString: NSAttributedString = NSAttributedString(string: messageString, attributes: attributes)
         
-        let rect: CGRect = attributedString.boundingRect(with: CGSize(width: self.view.bounds.size.width - 20, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
+        let rect: CGRect = attributedString.boundingRect(with: CGSize(width: self.view.frame.size.width - 53, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
         
         let requredSize: CGRect = rect
-        return requredSize.height
+        print(requredSize.height)
+        return requredSize.height + 16
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let height: CGFloat = self.calculateHeight(forMessage: self.messages[indexPath.row])
-        return height + 20.0
+        if let selectedIndexPath = self.selectedIndexPathForTimeStamp {
+            if indexPath == selectedIndexPath {
+                return height + 16
+            }
+        }
+        return height + 6
     }
 }
 
