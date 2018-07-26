@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import DZNEmptyDataSet
 
 extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -36,6 +37,11 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
         self.usersConnectivity.chatDelegates?.append(chatVC)
         self.navigationController?.pushViewController(chatVC, animated: true)
         
-        
+    }
+}
+
+extension NearbyUsersViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "No one is in the limbo\nLooking for someone")
     }
 }

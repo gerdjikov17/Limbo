@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import MultipeerConnectivity
-import DZNEmptyDataSet
 import RealmSwift
 
 class NearbyUsersViewController: UIViewController {
@@ -78,12 +77,6 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
     func didFindNewUser(user: UserModel, peerID: MCPeerID) {
         self.users[peerID] = user
         self.nearbyUsersCollectionView.reloadData()
-    }
-}
-
-extension NearbyUsersViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
-    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return NSAttributedString(string: "No one is in the limbo\nLooking for someone")
     }
 }
 
