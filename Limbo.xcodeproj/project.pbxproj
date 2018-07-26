@@ -25,6 +25,7 @@
 		06262FDD2108A88A003C6A1E /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FDC2108A88A003C6A1E /* MessageModel.swift */; };
 		06262FDF2109C95D003C6A1E /* ChatViewController+TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */; };
 		06262FE12109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */; };
+		06262FE32109DCD9003C6A1E /* Toast_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FE22109DCD9003C6A1E /* Toast_Swift.framework */; };
 		069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361F92107459900D02D22 /* UsersConnectivity.swift */; };
 		069361FD210745DC00D02D22 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361FC210745DC00D02D22 /* Protocols.swift */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
@@ -51,6 +52,7 @@
 		06262FDC2108A88A003C6A1E /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
 		06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+TableView.swift"; sourceTree = "<group>"; };
 		06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersViewController+CollectionView.swift"; sourceTree = "<group>"; };
+		06262FE22109DCD9003C6A1E /* Toast_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Toast_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		069361F92107459900D02D22 /* UsersConnectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersConnectivity.swift; sourceTree = "<group>"; };
 		069361FC210745DC00D02D22 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06262FE32109DCD9003C6A1E /* Toast_Swift.framework in Frameworks */,
 				06262FCD21075E9E003C6A1E /* DZNEmptyDataSet.framework in Frameworks */,
 				3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */,
 			);
@@ -159,6 +162,7 @@
 		1DC3AF52497DCF1AF8048988 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06262FE22109DCD9003C6A1E /* Toast_Swift.framework */,
 				06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */,
 				9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */,
 			);
@@ -254,12 +258,14 @@
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast-Swift/Toast_Swift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast_Swift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

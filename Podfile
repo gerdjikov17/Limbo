@@ -8,4 +8,5 @@ target 'Limbo' do
   # Pods for Limbo
   pod 'RealmSwift'
   pod 'DZNEmptyDataSet'
+  pod 'Toast-Swift', '~> 3.0.1'
 end

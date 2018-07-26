@@ -63,6 +63,11 @@ class UsersConnectivity: NSObject {
         
     }
     
+    func didSignOut() {
+        self.serviceAdvertiser.stopAdvertisingPeer()
+        self.serviceBrowser.stopBrowsingForPeers()
+    }
+    
 }
 
 extension UsersConnectivity: UsersConnectivityDelegate {
@@ -78,8 +83,6 @@ extension UsersConnectivity: UsersConnectivityDelegate {
             NSLog("%@", "Error for sending: \(error)")
         }
     }
-    
-    
     
 }
 

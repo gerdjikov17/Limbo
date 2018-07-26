@@ -29,6 +29,7 @@ class NearbyUsersViewController: UIViewController {
         
         navigationController?.navigationBar.barTintColor = UIColor(red:0.02, green:0.11, blue:0.16, alpha:0.5)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign out", style: .plain, target: self, action: #selector(self.signOutButtonTap))
         
         self.nearbyUsersCollectionView.emptyDataSetSource = self;
         self.nearbyUsersCollectionView.emptyDataSetDelegate = self;
@@ -63,6 +64,16 @@ class NearbyUsersViewController: UIViewController {
         self.currentUserImageView.image = UIImage(named: "ghost_avatar.png")
         self.usernameLabel.text = userModel.username
         self.userStateLabel.text = userModel.state
+    }
+    
+    @objc func signOutButtonTap() {
+        UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
+        UserDefaults.standard.synchronize()
+        let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
+        loginVC.loginDelegate = self
+        self.present(loginVC, animated: true, completion: {
+            self.usersConnectivity.didSignOut()
+        })
     }
 
 }
