@@ -88,12 +88,12 @@ class ChatViewController: UIViewController {
         UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
             self.messageTextFieldBottomConstraint.constant = 5
         }, completion: { (finished: Bool) in
-            let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-            if indexPath.row >= 0 {
-                self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
-            }
-
+//            the next line reloads the data to resize the tableview and the cells
+//            for unknown reason scrollToRow or setContentOffset doesn't work accordingly
+            self.chatTableView.reloadData()
+//            maybe this needs optimizing for better performance
         })
+
     }
     
     @IBAction func sendButtonTap() {
