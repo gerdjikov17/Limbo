@@ -17,6 +17,7 @@ class NearbyUsersViewController: UIViewController {
     var currentUser: UserModel!
     var users: [MCPeerID: UserModel]!
     var usersConnectivity: UsersConnectivity!
+    var pastelView: PastelView?
     @IBOutlet weak var nearbyUsersCollectionView: UICollectionView!
     @IBOutlet weak var currentUserImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
@@ -58,15 +59,11 @@ class NearbyUsersViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        addPastelViewToCollectionViewBackground()
         if let user = self.currentUser {
             self.setUIContent(userModel: user)
         }
         
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        addPastelViewToCollectionViewBackground()
     }
     
     func batteryLevelDidChange(notification: NSNotification) {
@@ -110,17 +107,34 @@ class NearbyUsersViewController: UIViewController {
 
     
     func addPastelViewToCollectionViewBackground() {
-        let pastelView: PastelView = PastelView(frame: self.nearbyUsersCollectionView.frame)
-        pastelView.startPastelPoint = .bottomLeft
-        pastelView.endPastelPoint = .topRight
-        pastelView.animationDuration = 3.0
-        pastelView.setColors([
-            UIColor(red:0.31, green:0.31, blue:0.31, alpha:1.0),
-            UIColor(red:0.88, green:0.88, blue:0.88, alpha:1.0),
-            UIColor(red:0.45, green:0.44, blue:0.49, alpha:1.0)
-            ])
-        pastelView.startAnimation()
-        self.nearbyUsersCollectionView.backgroundView = pastelView
+        
+        if self.pastelView == nil {
+            let pastelView = PastelView(frame: self.view.frame)
+            pastelView.startPastelPoint = .bottomLeft
+            pastelView.endPastelPoint = .topRight
+            pastelView.animationDuration = 3.0
+            pastelView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            pastelView.setColors([
+                UIColor(red:0.31, green:0.31, blue:0.31, alpha:1.0),
+                UIColor(red:0.88, green:0.88, blue:0.88, alpha:1.0),
+                UIColor(red:0.45, green:0.44, blue:0.49, alpha:1.0)
+                ])
+            pastelView.startAnimation()
+            //        self.nearbyUsersCollectionView.backgroundView = pastelView
+            self.nearbyUsersCollectionView.backgroundColor = .clear
+            self.view.addSubview(pastelView)
+            self.view.sendSubview(toBack: pastelView)
+            
+            let blurEffect = UIBlurEffect(style: .dark)
+            let blurEffectView = UIVisualEffectView(effect: blurEffect)
+            blurEffectView.frame = CGRect(x: 0, y: self.currentUserImageView.frame.origin.y - 10, width: view.bounds.width, height: view.bounds.height - 100)
+            blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            view.insertSubview(blurEffectView, aboveSubview: pastelView)
+            self.pastelView = pastelView
+        }
+        else {
+            pastelView?.startAnimation()
+        }
     }
 }
 
