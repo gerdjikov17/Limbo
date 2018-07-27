@@ -19,8 +19,7 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyUserCell", for: indexPath) as! NearbyDevicesCollectionViewCell
         let allUsers = Array(self.users.values)
         let userModel = allUsers[indexPath.row]
-        let image = UIImage(named: "ghost_avatar.png")
-        cell.avatarImageView.image = image;
+        cell.avatarImageView.image = UIImage(named: userModel.avatarString)
         cell.setCellContent(user: userModel)
         
         return cell

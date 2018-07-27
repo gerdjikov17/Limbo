@@ -26,6 +26,11 @@
 		06262FDF2109C95D003C6A1E /* ChatViewController+TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */; };
 		06262FE12109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */; };
 		06262FE32109DCD9003C6A1E /* Toast_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FE22109DCD9003C6A1E /* Toast_Swift.framework */; };
+		06262FE5210B471C003C6A1E /* AvatarCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FE4210B471C003C6A1E /* AvatarCollectionViewController.swift */; };
+		06262FE9210B493F003C6A1E /* do_you_kno_da_wey.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 06262FE6210B493E003C6A1E /* do_you_kno_da_wey.jpeg */; };
+		06262FEA210B493F003C6A1E /* pepe.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06262FE7210B493F003C6A1E /* pepe.jpg */; };
+		06262FEB210B493F003C6A1E /* spongebob.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06262FE8210B493F003C6A1E /* spongebob.jpg */; };
+		06262FED210B63EB003C6A1E /* Pastel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FEC210B63EB003C6A1E /* Pastel.framework */; };
 		069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361F92107459900D02D22 /* UsersConnectivity.swift */; };
 		069361FD210745DC00D02D22 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361FC210745DC00D02D22 /* Protocols.swift */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
@@ -53,6 +58,11 @@
 		06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+TableView.swift"; sourceTree = "<group>"; };
 		06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersViewController+CollectionView.swift"; sourceTree = "<group>"; };
 		06262FE22109DCD9003C6A1E /* Toast_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Toast_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		06262FE4210B471C003C6A1E /* AvatarCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionViewController.swift; sourceTree = "<group>"; };
+		06262FE6210B493E003C6A1E /* do_you_kno_da_wey.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = do_you_kno_da_wey.jpeg; sourceTree = "<group>"; };
+		06262FE7210B493F003C6A1E /* pepe.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pepe.jpg; sourceTree = "<group>"; };
+		06262FE8210B493F003C6A1E /* spongebob.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spongebob.jpg; sourceTree = "<group>"; };
+		06262FEC210B63EB003C6A1E /* Pastel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pastel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		069361F92107459900D02D22 /* UsersConnectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersConnectivity.swift; sourceTree = "<group>"; };
 		069361FC210745DC00D02D22 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -65,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06262FED210B63EB003C6A1E /* Pastel.framework in Frameworks */,
 				06262FE32109DCD9003C6A1E /* Toast_Swift.framework in Frameworks */,
 				06262FCD21075E9E003C6A1E /* DZNEmptyDataSet.framework in Frameworks */,
 				3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */,
@@ -119,6 +130,7 @@
 				06262FD6210876A2003C6A1E /* MessageCell.swift */,
 				06262FD8210876BA003C6A1E /* ChatViewController.swift */,
 				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
+				06262FE4210B471C003C6A1E /* AvatarCollectionViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -154,6 +166,9 @@
 		06262FD321086A4F003C6A1E /* Avatars */ = {
 			isa = PBXGroup;
 			children = (
+				06262FE6210B493E003C6A1E /* do_you_kno_da_wey.jpeg */,
+				06262FE7210B493F003C6A1E /* pepe.jpg */,
+				06262FE8210B493F003C6A1E /* spongebob.jpg */,
 				06262FD421086A4F003C6A1E /* ghost_avatar.png */,
 			);
 			path = Avatars;
@@ -162,6 +177,7 @@
 		1DC3AF52497DCF1AF8048988 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06262FEC210B63EB003C6A1E /* Pastel.framework */,
 				06262FE22109DCD9003C6A1E /* Toast_Swift.framework */,
 				06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */,
 				9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */,
@@ -239,8 +255,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				060FC53521071DE800E5D6BB /* LaunchScreen.storyboard in Resources */,
+				06262FEA210B493F003C6A1E /* pepe.jpg in Resources */,
 				060FC53221071DE800E5D6BB /* Assets.xcassets in Resources */,
 				06262FD521086A50003C6A1E /* ghost_avatar.png in Resources */,
+				06262FE9210B493F003C6A1E /* do_you_kno_da_wey.jpeg in Resources */,
+				06262FEB210B493F003C6A1E /* spongebob.jpg in Resources */,
 				060FC53021071DE700E5D6BB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -256,6 +275,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Limbo/Pods-Limbo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
+				"${BUILT_PRODUCTS_DIR}/Pastel/Pastel.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Toast-Swift/Toast_Swift.framework",
@@ -263,6 +283,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Pastel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast_Swift.framework",
@@ -306,6 +327,7 @@
 				069361FD210745DC00D02D22 /* Protocols.swift in Sources */,
 				060FC5482107435500E5D6BB /* NearbyUsers.swift in Sources */,
 				060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */,
+				06262FE5210B471C003C6A1E /* AvatarCollectionViewController.swift in Sources */,
 				06262FDD2108A88A003C6A1E /* MessageModel.swift in Sources */,
 				069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */,
 				060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */,

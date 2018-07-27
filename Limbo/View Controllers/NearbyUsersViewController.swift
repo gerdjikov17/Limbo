@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 import RealmSwift
+import Pastel
 
 class NearbyUsersViewController: UIViewController {
 
@@ -30,6 +31,7 @@ class NearbyUsersViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = UIColor(red:0.02, green:0.11, blue:0.16, alpha:0.5)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign out", style: .plain, target: self, action: #selector(self.signOutButtonTap))
+        self.currentUserImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.userImageTap)))
         
         self.nearbyUsersCollectionView.emptyDataSetSource = self;
         self.nearbyUsersCollectionView.emptyDataSetDelegate = self;
@@ -52,12 +54,19 @@ class NearbyUsersViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let user = self.currentUser {
+            self.setUIContent(userModel: user)
+        }
         
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        addPastelViewToCollectionViewBackground()
     }
     
     func batteryLevelDidChange(notification: NSNotification) {
@@ -74,7 +83,7 @@ class NearbyUsersViewController: UIViewController {
     }
     
     func setUIContent(userModel: UserModel) {
-        self.currentUserImageView.image = UIImage(named: "ghost_avatar.png")
+        self.currentUserImageView.image = UIImage(named: self.currentUser.avatarString)
         self.usernameLabel.text = userModel.username
         self.userStateLabel.text = userModel.state
     }
@@ -92,7 +101,27 @@ class NearbyUsersViewController: UIViewController {
             }
         })
     }
+    
+    @objc func userImageTap() {
+        let avatarChooseVC = storyboard?.instantiateViewController(withIdentifier: "AvatarCollectionViewController") as! AvatarCollectionViewController
+        avatarChooseVC.currentUser = self.currentUser
+        self.navigationController?.present(avatarChooseVC, animated: true, completion: nil)
+    }
 
+    
+    func addPastelViewToCollectionViewBackground() {
+        let pastelView: PastelView = PastelView(frame: self.nearbyUsersCollectionView.frame)
+        pastelView.startPastelPoint = .bottomLeft
+        pastelView.endPastelPoint = .topRight
+        pastelView.animationDuration = 3.0
+        pastelView.setColors([
+            UIColor(red:0.31, green:0.31, blue:0.31, alpha:1.0),
+            UIColor(red:0.88, green:0.88, blue:0.88, alpha:1.0),
+            UIColor(red:0.45, green:0.44, blue:0.49, alpha:1.0)
+            ])
+        pastelView.startAnimation()
+        self.nearbyUsersCollectionView.backgroundView = pastelView
+    }
 }
 
 extension NearbyUsersViewController: NearbyUsersDelegate {

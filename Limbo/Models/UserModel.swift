@@ -15,32 +15,33 @@ class UserModel: Object {
     @objc dynamic var userID = -1
     @objc dynamic var username = ""
     @objc dynamic var password = ""
+    @objc dynamic var avatarString = "ghost_avatar.png"
     var state = ""
-    var avatar: UIImage {
-        get {
-            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            var avatarsDirectory: URL = paths[0]
-            avatarsDirectory = avatarsDirectory.appendingPathComponent("avatars")
-            avatarsDirectory = avatarsDirectory.appendingPathComponent(String(self.userID)).appendingPathExtension("jpg")
-            let data = try? Data(contentsOf: avatarsDirectory)
-            if let data = data {
-                return UIImage(data: data)!
-            }
-            return UIImage(named: "no_avatar")!
-        }
-        set {
-            let data = UIImageJPEGRepresentation(newValue, 1)
-            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            var avatarsDirectory: URL = paths[0]
-            avatarsDirectory = avatarsDirectory.appendingPathComponent("avatars")
-            avatarsDirectory = avatarsDirectory.appendingPathComponent(String(self.userID)).appendingPathExtension("jpg")
-            do {
-                try data?.write(to: avatarsDirectory)
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
+//    var avatar: UIImage {
+//        get {
+//            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+//            var avatarsDirectory: URL = paths[0]
+//            avatarsDirectory = avatarsDirectory.appendingPathComponent("avatars")
+//            avatarsDirectory = avatarsDirectory.appendingPathComponent(String(self.userID)).appendingPathExtension("jpg")
+//            let data = try? Data(contentsOf: avatarsDirectory)
+//            if let data = data {
+//                return UIImage(data: data)!
+//            }
+//            return UIImage(named: "no_avatar")!
+//        }
+//        set {
+//            let data = UIImageJPEGRepresentation(newValue, 1)
+//            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+//            var avatarsDirectory: URL = paths[0]
+//            avatarsDirectory = avatarsDirectory.appendingPathComponent("avatars")
+//            avatarsDirectory = avatarsDirectory.appendingPathComponent(String(self.userID)).appendingPathExtension("jpg")
+//            do {
+//                try data?.write(to: avatarsDirectory)
+//            } catch {
+//                print(error.localizedDescription)
+//            }
+//        }
+//    }
     
     convenience init(username: String, password: String) {
         self.init()
@@ -85,6 +86,13 @@ class UserModel: Object {
             
         ] as [String: Any]
         return jsonDict
+    }
+    
+    func changeAvatar(newImageString: String) {
+        let realm = try! Realm()
+        try! realm.write {
+            self.avatarString = newImageString
+        }
     }
     
 }

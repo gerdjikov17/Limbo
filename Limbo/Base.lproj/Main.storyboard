@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="DGX-wd-rYd">
-                                <rect key="frame" x="0.0" y="64" width="375" height="361"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="390"/>
                                 <color key="backgroundColor" white="1" alpha="0.67950021404109584" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="fVb-rP-IwX">
                                     <size key="itemSize" width="100" height="100"/>
@@ -77,21 +77,21 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="euc-X2-kRU"/>
                                 </connections>
                             </collectionView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xf0-8i-0sz">
-                                <rect key="frame" x="130" y="433" width="115" height="115"/>
+                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xf0-8i-0sz">
+                                <rect key="frame" x="130" y="462" width="115" height="115"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="115" id="5e4-dq-cK6"/>
                                     <constraint firstAttribute="height" constant="115" id="8jW-hd-2ni"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="usA-t9-BGE">
-                                <rect key="frame" x="128.5" y="564" width="118" height="21"/>
+                                <rect key="frame" x="128.5" y="593" width="118" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Human" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FCc-9H-Fd5">
-                                <rect key="frame" x="159.5" y="597" width="55" height="21"/>
+                                <rect key="frame" x="159.5" y="626" width="55" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -104,8 +104,8 @@
                             <constraint firstItem="xf0-8i-0sz" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="9D1-1n-ZFo"/>
                             <constraint firstItem="xf0-8i-0sz" firstAttribute="top" secondItem="DGX-wd-rYd" secondAttribute="bottom" constant="8" id="KyQ-Mr-VdO"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="DGX-wd-rYd" secondAttribute="trailing" id="VsJ-5N-3ga"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="DGX-wd-rYd" secondAttribute="bottom" constant="242" id="aRk-Lk-9hb"/>
                             <constraint firstItem="usA-t9-BGE" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="evW-aB-KuX"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="FCc-9H-Fd5" secondAttribute="bottom" constant="20" id="mDI-PE-KVm"/>
                             <constraint firstItem="usA-t9-BGE" firstAttribute="top" secondItem="xf0-8i-0sz" secondAttribute="bottom" constant="16" id="mo6-aj-pf6"/>
                             <constraint firstItem="FCc-9H-Fd5" firstAttribute="top" secondItem="usA-t9-BGE" secondAttribute="bottom" constant="12" id="ybS-UY-xK7"/>
                             <constraint firstItem="FCc-9H-Fd5" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="zTG-aw-Rib"/>
@@ -426,6 +426,59 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ahJ-nC-Lsd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1880.8" y="790.25487256371821"/>
+        </scene>
+        <!--Avatar Collection View Controller-->
+        <scene sceneID="Rmv-sr-YQO">
+            <objects>
+                <collectionViewController storyboardIdentifier="AvatarCollectionViewController" id="KDM-yy-Lm6" customClass="AvatarCollectionViewController" customModule="Limbo" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="dGC-71-ru8">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.019607843140000001" green="0.10980392160000001" blue="0.16078431369999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="5dU-g5-ZEp">
+                            <size key="itemSize" width="100" height="100"/>
+                            <size key="headerReferenceSize" width="0.0" height="75"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="avatarCell" id="e8G-dw-tt8">
+                                <rect key="frame" x="0.0" y="75" width="100" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="avatarHeader" id="zOi-LP-owS">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="75"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose your avatar" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wyJ-zd-cvK">
+                                    <rect key="frame" x="95" y="24.5" width="185.5" height="26.5"/>
+                                    <fontDescription key="fontDescription" name="Optima-Bold" family="Optima" pointSize="22"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                    <variation key="heightClass=regular-widthClass=regular">
+                                        <fontDescription key="fontDescription" name="Optima-Bold" family="Optima" pointSize="30"/>
+                                    </variation>
+                                </label>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="wyJ-zd-cvK" firstAttribute="centerY" secondItem="zOi-LP-owS" secondAttribute="centerY" id="eEj-ld-Lnt"/>
+                                <constraint firstItem="wyJ-zd-cvK" firstAttribute="centerX" secondItem="zOi-LP-owS" secondAttribute="centerX" id="yvq-R9-Cew"/>
+                            </constraints>
+                        </collectionReusableView>
+                        <connections>
+                            <outlet property="dataSource" destination="KDM-yy-Lm6" id="msx-g3-8bf"/>
+                            <outlet property="delegate" destination="KDM-yy-Lm6" id="qId-mW-uQp"/>
+                        </connections>
+                    </collectionView>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YFU-mE-kE8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1881" y="1545"/>
         </scene>
     </scenes>
     <resources>

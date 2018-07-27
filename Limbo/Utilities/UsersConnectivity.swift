@@ -30,7 +30,7 @@ class UsersConnectivity: NSObject {
     init(userModel: UserModel) {
         self.userModel = userModel
         self.myPeerID = MCPeerID(displayName: userModel.username)
-        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["state": self.userModel.state], serviceType:Constants.MCServiceType)
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["state": self.userModel.state, "avatar": self.userModel.avatarString], serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
         self.chatDelegates = Array()
         
@@ -102,8 +102,9 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
         NSLog("%@", "foundPeer: \(peerID)")
         if let userState = info!["state"] {
             let userModel: UserModel! = UserModel(username: peerID.displayName, state: userState)
-            let shouldAddUser = shouldShowUserDependingOnState(foundUserState: userState)
-//            let shouldAddUser = true
+            userModel.avatarString = info!["avatar"]!
+//            let shouldAddUser = shouldShowUserDependingOnState(foundUserState: userState)
+            let shouldAddUser = true
             if  shouldAddUser {
                 self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
                 browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
