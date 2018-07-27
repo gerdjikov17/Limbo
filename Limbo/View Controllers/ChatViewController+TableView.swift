@@ -55,7 +55,6 @@ extension ChatViewController: UITableViewDelegate {
         else {
             self.selectedIndexPathForTimeStamp = indexPath
         }
-        
         self.chatTableView.endUpdates()
     }
     
@@ -70,7 +69,6 @@ extension ChatViewController: UITableViewDelegate {
         let rect: CGRect = attributedString.boundingRect(with: CGSize(width: self.view.frame.size.width - 53, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
         
         let requredSize: CGRect = rect
-        print(requredSize.height)
         return requredSize.height + 16
     }
     
@@ -78,9 +76,10 @@ extension ChatViewController: UITableViewDelegate {
         let height: CGFloat = self.calculateHeight(forMessage: self.messages[indexPath.row])
         if let selectedIndexPath = self.selectedIndexPathForTimeStamp {
             if indexPath == selectedIndexPath {
-                return height + 16
+                return height + 17
             }
         }
         return height + 6
     }
+
 }

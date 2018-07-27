@@ -49,6 +49,11 @@ class NearbyUsersViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: Selector(("batteryLevelDidChange:")), name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
@@ -73,6 +78,10 @@ class NearbyUsersViewController: UIViewController {
         loginVC.loginDelegate = self
         self.present(loginVC, animated: true, completion: {
             self.usersConnectivity.didSignOut()
+            let realm = try! Realm()
+            try? realm.write {
+                realm.delete(realm.objects(UserModel.self).filter("userID == %d", -1))
+            }
         })
     }
 
@@ -87,6 +96,12 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
     
     func didFindNewUser(user: UserModel, peerID: MCPeerID) {
         self.users[peerID] = user
+        let realm = try! Realm()
+        if realm.objects(UserModel.self).filter("username == %@", user.username).first == nil {
+            realm.beginWrite()
+            realm.add(user)
+            try! realm.commitWrite()
+        }
         self.nearbyUsersCollectionView.reloadData()
     }
 }

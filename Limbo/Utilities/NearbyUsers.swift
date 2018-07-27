@@ -11,11 +11,3 @@ import Foundation
 class NearbyUsers {
     
 }
-
-//extension NearbyUsers: NearbyUsersDelegate {
-//    func didFindNewUser(user: UserModel) {
-//        <#code#>
-//    }
-    
-    
-//}

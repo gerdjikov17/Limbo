@@ -57,7 +57,7 @@ class LoginViewController: UIViewController {
         if usernameString.count < 4 {
             message = "Username is too short"
         }
-        else if usernameString.count > 9 {
+        else if usernameString.count > 12 {
             message = "Username is too long"
         }
         else if passwordString.count < 5 {

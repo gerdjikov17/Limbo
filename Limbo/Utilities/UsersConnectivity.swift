@@ -8,6 +8,7 @@
 
 import UIKit
 import MultipeerConnectivity
+import RealmSwift
 
 class UsersConnectivity: NSObject {
     
@@ -17,7 +18,7 @@ class UsersConnectivity: NSObject {
     private let serviceBrowser: MCNearbyServiceBrowser
     
     lazy var session : MCSession = {
-        let session = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .required)
+        let session = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .none)
         session.delegate = self
         return session
     }()
@@ -48,21 +49,6 @@ class UsersConnectivity: NSObject {
         self.serviceBrowser.stopBrowsingForPeers()
     }
     
-    
-    func send(textString : String) {
-        NSLog("%@", "sendColor: \(textString) to \(session.connectedPeers.count) peers")
-        
-        if session.connectedPeers.count > 0 {
-            do {
-                try self.session.send(textString.data(using: .utf8)!, toPeers: session.connectedPeers, with: .reliable)
-            }
-            catch let error {
-                NSLog("%@", "Error for sending: \(error)")
-            }
-        }
-        
-    }
-    
     func didSignOut() {
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
@@ -73,14 +59,23 @@ class UsersConnectivity: NSObject {
 extension UsersConnectivity: UsersConnectivityDelegate {
     func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID) {
         if !session.connectedPeers.contains(toPeerID) {
-            self.serviceBrowser.invitePeer(toPeerID, to: session, withContext: nil, timeout: 10)
+            let pointForToast = CGPoint(x: (UIApplication.shared.keyWindow?.center.x)!, y: ((UIApplication.shared.keyWindow?.bounds.height)! - CGFloat(100)))
+            UIApplication.shared.keyWindow?.makeToast("This user is offline and won't receive messages from you.", point:pointForToast , title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
         }
-        do {
-            let data = NSKeyedArchiver.archivedData(withRootObject: messageModel.toDictionary())
-            try self.session.send(data, toPeers: [toPeerID], with: .reliable)
+        else {
+            do {
+                let data = NSKeyedArchiver.archivedData(withRootObject: messageModel.toDictionary())
+                try self.session.send(data, toPeers: [toPeerID], with: .reliable)
+            }
+            catch let error {
+                NSLog("%@", "Error for sending: \(error)")
+            }
         }
-        catch let error {
-            NSLog("%@", "Error for sending: \(error)")
+    }
+    
+    func chatDelegateDidDisappear(chatDelegate: ChatDelegate) {
+        if let indexOfChatDelegate = self.chatDelegates?.index(where: {$0 === chatDelegate}) {
+            self.chatDelegates?.remove(at: indexOfChatDelegate)
         }
     }
     
@@ -110,8 +105,6 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
             let userModel: UserModel! = UserModel(username: peerID.displayName, state: userState)
             self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
         }
-        
-        
         browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
@@ -133,8 +126,13 @@ extension UsersConnectivity : MCSessionDelegate {
         NSLog("%@", "didReceiveData: \(data)")
         let dataDict = NSKeyedUnarchiver.unarchiveObject(with: data) as! Dictionary<String, Any>
         let messageModel = MessageModel(withDictionary: dataDict)
+        let realm = try! Realm()
+        realm.beginWrite()
+        realm.add(messageModel)
+        try? realm.commitWrite()
+        let threadSafeMessage = ThreadSafeReference(to: messageModel)
         for chatDelegate in self.chatDelegates! {
-            chatDelegate.didReceiveMessage(messageModel: messageModel, fromPeerID: peerID)
+            chatDelegate.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: peerID)
         }
     }
     

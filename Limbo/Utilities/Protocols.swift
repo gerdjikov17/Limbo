@@ -8,6 +8,7 @@
 
 import Foundation
 import MultipeerConnectivity
+import RealmSwift
 
 protocol NearbyUsersDelegate {
     func didFindNewUser(user: UserModel, peerID: MCPeerID)
@@ -16,12 +17,13 @@ protocol NearbyUsersDelegate {
 
 protocol UsersConnectivityDelegate {
     func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID)
+    func chatDelegateDidDisappear(chatDelegate: ChatDelegate)
 }
 
 protocol LoginDelegate {
     func didLogin(userModel: UserModel)
 }
 
-protocol ChatDelegate {
-    func didReceiveMessage(messageModel: MessageModel, fromPeerID: MCPeerID)
+protocol ChatDelegate: AnyObject {
+    func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID)
 }

@@ -30,8 +30,9 @@ class MessageModel: Object {
         self.timeSent = dictionary["timeSent"] as! Date
         let realm = try! Realm()
         let senderDict: Dictionary = dictionary["sender"] as! Dictionary<String, Any>
-        if let userID = senderDict["userID"] {
-            self.sender = realm.objects(UserModel.self).filter("userID = %d", userID).first
-        }        
+        if let username = senderDict["username"] {
+            self.sender = realm.objects(UserModel.self).filter("userID == %d AND username == %@", -1, username as! String).first
+            self.receivers.append(realm.objects(UserModel.self).filter("userID == %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first!)
+        }
     }
 }

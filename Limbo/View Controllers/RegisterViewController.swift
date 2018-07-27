@@ -64,7 +64,7 @@ class RegisterViewController: UIViewController {
         if username.count < 4 {
             message = "Username is too short"
         }
-        else if username.count > 9 {
+        else if username.count > 12 {
             message = "Username is too long"
         }
         else if password.count < 5 {

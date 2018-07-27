@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import MultipeerConnectivity
+import RealmSwift
 
 class ChatViewController: UIViewController {
     @IBOutlet weak var chatTableView: UITableView!
@@ -24,7 +25,9 @@ class ChatViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.messages = Array()
+        let realm = try! Realm()
+        self.messages = Array(realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers.username = %@) OR (sender.username = %@ AND ANY receivers.username = %@)", self.currentUser!, self.userChattingWith!.username, self.userChattingWith!.username, self.currentUser!.username))
+
         self.chatTableView.dataSource = self
         self.chatTableView.delegate = self
         self.messageTextField.delegate = self;
@@ -35,13 +38,18 @@ class ChatViewController: UIViewController {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-    
+        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+        if indexPath.row >= 0 {
+            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        self.chatDelegate?.chatDelegateDidDisappear(chatDelegate: self)
     }
     
     @objc func keyboardWillShow(notification: Notification) {
@@ -52,8 +60,17 @@ class ChatViewController: UIViewController {
         UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.curveEaseIn, animations: {
             if (self.messageTextFieldBottomConstraint.constant < 50) {
                 self.messageTextFieldBottomConstraint.constant += keyboardHeight
+                
             }
-        }, completion: nil)
+        }, completion: { (finished: Bool) in
+            if self.messageTextFieldBottomConstraint.constant > 50 {
+                let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                if indexPath.row >= 0 {
+                    self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+                }
+            }
+        })
+        
     }
     
     @objc func keyboardWillHide(notification: Notification) {
@@ -61,7 +78,13 @@ class ChatViewController: UIViewController {
         let duration = info[UIKeyboardAnimationDurationUserInfoKey] as! TimeInterval
         UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
             self.messageTextFieldBottomConstraint.constant = 5
-        }, completion: nil)
+        }, completion: { (finished: Bool) in
+            let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+            if indexPath.row >= 0 {
+                self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+            }
+
+        })
     }
     
     @IBAction func sendButtonTap() {
@@ -72,6 +95,15 @@ class ChatViewController: UIViewController {
                     let messageModel = MessageModel()
                     messageModel.messageString = message
                     messageModel.sender = self.currentUser
+                    
+                    
+                    let realm = try! Realm()
+                    let userChattingWith = realm.objects(UserModel.self).filter("username == %@", self.userChattingWith!.username).first
+                    try? realm.write {
+                        realm.add(messageModel)
+                        messageModel.receivers.append(userChattingWith!)
+                    }
+                    
                     
                     self.messages.append(messageModel)
                     let indexOfMessage = self.messages.count - 1
@@ -87,12 +119,15 @@ class ChatViewController: UIViewController {
 }
 
 extension ChatViewController: ChatDelegate {
-    func didReceiveMessage(messageModel: MessageModel, fromPeerID: MCPeerID) {
+    func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
         if fromPeerID == self.peerIDChattingWith {
-            self.messages.append(messageModel)
-            let indexOfMessage = self.messages.count - 1
-            let indexPath = IndexPath(row: indexOfMessage, section: 0)
+            
             DispatchQueue.main.async {
+                let realm = try! Realm()
+                let messageModel = realm.resolve(threadSafeMessageRef)
+                self.messages.append(messageModel!)
+                let indexOfMessage = self.messages.count - 1
+                let indexPath = IndexPath(row: indexOfMessage, section: 0)
                 self.chatTableView.insertRows(at: [indexPath], with: .middle)
                 self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
             }
@@ -105,7 +140,5 @@ extension ChatViewController: UITextFieldDelegate {
         self.sendButtonTap()
         return true
     }
-    
-    
 }
 
