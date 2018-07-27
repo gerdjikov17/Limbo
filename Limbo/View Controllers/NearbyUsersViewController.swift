@@ -42,6 +42,7 @@ class NearbyUsersViewController: UIViewController {
         else {
             let realm = try! Realm()
             self.currentUser = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first!
+            self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
             self.usersConnectivity = UsersConnectivity(userModel: currentUser)
             self.usersConnectivity.delegate = self;
             self.setUIContent(userModel: self.currentUser)
@@ -62,7 +63,14 @@ class NearbyUsersViewController: UIViewController {
     func batteryLevelDidChange(notification: NSNotification) {
         let batteryLevel = UIDevice.current.batteryLevel
         self.currentUser.setState(batteryLevel: batteryLevel)
-        self.userStateLabel.text = self.currentUser.state
+        if self.userStateLabel.text != self.currentUser.state {
+            self.userStateLabel.text = self.currentUser.state
+//        this may be problematic at some time
+//        create new UsersConnectivity which uses new user state
+            self.usersConnectivity = UsersConnectivity(userModel: currentUser)
+            self.usersConnectivity.delegate = self;
+            self.setUIContent(userModel: self.currentUser)
+        }
     }
     
     func setUIContent(userModel: UserModel) {

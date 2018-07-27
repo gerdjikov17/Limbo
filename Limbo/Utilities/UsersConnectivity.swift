@@ -29,7 +29,6 @@ class UsersConnectivity: NSObject {
     
     init(userModel: UserModel) {
         self.userModel = userModel
-        self.userModel.setState(batteryLevel: UIDevice.current.batteryLevel)
         self.myPeerID = MCPeerID(displayName: userModel.username)
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["state": self.userModel.state], serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
@@ -103,14 +102,38 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
         NSLog("%@", "foundPeer: \(peerID)")
         if let userState = info!["state"] {
             let userModel: UserModel! = UserModel(username: peerID.displayName, state: userState)
-            self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
+            let shouldAddUser = shouldShowUserDependingOnState(foundUserState: userState)
+//            let shouldAddUser = true
+            if  shouldAddUser {
+                self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
+                browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+            }
         }
-        browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
         self.delegate?.didLostUser(peerID: peerID)
+    }
+    
+    func shouldShowUserDependingOnState(foundUserState: String) -> Bool {
+        let currentUserState = self.userModel.state
+        switch currentUserState {
+        case "Human":
+            if (foundUserState == "Human") { return true }
+            else { return false }
+        case "Dying":
+            if foundUserState == "Dying"{ return true }
+            else { return false }
+        case "Hollow":
+            if (foundUserState == "Hollow") || (foundUserState == "Dying") { return true }
+            else { return false }
+        case "Undead":
+            if (foundUserState == "Hollow") || (foundUserState == "Dying") || (foundUserState == "Undead") || (foundUserState == "Ghost") { return true }
+            else { return false }
+        default:
+            return true
+        }
     }
     
 }
