@@ -32,17 +32,26 @@ class ChatViewController: UIViewController {
         self.chatTableView.delegate = self
         self.messageTextField.delegate = self;
         self.navigationItem.title = self.userChattingWith?.username
+        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+        if indexPath.row >= 0 {
+            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+
+        
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
         if indexPath.row >= 0 {
             self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
         }
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {

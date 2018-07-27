@@ -56,6 +56,10 @@ extension ChatViewController: UITableViewDelegate {
             self.selectedIndexPathForTimeStamp = indexPath
         }
         self.chatTableView.endUpdates()
+        
+        if indexPath.row == self.messages.count - 1 {
+            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+        }
     }
     
     
