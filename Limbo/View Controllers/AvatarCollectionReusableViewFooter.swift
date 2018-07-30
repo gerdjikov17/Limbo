@@ -50,7 +50,7 @@ class AvatarCollectionReusableViewFooter: UICollectionReusableView, UIImagePicke
                 let avatarString = responseData!["link"] as! String
                 let currentlyLoggedUserID = UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)
                 let realm = try! Realm()
-                var currentlyLoggedUser = realm.objects(UserModel.self).filter("userID = %d", currentlyLoggedUserID).first
+                let currentlyLoggedUser = realm.objects(UserModel.self).filter("userID = %d", currentlyLoggedUserID).first
                 realm.beginWrite()
                 currentlyLoggedUser?.avatarString = avatarString
                 try! realm.commitWrite()

@@ -38,14 +38,14 @@ class ChatViewController: UIViewController {
         if indexPath.row >= 0 {
             self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
         }
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear history", style: .plain, target: self, action: #selector(self.clearHistoryButtonTap))
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-
-        
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -116,7 +116,23 @@ class ChatViewController: UIViewController {
 //            }
 //            maybe this needs optimizing for better performance
         })
-
+    }
+    
+    @objc func clearHistoryButtonTap() {
+        let alertController = UIAlertController(title: "Clear history", message: "In result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+            let realm = try! Realm()
+            realm.beginWrite()
+            let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers.username = %@) OR (sender.username = %@ AND ANY receivers.username = %@)", self.currentUser!, self.userChattingWith!.username, self.userChattingWith!.username, self.currentUser!.username)
+            realm.delete(results)
+            try! realm.commitWrite()
+            self.messages = Array()
+            self.chatTableView.reloadData()
+        }))
+        alertController.addAction(UIAlertAction(title: "No", style: .destructive, handler: { (action) in
+            
+        }))
+        self.present(alertController, animated: true, completion: nil)
     }
     
     @IBAction func sendButtonTap() {
