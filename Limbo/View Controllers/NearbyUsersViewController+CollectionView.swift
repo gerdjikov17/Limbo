@@ -34,10 +34,11 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
         chatVC.userChattingWith = selectedUser
         chatVC.peerIDChattingWith = selectedPeerID
         chatVC.chatDelegate = self.usersConnectivity
-        self.usersConnectivity.chatDelegates?.append(chatVC)
+        self.usersConnectivity.chatDelegate = chatVC
         self.navigationController?.pushViewController(chatVC, animated: true)
         
     }
+
 }
 
 extension NearbyUsersViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {

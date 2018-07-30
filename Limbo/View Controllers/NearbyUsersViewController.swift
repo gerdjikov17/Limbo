@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 import RealmSwift
+import LNRSimpleNotifications
 import Pastel
 
 class NearbyUsersViewController: UIViewController {
@@ -63,7 +64,7 @@ class NearbyUsersViewController: UIViewController {
         if let user = self.currentUser {
             self.setUIContent(userModel: user)
         }
-        
+        self.usersConnectivity.chatDelegate = self
     }
     
     func batteryLevelDidChange(notification: NSNotification) {
@@ -165,6 +166,39 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
         }
         self.nearbyUsersCollectionView.reloadData()
     }
+}
+
+extension NearbyUsersViewController: ChatDelegate {
+    func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
+        //        create a notificiation that message is received
+        DispatchQueue.main.async {
+            let realm = try! Realm()
+            let messageModel = realm.resolve(threadSafeMessageRef)
+            let userChattingWith = messageModel?.sender
+            let notificationManager = LNRNotificationManager()
+            notificationManager.notificationsPosition = .top
+            notificationManager.notificationsBackgroundColor = .white
+            notificationManager.notificationsTitleTextColor = .black
+            notificationManager.notificationsBodyTextColor = .darkGray
+            notificationManager.notificationsSeperatorColor = .gray
+            
+            notificationManager.showNotification(notification: LNRNotification(title: (userChattingWith?.username)!, body:messageModel?.messageString , duration: 3, onTap: {
+                
+                let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
+                self.usersConnectivity.inviteUser(peerID: fromPeerID)
+                chatVC.currentUser = self.currentUser
+                chatVC.userChattingWith = userChattingWith
+                chatVC.peerIDChattingWith = fromPeerID
+                chatVC.chatDelegate = self.usersConnectivity
+                self.usersConnectivity.chatDelegate = chatVC
+                self.navigationController?.pushViewController(chatVC, animated: true)
+                
+            }, onTimeout: {
+                
+            }))
+        }
+    }
+    
 }
 
 extension NearbyUsersViewController: LoginDelegate {

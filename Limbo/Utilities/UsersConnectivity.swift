@@ -24,7 +24,7 @@ class UsersConnectivity: NSObject {
     }()
     
     var delegate: NearbyUsersDelegate?
-    var chatDelegates: [ChatDelegate]?
+    var chatDelegate: ChatDelegate?
     
     
     init(userModel: UserModel) {
@@ -32,7 +32,6 @@ class UsersConnectivity: NSObject {
         self.myPeerID = MCPeerID(displayName: userModel.username)
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["state": self.userModel.state, "avatar": self.userModel.avatarString], serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
-        self.chatDelegates = Array()
         
         super.init()
         
@@ -71,12 +70,10 @@ extension UsersConnectivity: UsersConnectivityDelegate {
             }
         }
     }
-    
-    func chatDelegateDidDisappear(chatDelegate: ChatDelegate) {
-        if let indexOfChatDelegate = self.chatDelegates?.index(where: {$0 === chatDelegate}) {
-            self.chatDelegates?.remove(at: indexOfChatDelegate)
-        }
+    func setChatDelegate(newDelegate: ChatDelegate) {
+        self.chatDelegate = newDelegate
     }
+    
     
 }
 
@@ -107,18 +104,12 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
         if let userState = info!["state"] {
             let userModel: UserModel! = UserModel(username: peerID.displayName, state: userState)
             userModel.avatarString = info!["avatar"]!
-//            let shouldSowUser = shouldShowUserDependingOnState(foundUserState: userState)
-            let shouldSowUser = true
-            if  shouldSowUser {
+//            if shouldShowUserDependingOnState(foundUserState: userState) {
                 self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
-                browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
-            }
+//            }
+            
+            browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
         }
-    }
-    
-    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        NSLog("%@", "lostPeer: \(peerID)")
-        self.delegate?.didLostUser(peerID: peerID)
     }
     
     func shouldShowUserDependingOnState(foundUserState: String) -> Bool {
@@ -141,6 +132,11 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
         }
     }
     
+    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+        NSLog("%@", "lostPeer: \(peerID)")
+        self.delegate?.didLostUser(peerID: peerID)
+    }
+    
 }
 
 extension UsersConnectivity : MCSessionDelegate {
@@ -159,9 +155,7 @@ extension UsersConnectivity : MCSessionDelegate {
         realm.add(messageModel)
         try? realm.commitWrite()
         let threadSafeMessage = ThreadSafeReference(to: messageModel)
-        for chatDelegate in self.chatDelegates! {
-            chatDelegate.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: peerID)
-        }
+        chatDelegate!.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: peerID)
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {

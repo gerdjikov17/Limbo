@@ -17,7 +17,7 @@ protocol NearbyUsersDelegate {
 
 protocol UsersConnectivityDelegate {
     func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID)
-    func chatDelegateDidDisappear(chatDelegate: ChatDelegate)
+    func setChatDelegate(newDelegate: ChatDelegate)
 }
 
 protocol LoginDelegate {

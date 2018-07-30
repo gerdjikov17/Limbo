@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 import RealmSwift
+import LNRSimpleNotifications
 
 class ChatViewController: UIViewController {
     @IBOutlet weak var chatTableView: UITableView!
@@ -59,7 +60,6 @@ class ChatViewController: UIViewController {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        self.chatDelegate?.chatDelegateDidDisappear(chatDelegate: self)
     }
     
     func queryLastHundredMessages() -> [MessageModel] {
@@ -148,16 +148,44 @@ class ChatViewController: UIViewController {
 
 extension ChatViewController: ChatDelegate {
     func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
-        if fromPeerID == self.peerIDChattingWith {
-            
-            DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            if fromPeerID == self.peerIDChattingWith {
+                
                 let realm = try! Realm()
                 let messageModel = realm.resolve(threadSafeMessageRef)
                 self.messages.append(messageModel!)
                 let indexOfMessage = self.messages.count - 1
                 let indexPath = IndexPath(row: indexOfMessage, section: 0)
                 self.chatTableView.insertRows(at: [indexPath], with: .middle)
-                self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            }
+            else {
+                
+                let realm = try! Realm()
+                let messageModel = realm.resolve(threadSafeMessageRef)
+                let notificationManager = LNRNotificationManager()
+                notificationManager.notificationsPosition = .top
+                notificationManager.notificationsBackgroundColor = .white
+                notificationManager.notificationsTitleTextColor = .black
+                notificationManager.notificationsBodyTextColor = .darkGray
+                notificationManager.notificationsSeperatorColor = .gray
+                
+                notificationManager.showNotification(notification: LNRNotification(title: (messageModel?.sender?.username)!, body:messageModel?.messageString , duration: 3, onTap: {
+                    
+                    let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
+                    chatVC.currentUser = self.currentUser
+                    chatVC.userChattingWith = messageModel?.sender
+                    chatVC.peerIDChattingWith = fromPeerID
+                    chatVC.chatDelegate = self.chatDelegate
+                    self.chatDelegate?.setChatDelegate(newDelegate: chatVC)
+                    var viewControllers = self.navigationController?.viewControllers
+                    viewControllers?.removeLast()
+                    viewControllers?.append(chatVC)
+                    self.navigationController?.setViewControllers(viewControllers!, animated: true)
+                    
+                }, onTimeout: {
+                    
+                }))
             }
         }
     }
