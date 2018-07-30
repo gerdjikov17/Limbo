@@ -98,14 +98,18 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
         NSLog("%@", "didNotStartBrowsingForPeers: \(error)")
     }
     
+    func inviteUser(peerID: MCPeerID) {
+        self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+    }
+    
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
         if let userState = info!["state"] {
             let userModel: UserModel! = UserModel(username: peerID.displayName, state: userState)
             userModel.avatarString = info!["avatar"]!
-//            let shouldAddUser = shouldShowUserDependingOnState(foundUserState: userState)
-            let shouldAddUser = true
-            if  shouldAddUser {
+//            let shouldSowUser = shouldShowUserDependingOnState(foundUserState: userState)
+            let shouldSowUser = true
+            if  shouldSowUser {
                 self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
                 browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
             }

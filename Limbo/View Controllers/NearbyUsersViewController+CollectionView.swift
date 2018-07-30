@@ -28,6 +28,7 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedUser = Array(self.users.values)[indexPath.row]
         let selectedPeerID = Array(self.users.keys)[indexPath.row]
+        self.usersConnectivity.inviteUser(peerID: selectedPeerID)
         let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
         chatVC.currentUser = self.currentUser
         chatVC.userChattingWith = selectedUser

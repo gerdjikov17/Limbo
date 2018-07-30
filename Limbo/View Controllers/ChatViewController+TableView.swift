@@ -58,10 +58,23 @@ extension ChatViewController: UITableViewDelegate {
         self.chatTableView.endUpdates()
         
         if indexPath.row == self.messages.count - 1 {
-            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+            self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
         }
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y == 0 {
+            if !self.areAllMessagesLoaded {
+                let newResultsOfMessages = queryLastHundredMessages()
+                let mergedArray = newResultsOfMessages + messages
+                self.messages = mergedArray
+                chatTableView.reloadData()
+                
+                let indexPath = IndexPath(item: newResultsOfMessages.count, section: 0)
+                self.chatTableView.scrollToRow(at: indexPath, at: .top, animated: false)
+            }
+        }
+    }
     
     func calculateHeight(forMessage message: MessageModel) -> CGFloat {
         

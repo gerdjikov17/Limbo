@@ -22,12 +22,13 @@ class ChatViewController: UIViewController {
     var currentUser: UserModel?
     var messages: [MessageModel]!
     var selectedIndexPathForTimeStamp: IndexPath?
+    var lastLoadedMessageIndex: Int?
+    var areAllMessagesLoaded: Bool!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let realm = try! Realm()
-        self.messages = Array(realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers.username = %@) OR (sender.username = %@ AND ANY receivers.username = %@)", self.currentUser!, self.userChattingWith!.username, self.userChattingWith!.username, self.currentUser!.username))
-
+        self.areAllMessagesLoaded = false
+        self.messages = queryLastHundredMessages()
         self.chatTableView.dataSource = self
         self.chatTableView.delegate = self
         self.messageTextField.delegate = self;
@@ -59,6 +60,24 @@ class ChatViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         self.chatDelegate?.chatDelegateDidDisappear(chatDelegate: self)
+    }
+    
+    func queryLastHundredMessages() -> [MessageModel] {
+        
+        let realm = try! Realm()
+        let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers.username = %@) OR (sender.username = %@ AND ANY receivers.username = %@)", self.currentUser!, self.userChattingWith!.username, self.userChattingWith!.username, self.currentUser!.username)
+        if lastLoadedMessageIndex == nil {
+            lastLoadedMessageIndex = results.count
+        }
+        if lastLoadedMessageIndex! - 50 >= 0 {
+            let lastLoadedMessageIndex = self.lastLoadedMessageIndex!
+            self.lastLoadedMessageIndex! -= 50
+            return Array(results[lastLoadedMessageIndex - 50..<lastLoadedMessageIndex])
+        }
+        else {
+            self.areAllMessagesLoaded = true
+            return Array(results[0..<lastLoadedMessageIndex!])
+        }
     }
     
     @objc func keyboardWillShow(notification: Notification) {
