@@ -122,14 +122,24 @@ class NearbyUsersViewController: UIViewController {
             pastelView.startAnimation()
             //        self.nearbyUsersCollectionView.backgroundView = pastelView
             self.nearbyUsersCollectionView.backgroundColor = .clear
-            self.view.addSubview(pastelView)
-            self.view.sendSubview(toBack: pastelView)
             
-            let blurEffect = UIBlurEffect(style: .dark)
-            let blurEffectView = UIVisualEffectView(effect: blurEffect)
-            blurEffectView.frame = CGRect(x: 0, y: self.currentUserImageView.frame.origin.y - 10, width: view.bounds.width, height: view.bounds.height - 100)
-            blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            view.insertSubview(blurEffectView, aboveSubview: pastelView)
+            
+            let pastelView2 = PastelView(frame: self.view.frame)
+            pastelView2.startPastelPoint = .bottomLeft
+            pastelView2.endPastelPoint = .topRight
+            pastelView2.animationDuration = 3.0
+            pastelView2.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            pastelView2.setColors([
+                UIColor(red:0.31, green:0.34, blue:0.31, alpha:1.0),
+                UIColor(red:0.88, green:0.85, blue:0.88, alpha:1.0),
+                UIColor(red:0.45, green:0.41, blue:0.49, alpha:1.0)
+                ])
+            pastelView2.startAnimation()
+            
+            self.view.addSubview(pastelView2)
+            self.view.sendSubview(toBack: pastelView2)
+            self.view.insertSubview(pastelView, aboveSubview: pastelView2)
+            
             self.pastelView = pastelView
         }
         else {
