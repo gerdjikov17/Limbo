@@ -81,7 +81,13 @@ class NearbyUsersViewController: UIViewController {
     }
     
     func setUIContent(userModel: UserModel) {
-        self.currentUserImageView.image = UIImage(named: self.currentUser.avatarString)
+        if let defaultImage = UIImage(named: userModel.avatarString) {
+            self.currentUserImageView.image = defaultImage
+        }
+        else {
+            let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: userModel.avatarString)!))
+            self.currentUserImageView.image = imgurImage
+        }
         self.usernameLabel.text = userModel.username
         self.userStateLabel.text = userModel.state
     }

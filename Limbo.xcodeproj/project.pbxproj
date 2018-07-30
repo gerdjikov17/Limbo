@@ -17,6 +17,7 @@
 		060FC5482107435500E5D6BB /* NearbyUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC5472107435500E5D6BB /* NearbyUsers.swift */; };
 		061095BC210F176400A23D27 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061095BB210F176400A23D27 /* AudioToolbox.framework */; };
 		061095BE210F178F00A23D27 /* LNRSimpleNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061095BD210F178F00A23D27 /* LNRSimpleNotifications.framework */; };
+		061095C0210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095BF210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift */; };
 		06262FCB21075E7A003C6A1E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FCA21075E79003C6A1E /* Constants.swift */; };
 		06262FCD21075E9E003C6A1E /* DZNEmptyDataSet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */; };
 		06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FCE210762B6003C6A1E /* LoginViewController.swift */; };
@@ -51,6 +52,7 @@
 		060FC5472107435500E5D6BB /* NearbyUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyUsers.swift; sourceTree = "<group>"; };
 		061095BB210F176400A23D27 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		061095BD210F178F00A23D27 /* LNRSimpleNotifications.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LNRSimpleNotifications.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		061095BF210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionReusableViewFooter.swift; sourceTree = "<group>"; };
 		06262FCA21075E79003C6A1E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = DZNEmptyDataSet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06262FCE210762B6003C6A1E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 				06262FD8210876BA003C6A1E /* ChatViewController.swift */,
 				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 				06262FE4210B471C003C6A1E /* AvatarCollectionViewController.swift */,
+				061095BF210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -331,6 +334,7 @@
 				06262FD7210876A2003C6A1E /* MessageCell.swift in Sources */,
 				06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */,
 				06262FD121076B08003C6A1E /* RegisterViewController.swift in Sources */,
+				061095C0210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift in Sources */,
 				060FC52B21071DE700E5D6BB /* AppDelegate.swift in Sources */,
 				06262FE12109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift in Sources */,
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,

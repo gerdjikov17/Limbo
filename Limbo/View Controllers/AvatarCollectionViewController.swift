@@ -71,11 +71,17 @@ class AvatarCollectionViewController: UICollectionViewController {
         // MARK: UICollectionViewDelegate
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         self.currentUser?.changeAvatar(newImageString: self.imageStrings[indexPath.row])
         self.dismiss(animated: true, completion: nil)
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionElementKindSectionFooter {
+            let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath) as! AvatarCollectionReusableViewFooter
+            footer.presentingVC = self
+            return footer
+        }
         return collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "avatarHeader", for: indexPath)
     }
 
@@ -109,4 +115,8 @@ class AvatarCollectionViewController: UICollectionViewController {
     }
     */
 
+}
+
+extension AvatarCollectionViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
 }
