@@ -94,7 +94,7 @@ class ChatViewController: UIViewController {
             if self.messageTextFieldBottomConstraint.constant > 50 {
                 let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
                 if indexPath.row >= 0 {
-                    self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+                    self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
                 }
             }
         })
@@ -109,7 +109,11 @@ class ChatViewController: UIViewController {
         }, completion: { (finished: Bool) in
 //            the next line reloads the data to resize the tableview and the cells
 //            for unknown reason scrollToRow or setContentOffset doesn't work accordingly
-            self.chatTableView.reloadData()
+//            self.chatTableView.reloadData()
+//            let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+//            if indexPath.row >= 0 {
+//                self.chatTableView.scrollToRow(at: indexPath, at: .top, animated: false)
+//            }
 //            maybe this needs optimizing for better performance
         })
 
@@ -125,20 +129,22 @@ class ChatViewController: UIViewController {
                     messageModel.sender = self.currentUser
                     
                     
-                    let realm = try! Realm()
-                    let userChattingWith = realm.objects(UserModel.self).filter("username == %@", self.userChattingWith!.username).first
-                    try? realm.write {
-                        realm.add(messageModel)
-                        messageModel.receivers.append(userChattingWith!)
+                    
+                    let success = self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID)
+                    if success! {
+                        self.messages.append(messageModel)
+                        let realm = try! Realm()
+                        let userChattingWith = realm.objects(UserModel.self).filter("username == %@", self.userChattingWith!.username).first
+                        try? realm.write {
+                            realm.add(messageModel)
+                            messageModel.receivers.append(userChattingWith!)
+                            
+                            let indexOfMessage = self.messages.count - 1
+                            let indexPath = IndexPath(row: indexOfMessage, section: 0)
+                            self.chatTableView.insertRows(at: [indexPath], with: .middle)
+                            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                        }
                     }
-                    
-                    
-                    self.messages.append(messageModel)
-                    let indexOfMessage = self.messages.count - 1
-                    let indexPath = IndexPath(row: indexOfMessage, section: 0)
-                    self.chatTableView.insertRows(at: [indexPath], with: .middle)
-                    self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
-                    self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID)
                     self.messageTextField.text = ""
                 }
             }
@@ -149,7 +155,7 @@ class ChatViewController: UIViewController {
 extension ChatViewController: ChatDelegate {
     func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
         DispatchQueue.main.async {
-            if fromPeerID == self.peerIDChattingWith {
+            if fromPeerID.displayName == self.peerIDChattingWith?.displayName {
                 
                 let realm = try! Realm()
                 let messageModel = realm.resolve(threadSafeMessageRef)

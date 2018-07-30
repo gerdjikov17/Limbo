@@ -29,8 +29,8 @@ class UsersConnectivity: NSObject {
     
     init(userModel: UserModel) {
         self.userModel = userModel
-        self.myPeerID = MCPeerID(displayName: userModel.username)
-        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["state": self.userModel.state, "avatar": self.userModel.avatarString], serviceType:Constants.MCServiceType)
+        self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!)
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": userModel.username, "state": self.userModel.state, "avatar": self.userModel.avatarString], serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
         
         super.init()
@@ -55,25 +55,37 @@ class UsersConnectivity: NSObject {
 }
 
 extension UsersConnectivity: UsersConnectivityDelegate {
-    func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID) {
-        if !session.connectedPeers.contains(toPeerID) {
-            let pointForToast = CGPoint(x: (UIApplication.shared.keyWindow?.center.x)!, y: ((UIApplication.shared.keyWindow?.bounds.height)! - CGFloat(100)))
-            UIApplication.shared.keyWindow?.makeToast("This user is offline and won't receive messages from you.", point:pointForToast , title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
-        }
-        else {
+    func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID) -> Bool {
+        if let toPeer = getPeerIDForUID(uniqueID: toPeerID.displayName) {
             do {
                 let data = NSKeyedArchiver.archivedData(withRootObject: messageModel.toDictionary())
-                try self.session.send(data, toPeers: [toPeerID], with: .reliable)
+                try self.session.send(data, toPeers: [toPeer], with: .reliable)
+                return true
             }
             catch let error {
                 NSLog("%@", "Error for sending: \(error)")
+                return false
             }
         }
+        else {
+            let pointForToast = CGPoint(x: (UIApplication.shared.keyWindow?.center.x)!, y: ((UIApplication.shared.keyWindow?.bounds.height)! - CGFloat(100)))
+            UIApplication.shared.keyWindow?.makeToast("This user is offline and won't receive messages from you.", point:pointForToast , title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+            return false
+        }
     }
+    
     func setChatDelegate(newDelegate: ChatDelegate) {
         self.chatDelegate = newDelegate
     }
     
+    func getPeerIDForUID(uniqueID: String) -> MCPeerID? {
+        for peerID in self.session.connectedPeers {
+            if peerID.displayName == uniqueID {
+                return peerID
+            }
+        }
+        return nil
+    }
     
 }
 
@@ -102,7 +114,7 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
         if let userState = info!["state"] {
-            let userModel: UserModel! = UserModel(username: peerID.displayName, state: userState)
+            let userModel: UserModel! = UserModel(username: info!["username"]!, state: userState)
             userModel.avatarString = info!["avatar"]!
 //            if shouldShowUserDependingOnState(foundUserState: userState) {
                 self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
@@ -155,7 +167,9 @@ extension UsersConnectivity : MCSessionDelegate {
         realm.add(messageModel)
         try? realm.commitWrite()
         let threadSafeMessage = ThreadSafeReference(to: messageModel)
-        chatDelegate!.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: peerID)
+        if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
+            chatDelegate!.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
+        }
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
