@@ -190,6 +190,7 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
 extension NearbyUsersViewController: LoginDelegate {
     func didLogin(userModel: UserModel) {
         self.currentUser = userModel
+        self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
         self.usersConnectivity = UsersConnectivity(userModel: currentUser)
         self.usersConnectivity.delegate = self;
         self.setUIContent(userModel: self.currentUser)
