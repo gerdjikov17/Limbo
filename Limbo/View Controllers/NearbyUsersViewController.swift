@@ -18,7 +18,6 @@ class NearbyUsersViewController: UIViewController {
     var currentUser: UserModel!
     var users: [MCPeerID: UserModel]!
     var usersConnectivity: UsersConnectivity!
-    var pastelView: PastelView?
     @IBOutlet weak var nearbyUsersCollectionView: UICollectionView!
     @IBOutlet weak var currentUserImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
@@ -46,6 +45,7 @@ class NearbyUsersViewController: UIViewController {
         else {
             let realm = try! Realm()
             self.currentUser = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first!
+            self.checkForCurses(forUser: self.currentUser)
             self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
             self.usersConnectivity = UsersConnectivity(userModel: currentUser)
             self.usersConnectivity.delegate = self;
@@ -58,6 +58,11 @@ class NearbyUsersViewController: UIViewController {
         super.viewWillDisappear(animated)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.nearbyUsersCollectionView.reloadData()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         addPastelViewToCollectionViewBackground()
@@ -65,6 +70,21 @@ class NearbyUsersViewController: UIViewController {
             self.setUIContent(userModel: user)
         }
         self.usersConnectivity.chatDelegate = self
+    }
+    
+    func checkForCurses(forUser: UserModel) {
+        if let lastCurse = UserDefaults.standard.string(forKey: Constants.UserDefaults.lastCurse) {
+            if lastCurse != "" {
+                let lastCurse = Curse(rawValue: lastCurse)
+                let lastCurseDate = UserDefaults.standard.object(forKey: Constants.UserDefaults.lastCurseDate) as! Date
+                let timeInterval = Date.timeIntervalSince(Date())
+                let remainingTime = Constants.Curses.curseTime - timeInterval(lastCurseDate)
+                if remainingTime > 0 {
+                    CurseManager.reApplyCurse(curse: lastCurse!, toUser: forUser, remainingTime: remainingTime)
+                    self.didReceiveCurse(curse: lastCurse!, remainingTime: remainingTime)
+                }
+            }
+        }
     }
     
     func batteryLevelDidChange(notification: NSNotification) {
@@ -93,17 +113,23 @@ class NearbyUsersViewController: UIViewController {
     }
     
     @objc func signOutButtonTap() {
-        UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
-        UserDefaults.standard.synchronize()
-        let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
-        loginVC.loginDelegate = self
-        self.present(loginVC, animated: true, completion: {
-            self.usersConnectivity.didSignOut()
-            let realm = try! Realm()
-            try? realm.write {
-                realm.delete(realm.objects(UserModel.self).filter("userID == %d", -1))
-            }
-        })
+        if self.currentUser.curse == .None {
+            UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
+            UserDefaults.standard.synchronize()
+            let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
+            loginVC.loginDelegate = self
+            self.present(loginVC, animated: true, completion: {
+                self.usersConnectivity.didSignOut()
+                let realm = try! Realm()
+                try? realm.write {
+                    realm.delete(realm.objects(UserModel.self).filter("userID == %d", -1))
+                }
+            })
+        }
+        else {
+            self.view.makeToast("You can't sign out while cursed")
+        }
+        
     }
     
     @objc func userImageTap() {
@@ -115,43 +141,24 @@ class NearbyUsersViewController: UIViewController {
     
     func addPastelViewToCollectionViewBackground() {
         
-        if self.pastelView == nil {
-            let pastelView = PastelView(frame: self.view.frame)
+        if self.nearbyUsersCollectionView.backgroundView == nil {
+            let pastelView = PastelView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.nearbyUsersCollectionView.frame.height))
             pastelView.startPastelPoint = .bottomLeft
             pastelView.endPastelPoint = .topRight
             pastelView.animationDuration = 3.0
             pastelView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             pastelView.setColors([
-                UIColor(red:0.31, green:0.31, blue:0.31, alpha:1.0),
-                UIColor(red:0.88, green:0.88, blue:0.88, alpha:1.0),
-                UIColor(red:0.45, green:0.44, blue:0.49, alpha:1.0)
+                UIColor(red:0.46, green:0.43, blue:0.60, alpha:1.0),
+                UIColor(red:0.37, green:0.33, blue:0.55, alpha:1.0),
+                UIColor(red:0.23, green:0.20, blue:0.36, alpha:1.0)
                 ])
-            pastelView.startAnimation()
-            //        self.nearbyUsersCollectionView.backgroundView = pastelView
+
+            self.nearbyUsersCollectionView.backgroundView = pastelView
             self.nearbyUsersCollectionView.backgroundColor = .clear
             
-            
-            let pastelView2 = PastelView(frame: self.view.frame)
-            pastelView2.startPastelPoint = .bottomLeft
-            pastelView2.endPastelPoint = .topRight
-            pastelView2.animationDuration = 3.0
-            pastelView2.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            pastelView2.setColors([
-                UIColor(red:0.31, green:0.34, blue:0.31, alpha:1.0),
-                UIColor(red:0.88, green:0.85, blue:0.88, alpha:1.0),
-                UIColor(red:0.45, green:0.41, blue:0.49, alpha:1.0)
-                ])
-            pastelView2.startAnimation()
-            
-            self.view.addSubview(pastelView2)
-            self.view.sendSubview(toBack: pastelView2)
-            self.view.insertSubview(pastelView, aboveSubview: pastelView2)
-            
-            self.pastelView = pastelView
         }
-        else {
-            pastelView?.startAnimation()
-        }
+        let pastelView = self.nearbyUsersCollectionView.backgroundView as! PastelView
+        pastelView.startAnimation()
     }
 }
 
@@ -172,39 +179,10 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
         }
         self.nearbyUsersCollectionView.reloadData()
     }
-}
-
-extension NearbyUsersViewController: ChatDelegate {
-    func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
-        //        create a notificiation that message is received
-        DispatchQueue.main.async {
-            let realm = try! Realm()
-            let messageModel = realm.resolve(threadSafeMessageRef)
-            let userChattingWith = messageModel?.sender
-            let notificationManager = LNRNotificationManager()
-            notificationManager.notificationsPosition = .top
-            notificationManager.notificationsBackgroundColor = .white
-            notificationManager.notificationsTitleTextColor = .black
-            notificationManager.notificationsBodyTextColor = .darkGray
-            notificationManager.notificationsSeperatorColor = .gray
-            
-            notificationManager.showNotification(notification: LNRNotification(title: (userChattingWith?.username)!, body:messageModel?.messageString , duration: 3, onTap: {
-                
-                let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
-                self.usersConnectivity.inviteUser(peerID: fromPeerID)
-                chatVC.currentUser = self.currentUser
-                chatVC.userChattingWith = userChattingWith
-                chatVC.peerIDChattingWith = fromPeerID
-                chatVC.chatDelegate = self.usersConnectivity
-                self.usersConnectivity.chatDelegate = chatVC
-                self.navigationController?.pushViewController(chatVC, animated: true)
-                
-            }, onTimeout: {
-                
-            }))
-        }
-    }
     
+    func isPeerAGhost(peerID: MCPeerID) -> Bool {
+        return self.users[peerID]?.state == "Ghost"
+    }
 }
 
 extension NearbyUsersViewController: LoginDelegate {

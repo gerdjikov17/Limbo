@@ -12,6 +12,9 @@ import DZNEmptyDataSet
 
 extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if self.currentUser.curse == .Blind {
+            return 0
+        }
         return users.count
     }
     
@@ -26,8 +29,6 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
             let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: userModel.avatarString)!))
             cell.avatarImageView.image = imgurImage
         }
-    
-        
         cell.setCellContent(user: userModel)
         
         return cell

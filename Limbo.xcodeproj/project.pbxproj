@@ -14,10 +14,13 @@
 		060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC53F210732DF00E5D6BB /* NearbyUsersViewController.swift */; };
 		060FC5432107336E00E5D6BB /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC5422107336E00E5D6BB /* UserModel.swift */; };
 		060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */; };
-		060FC5482107435500E5D6BB /* NearbyUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC5472107435500E5D6BB /* NearbyUsers.swift */; };
 		061095BC210F176400A23D27 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061095BB210F176400A23D27 /* AudioToolbox.framework */; };
 		061095BE210F178F00A23D27 /* LNRSimpleNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061095BD210F178F00A23D27 /* LNRSimpleNotifications.framework */; };
 		061095C0210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095BF210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift */; };
+		061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C121104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift */; };
+		061095C421104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C321104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift */; };
+		061095C6211054F600A23D27 /* CurseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C5211054F600A23D27 /* CurseManager.swift */; };
+		061095C821109BE100A23D27 /* ChatViewController+ChatDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */; };
 		06262FCB21075E7A003C6A1E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FCA21075E79003C6A1E /* Constants.swift */; };
 		06262FCD21075E9E003C6A1E /* DZNEmptyDataSet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */; };
 		06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FCE210762B6003C6A1E /* LoginViewController.swift */; };
@@ -49,10 +52,13 @@
 		060FC53F210732DF00E5D6BB /* NearbyUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyUsersViewController.swift; sourceTree = "<group>"; };
 		060FC5422107336E00E5D6BB /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyDeviceCollectionViewCell.swift; sourceTree = "<group>"; };
-		060FC5472107435500E5D6BB /* NearbyUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyUsers.swift; sourceTree = "<group>"; };
 		061095BB210F176400A23D27 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		061095BD210F178F00A23D27 /* LNRSimpleNotifications.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LNRSimpleNotifications.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		061095BF210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionReusableViewFooter.swift; sourceTree = "<group>"; };
+		061095C121104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersViewController+ChatDelegate.swift"; sourceTree = "<group>"; };
+		061095C321104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersConnectivity+UsersConnectivityDelegate.swift"; sourceTree = "<group>"; };
+		061095C5211054F600A23D27 /* CurseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurseManager.swift; sourceTree = "<group>"; };
+		061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+ChatDelegate.swift"; sourceTree = "<group>"; };
 		06262FCA21075E79003C6A1E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = DZNEmptyDataSet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06262FCE210762B6003C6A1E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -132,11 +138,13 @@
 			children = (
 				060FC53F210732DF00E5D6BB /* NearbyUsersViewController.swift */,
 				06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */,
+				061095C121104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift */,
 				060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */,
 				06262FCE210762B6003C6A1E /* LoginViewController.swift */,
 				06262FD021076B08003C6A1E /* RegisterViewController.swift */,
 				06262FD6210876A2003C6A1E /* MessageCell.swift */,
 				06262FD8210876BA003C6A1E /* ChatViewController.swift */,
+				061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */,
 				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 				06262FE4210B471C003C6A1E /* AvatarCollectionViewController.swift */,
 				061095BF210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift */,
@@ -156,10 +164,11 @@
 		060FC5462107433100E5D6BB /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				060FC5472107435500E5D6BB /* NearbyUsers.swift */,
 				069361F92107459900D02D22 /* UsersConnectivity.swift */,
+				061095C321104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift */,
 				069361FC210745DC00D02D22 /* Protocols.swift */,
 				06262FCA21075E79003C6A1E /* Constants.swift */,
+				061095C5211054F600A23D27 /* CurseManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -331,7 +340,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				061095C6211054F600A23D27 /* CurseManager.swift in Sources */,
 				06262FD7210876A2003C6A1E /* MessageCell.swift in Sources */,
+				061095C421104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift in Sources */,
 				06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */,
 				06262FD121076B08003C6A1E /* RegisterViewController.swift in Sources */,
 				061095C0210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift in Sources */,
@@ -339,9 +350,10 @@
 				06262FE12109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift in Sources */,
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,
 				069361FD210745DC00D02D22 /* Protocols.swift in Sources */,
-				060FC5482107435500E5D6BB /* NearbyUsers.swift in Sources */,
+				061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */,
 				060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */,
 				06262FE5210B471C003C6A1E /* AvatarCollectionViewController.swift in Sources */,
+				061095C821109BE100A23D27 /* ChatViewController+ChatDelegate.swift in Sources */,
 				06262FDD2108A88A003C6A1E /* MessageModel.swift in Sources */,
 				069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */,
 				060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */,

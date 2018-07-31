@@ -109,11 +109,7 @@ class ChatViewController: UIViewController {
         }, completion: { (finished: Bool) in
 //            the next line reloads the data to resize the tableview and the cells
 //            for unknown reason scrollToRow or setContentOffset doesn't work accordingly
-//            self.chatTableView.reloadData()
-//            let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-//            if indexPath.row >= 0 {
-//                self.chatTableView.scrollToRow(at: indexPath, at: .top, animated: false)
-//            }
+            self.chatTableView.reloadData()
 //            maybe this needs optimizing for better performance
         })
     }
@@ -137,14 +133,17 @@ class ChatViewController: UIViewController {
     
     @IBAction func sendButtonTap() {
         if let message = self.messageTextField.text {
-            if message.count > 0 {
+            if message.count > 0 && self.currentUser!.curse != .Silence {
                 if let peerID = self.peerIDChattingWith {
                     
                     let messageModel = MessageModel()
-                    messageModel.messageString = message
+                    if self.currentUser?.curse == Curse.Posession {
+                        messageModel.messageString = randomizeText(string: self.messageTextField.text!)
+                    }
+                    else {
+                        messageModel.messageString = message
+                    }
                     messageModel.sender = self.currentUser
-                    
-                    
                     
                     let success = self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID)
                     if success! {
@@ -161,55 +160,25 @@ class ChatViewController: UIViewController {
                             self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
                         }
                     }
-                    self.messageTextField.text = ""
                 }
             }
+            else {
+                let pointForToast = CGPoint(x: self.view.center.x, y: (self.navigationController?.navigationBar.frame.size.height)! + CGFloat(100))
+                let lastCurseDate = UserDefaults.standard.object(forKey: Constants.UserDefaults.lastCurseDate) as! Date
+                let timeInterval = Date.timeIntervalSince(Date())
+                let remainingTime = Constants.Curses.curseTime - timeInterval(lastCurseDate)
+                let curseRemainingTime = Int(remainingTime)
+                self.view.makeToast("You are cursed with Silence", point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+            }
+            self.messageTextField.text = ""
         }
     }
-}
-
-extension ChatViewController: ChatDelegate {
-    func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
-        DispatchQueue.main.async {
-            if fromPeerID.displayName == self.peerIDChattingWith?.displayName {
-                
-                let realm = try! Realm()
-                let messageModel = realm.resolve(threadSafeMessageRef)
-                self.messages.append(messageModel!)
-                let indexOfMessage = self.messages.count - 1
-                let indexPath = IndexPath(row: indexOfMessage, section: 0)
-                self.chatTableView.insertRows(at: [indexPath], with: .middle)
-                self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-            }
-            else {
-                
-                let realm = try! Realm()
-                let messageModel = realm.resolve(threadSafeMessageRef)
-                let notificationManager = LNRNotificationManager()
-                notificationManager.notificationsPosition = .top
-                notificationManager.notificationsBackgroundColor = .white
-                notificationManager.notificationsTitleTextColor = .black
-                notificationManager.notificationsBodyTextColor = .darkGray
-                notificationManager.notificationsSeperatorColor = .gray
-                
-                notificationManager.showNotification(notification: LNRNotification(title: (messageModel?.sender?.username)!, body:messageModel?.messageString , duration: 3, onTap: {
-                    
-                    let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
-                    chatVC.currentUser = self.currentUser
-                    chatVC.userChattingWith = messageModel?.sender
-                    chatVC.peerIDChattingWith = fromPeerID
-                    chatVC.chatDelegate = self.chatDelegate
-                    self.chatDelegate?.setChatDelegate(newDelegate: chatVC)
-                    var viewControllers = self.navigationController?.viewControllers
-                    viewControllers?.removeLast()
-                    viewControllers?.append(chatVC)
-                    self.navigationController?.setViewControllers(viewControllers!, animated: true)
-                    
-                }, onTimeout: {
-                    
-                }))
-            }
+    
+    func randomizeText(string: String) -> String {
+        let shuffledString = string.sorted { (_, _) -> Bool in
+            arc4random() < arc4random()
         }
+        return String(shuffledString)
     }
 }
 

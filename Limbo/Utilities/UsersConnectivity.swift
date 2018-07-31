@@ -54,41 +54,6 @@ class UsersConnectivity: NSObject {
     
 }
 
-extension UsersConnectivity: UsersConnectivityDelegate {
-    func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID) -> Bool {
-        if let toPeer = getPeerIDForUID(uniqueID: toPeerID.displayName) {
-            do {
-                let data = NSKeyedArchiver.archivedData(withRootObject: messageModel.toDictionary())
-                try self.session.send(data, toPeers: [toPeer], with: .reliable)
-                return true
-            }
-            catch let error {
-                NSLog("%@", "Error for sending: \(error)")
-                return false
-            }
-        }
-        else {
-            let pointForToast = CGPoint(x: (UIApplication.shared.keyWindow?.center.x)!, y: ((UIApplication.shared.keyWindow?.bounds.height)! - CGFloat(100)))
-            UIApplication.shared.keyWindow?.makeToast("This user is offline and won't receive messages from you.", point:pointForToast , title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
-            return false
-        }
-    }
-    
-    func setChatDelegate(newDelegate: ChatDelegate) {
-        self.chatDelegate = newDelegate
-    }
-    
-    func getPeerIDForUID(uniqueID: String) -> MCPeerID? {
-        for peerID in self.session.connectedPeers {
-            if peerID.displayName == uniqueID {
-                return peerID
-            }
-        }
-        return nil
-    }
-    
-}
-
 extension UsersConnectivity: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
         NSLog("%@", "didNotStartAdvertisingPeer: \(error)")
@@ -162,14 +127,25 @@ extension UsersConnectivity : MCSessionDelegate {
         NSLog("%@", "didReceiveData: \(data)")
         let dataDict = NSKeyedUnarchiver.unarchiveObject(with: data) as! Dictionary<String, Any>
         let messageModel = MessageModel(withDictionary: dataDict)
-        let realm = try! Realm()
-        realm.beginWrite()
-        realm.add(messageModel)
-        try? realm.commitWrite()
-        let threadSafeMessage = ThreadSafeReference(to: messageModel)
-        if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
-            chatDelegate!.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
+        if (Constants.Curses.allCurses.contains(where: { (curse) -> Bool in
+            curse.rawValue == messageModel.messageString
+        })) && (self.delegate?.isPeerAGhost(peerID: peerID))! {
+            let curse = Curse(rawValue: messageModel.messageString)!
+            CurseManager.applyCurse(curse: curse, toUser: self.userModel)
+            chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
+
         }
+        else {
+            let realm = try! Realm()
+            realm.beginWrite()
+            realm.add(messageModel)
+            try? realm.commitWrite()
+            let threadSafeMessage = ThreadSafeReference(to: messageModel)
+            if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
+                chatDelegate!.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
+            }
+        }
+        
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
