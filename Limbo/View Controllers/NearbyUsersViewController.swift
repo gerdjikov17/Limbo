@@ -32,6 +32,7 @@ class NearbyUsersViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = UIColor(red:0.02, green:0.11, blue:0.16, alpha:0.5)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign out", style: .plain, target: self, action: #selector(self.signOutButtonTap))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Reload", style: .plain, target: self, action: #selector(self.reloadDataFromSelector))
         self.currentUserImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.userImageTap)))
         
         self.nearbyUsersCollectionView.emptyDataSetSource = self;
@@ -68,8 +69,9 @@ class NearbyUsersViewController: UIViewController {
         addPastelViewToCollectionViewBackground()
         if let user = self.currentUser {
             self.setUIContent(userModel: user)
+            self.usersConnectivity.chatDelegate = self
         }
-        self.usersConnectivity.chatDelegate = self
+        
     }
     
     func checkForCurses(forUser: UserModel) {

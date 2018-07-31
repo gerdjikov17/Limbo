@@ -12,8 +12,10 @@ import DZNEmptyDataSet
 
 extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if self.currentUser.curse == .Blind {
-            return 0
+        if let user = self.currentUser {
+            if user.curse == .Blind {
+                return 0
+            }
         }
         return users.count
     }
