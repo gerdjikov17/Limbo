@@ -82,7 +82,35 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="115" id="5e4-dq-cK6"/>
                                     <constraint firstAttribute="height" constant="115" id="8jW-hd-2ni"/>
+                                    <constraint firstAttribute="height" constant="50" id="lWp-Bs-iCY"/>
+                                    <constraint firstAttribute="width" constant="50" id="trX-Og-MeL"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="5e4-dq-cK6"/>
+                                        <exclude reference="8jW-hd-2ni"/>
+                                        <exclude reference="lWp-Bs-iCY"/>
+                                        <exclude reference="trX-Og-MeL"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="lWp-Bs-iCY"/>
+                                        <include reference="trX-Og-MeL"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="5e4-dq-cK6"/>
+                                        <include reference="8jW-hd-2ni"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="5e4-dq-cK6"/>
+                                        <include reference="8jW-hd-2ni"/>
+                                    </mask>
+                                </variation>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="usA-t9-BGE">
                                 <rect key="frame" x="128.5" y="593" width="118" height="21"/>
@@ -91,7 +119,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Human" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FCc-9H-Fd5">
-                                <rect key="frame" x="159.5" y="626" width="55" height="21"/>
+                                <rect key="frame" x="160" y="626" width="55" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -102,15 +130,46 @@
                             <constraint firstItem="DGX-wd-rYd" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="3Zf-9w-LmG"/>
                             <constraint firstItem="DGX-wd-rYd" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="61O-Y8-wV2"/>
                             <constraint firstItem="xf0-8i-0sz" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="9D1-1n-ZFo"/>
+                            <constraint firstItem="FCc-9H-Fd5" firstAttribute="leading" secondItem="xf0-8i-0sz" secondAttribute="trailing" constant="15" id="DI5-X1-f6U"/>
                             <constraint firstItem="xf0-8i-0sz" firstAttribute="top" secondItem="DGX-wd-rYd" secondAttribute="bottom" constant="8" id="KyQ-Mr-VdO"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="DGX-wd-rYd" secondAttribute="trailing" id="VsJ-5N-3ga"/>
+                            <constraint firstItem="usA-t9-BGE" firstAttribute="leading" secondItem="xf0-8i-0sz" secondAttribute="trailing" constant="15" id="dhr-yL-9XH"/>
                             <constraint firstItem="usA-t9-BGE" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="evW-aB-KuX"/>
+                            <constraint firstItem="usA-t9-BGE" firstAttribute="top" secondItem="xf0-8i-0sz" secondAttribute="top" id="hAd-f8-mMx"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="FCc-9H-Fd5" secondAttribute="bottom" constant="20" id="mDI-PE-KVm"/>
                             <constraint firstItem="usA-t9-BGE" firstAttribute="top" secondItem="xf0-8i-0sz" secondAttribute="bottom" constant="16" id="mo6-aj-pf6"/>
                             <constraint firstItem="FCc-9H-Fd5" firstAttribute="top" secondItem="usA-t9-BGE" secondAttribute="bottom" constant="12" id="ybS-UY-xK7"/>
                             <constraint firstItem="FCc-9H-Fd5" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="zTG-aw-Rib"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="9D1-1n-ZFo"/>
+                                <exclude reference="dhr-yL-9XH"/>
+                                <exclude reference="hAd-f8-mMx"/>
+                                <exclude reference="mo6-aj-pf6"/>
+                                <exclude reference="DI5-X1-f6U"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="dhr-yL-9XH"/>
+                                <include reference="hAd-f8-mMx"/>
+                                <include reference="DI5-X1-f6U"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="9D1-1n-ZFo"/>
+                                <include reference="mo6-aj-pf6"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="constraints">
+                                <include reference="9D1-1n-ZFo"/>
+                                <include reference="mo6-aj-pf6"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="qBP-SY-wXT"/>
                     <connections>
@@ -273,13 +332,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wnw-OQ-LtC" userLabel="sentrMessageTimeStamp">
-                                                    <rect key="frame" x="365" y="38" width="0.0" height="0.0"/>
+                                                    <rect key="frame" x="657" y="38" width="0.0" height="0.0"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Lorem ipsum dol" translatesAutoresizingMaskIntoConstraints="NO" id="ZLr-18-k1R">
-                                                    <rect key="frame" x="248" y="5" width="117" height="33"/>
+                                                    <rect key="frame" x="540" y="5" width="117" height="33"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -438,7 +497,7 @@
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="5dU-g5-ZEp">
                             <size key="itemSize" width="100" height="100"/>
                             <size key="headerReferenceSize" width="0.0" height="75"/>
-                            <size key="footerReferenceSize" width="50" height="50"/>
+                            <size key="footerReferenceSize" width="50" height="75"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
@@ -471,7 +530,7 @@
                             </constraints>
                         </collectionReusableView>
                         <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="footer" id="C4t-hM-sa3" customClass="AvatarCollectionReusableViewFooter" customModule="Limbo" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="175" width="375" height="50"/>
+                            <rect key="frame" x="0.0" y="175" width="375" height="75"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vnz-6R-Kx2">
@@ -481,10 +540,19 @@
                                         <action selector="uploadAvatarButtonTap:" destination="C4t-hM-sa3" eventType="touchUpInside" id="O0U-PW-Q4g"/>
                                     </connections>
                                 </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9vV-zy-6ed">
+                                    <rect key="frame" x="160" y="37" width="54" height="30"/>
+                                    <state key="normal" title="Dismiss"/>
+                                    <connections>
+                                        <action selector="dismissButtonTap:" destination="C4t-hM-sa3" eventType="touchUpInside" id="4gS-gm-pB2"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <constraints>
-                                <constraint firstItem="Vnz-6R-Kx2" firstAttribute="centerY" secondItem="C4t-hM-sa3" secondAttribute="centerY" id="5X8-xB-siS"/>
+                                <constraint firstItem="9vV-zy-6ed" firstAttribute="centerX" secondItem="C4t-hM-sa3" secondAttribute="centerX" id="Q28-lG-Thd"/>
+                                <constraint firstItem="Vnz-6R-Kx2" firstAttribute="top" secondItem="C4t-hM-sa3" secondAttribute="top" constant="10" id="psc-yR-ysZ"/>
                                 <constraint firstItem="Vnz-6R-Kx2" firstAttribute="centerX" secondItem="C4t-hM-sa3" secondAttribute="centerX" id="r6w-BX-9n3"/>
+                                <constraint firstItem="9vV-zy-6ed" firstAttribute="top" secondItem="Vnz-6R-Kx2" secondAttribute="bottom" constant="-3" id="rtV-ww-HUl"/>
                             </constraints>
                         </collectionReusableView>
                         <connections>

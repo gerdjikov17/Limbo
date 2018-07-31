@@ -66,12 +66,15 @@ class NearbyUsersViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        addPastelViewToCollectionViewBackground()
         if let user = self.currentUser {
             self.setUIContent(userModel: user)
             self.usersConnectivity.chatDelegate = self
         }
-        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        addPastelViewToCollectionViewBackground()
     }
     
     func checkForCurses(forUser: UserModel) {
@@ -143,23 +146,27 @@ class NearbyUsersViewController: UIViewController {
     
     func addPastelViewToCollectionViewBackground() {
         
-        if self.nearbyUsersCollectionView.backgroundView == nil {
-            let pastelView = PastelView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.nearbyUsersCollectionView.frame.height))
-            pastelView.startPastelPoint = .bottomLeft
-            pastelView.endPastelPoint = .topRight
-            pastelView.animationDuration = 3.0
-            pastelView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            pastelView.setColors([
-                UIColor(red:0.46, green:0.43, blue:0.60, alpha:1.0),
-                UIColor(red:0.37, green:0.33, blue:0.55, alpha:1.0),
-                UIColor(red:0.23, green:0.20, blue:0.36, alpha:1.0)
-                ])
-
-            self.nearbyUsersCollectionView.backgroundView = pastelView
-            self.nearbyUsersCollectionView.backgroundColor = .clear
-            
-        }
-        let pastelView = self.nearbyUsersCollectionView.backgroundView as! PastelView
+        let pastelView = PastelView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.nearbyUsersCollectionView.frame.height))
+        pastelView.startPastelPoint = .bottomLeft
+        pastelView.endPastelPoint = .topRight
+        pastelView.animationDuration = 3.0
+        pastelView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        pastelView.setColors([
+            UIColor(red:0.46, green:0.43, blue:0.60, alpha:1.0),
+            UIColor(red:0.37, green:0.33, blue:0.55, alpha:1.0),
+            UIColor(red:0.23, green:0.20, blue:0.36, alpha:1.0)
+            ])
+        
+        self.nearbyUsersCollectionView.backgroundView = pastelView
+        self.nearbyUsersCollectionView.backgroundColor = .clear
+        
+        let gradient = CAGradientLayer()
+        gradient.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.nearbyUsersCollectionView.frame.height)
+        let endColor = UIColor(red:0.02, green:0.11, blue:0.16, alpha:0.5)
+        gradient.colors = [UIColor.clear.cgColor, endColor.cgColor, endColor.cgColor, UIColor.clear.cgColor]
+        gradient.locations = [0, 0.1, 0.9, 1]
+        pastelView.layer.mask = gradient
+        
         pastelView.startAnimation()
     }
 }

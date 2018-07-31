@@ -22,6 +22,11 @@ class AvatarCollectionReusableViewFooter: UICollectionReusableView, UIImagePicke
         self.presentingVC?.present(imgPicker, animated: true, completion: nil)
     }
     
+    @IBAction func dismissButtonTap(_ sender: Any) {
+        self.presentingVC?.dismiss(animated: true, completion: nil)
+    }
+    
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             let clientID = "0feecf2e4de72c6"
