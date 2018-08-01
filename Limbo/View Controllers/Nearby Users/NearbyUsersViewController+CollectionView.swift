@@ -26,7 +26,7 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
         
         var userModel: UserModel
         
-        if itemsCountIfBlind == 1 {
+        if itemsCountIfBlind == 1 && self.currentUser.curse == .Blind{
             let userKV = self.users.first(where: { (key, value) -> Bool in
                 key.displayName == "Spectre"
             })

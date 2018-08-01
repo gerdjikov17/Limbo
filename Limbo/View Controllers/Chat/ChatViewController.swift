@@ -152,6 +152,20 @@ class ChatViewController: UIViewController {
         }
     }
     
+    @IBAction func itemsButtonTap(_ sender: AnyObject) {
+        let button: UIButton = sender as! UIButton
+        let itemsVC = storyboard?.instantiateViewController(withIdentifier: "itemsVC") as! ItemsViewController
+        itemsVC.user = self.currentUser!
+        itemsVC.modalPresentationStyle = .popover
+        itemsVC.preferredContentSize = CGSize(width: 120, height: 70)
+        let popoverPresentationController = itemsVC.popoverPresentationController
+        popoverPresentationController?.permittedArrowDirections = .down
+        popoverPresentationController!.sourceView = button
+        popoverPresentationController!.sourceRect = button.bounds
+        popoverPresentationController!.delegate = self
+        self.navigationController?.present(itemsVC, animated: true, completion: nil)
+    }
+    
     func randomizeText(string: String) -> String {
         let shuffledString = string.sorted { (_, _) -> Bool in
             arc4random() < arc4random()
@@ -185,6 +199,12 @@ extension ChatViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.sendButtonTap()
         return true
+    }
+}
+
+extension ChatViewController: UIPopoverPresentationControllerDelegate {
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
 }
 
