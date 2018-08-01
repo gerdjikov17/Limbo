@@ -16,7 +16,8 @@ class UserModel: Object {
     @objc dynamic var username = ""
     @objc dynamic var password = ""
     @objc dynamic var avatarString = "ghost_avatar.png"
-    var state = ""
+    @objc dynamic var state = ""
+    @objc dynamic var uniqueDeviceID = ""
     var curse: Curse = .None
     
     convenience init(username: String, password: String) {
@@ -26,10 +27,11 @@ class UserModel: Object {
         self.username = username
         self.password = password
     }
-    convenience init(username: String, state: String) {
+    convenience init(username: String, state: String, uniqueDeviceID: String) {
         self.init()
         self.username = username
         self.state = state
+        self.uniqueDeviceID = uniqueDeviceID
     }
     
     override class func primaryKey() -> String? {
@@ -52,7 +54,10 @@ class UserModel: Object {
                 }
             }
         }
+        let realm = try! Realm()
+        realm.beginWrite()
         self.state = state;
+        try! realm.commitWrite()
     }
     
     func toJSONDict() -> Dictionary<String, Any> {

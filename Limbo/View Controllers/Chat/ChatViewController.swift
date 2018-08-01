@@ -132,43 +132,21 @@ class ChatViewController: UIViewController {
     }
     
     @IBAction func sendButtonTap() {
-        if let message = self.messageTextField.text {
-            if message.count > 0 && self.currentUser!.curse != .Silence {
+        
+        if var message = self.messageTextField.text {
+            if self.userChattingWith?.state == "Spectre" {
+                self.sendMessageToSpectre(message: message)
+            }
+            else if message.count > 0 && self.currentUser!.curse != .Silence {
                 if let peerID = self.peerIDChattingWith {
-                    
-                    let messageModel = MessageModel()
                     if self.currentUser?.curse == Curse.Posession {
-                        messageModel.messageString = randomizeText(string: self.messageTextField.text!)
+                        message = randomizeText(string: self.messageTextField.text!)
                     }
-                    else {
-                        messageModel.messageString = message
-                    }
-                    messageModel.sender = self.currentUser
-                    
-                    let success = self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID)
-                    if success! {
-                        self.messages.append(messageModel)
-                        let realm = try! Realm()
-                        let userChattingWith = realm.objects(UserModel.self).filter("username == %@", self.userChattingWith!.username).first
-                        try? realm.write {
-                            realm.add(messageModel)
-                            messageModel.receivers.append(userChattingWith!)
-                            
-                            let indexOfMessage = self.messages.count - 1
-                            let indexPath = IndexPath(row: indexOfMessage, section: 0)
-                            self.chatTableView.insertRows(at: [indexPath], with: .middle)
-                            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
-                        }
-                    }
+                    self.sendMessageToUser(message: message, peerID: peerID)
                 }
             }
             else {
-                let pointForToast = CGPoint(x: self.view.center.x, y: (self.navigationController?.navigationBar.frame.size.height)! + CGFloat(100))
-                let lastCurseDate = UserDefaults.standard.object(forKey: Constants.UserDefaults.lastCurseDate) as! Date
-                let timeInterval = Date.timeIntervalSince(Date())
-                let remainingTime = Constants.Curses.curseTime - timeInterval(lastCurseDate)
-                let curseRemainingTime = Int(remainingTime)
-                self.view.makeToast("You are cursed with Silence", point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+                self.sendingMessageWhileSilenced()
             }
             self.messageTextField.text = ""
         }
@@ -179,6 +157,27 @@ class ChatViewController: UIViewController {
             arc4random() < arc4random()
         }
         return String(shuffledString)
+    }
+    
+    func sendMessageToUser(message: String, peerID: MCPeerID) {
+        let messageModel = MessageModel()
+        messageModel.messageString = message
+        messageModel.sender = self.currentUser
+        let success = self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID)
+        if success! {
+            self.messages.append(messageModel)
+            let realm = try! Realm()
+            let userChattingWith = realm.objects(UserModel.self).filter("username == %@", self.userChattingWith!.username).first
+            try? realm.write {
+                realm.add(messageModel)
+                messageModel.receivers.append(userChattingWith!)
+                
+                let indexOfMessage = self.messages.count - 1
+                let indexPath = IndexPath(row: indexOfMessage, section: 0)
+                self.chatTableView.insertRows(at: [indexPath], with: .middle)
+                self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+            }
+        }
     }
 }
 

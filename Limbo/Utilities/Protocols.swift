@@ -13,7 +13,6 @@ import RealmSwift
 protocol NearbyUsersDelegate {
     func didFindNewUser(user: UserModel, peerID: MCPeerID)
     func didLostUser(peerID: MCPeerID)
-    func isPeerAGhost(peerID: MCPeerID) -> Bool
 }
 
 protocol UsersConnectivityDelegate {

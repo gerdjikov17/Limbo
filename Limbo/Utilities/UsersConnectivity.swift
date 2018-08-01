@@ -13,8 +13,8 @@ import RealmSwift
 class UsersConnectivity: NSObject {
     
     private var userModel: UserModel
-    private var myPeerID: MCPeerID
-    private let serviceAdvertiser: MCNearbyServiceAdvertiser
+    internal var myPeerID: MCPeerID
+    private var serviceAdvertiser: MCNearbyServiceAdvertiser
     private let serviceBrowser: MCNearbyServiceBrowser
     
     lazy var session : MCSession = {
@@ -27,8 +27,9 @@ class UsersConnectivity: NSObject {
     var chatDelegate: ChatDelegate?
     
     
-    init(userModel: UserModel) {
+    init(userModel: UserModel, delegate: NearbyUsersDelegate) {
         self.userModel = userModel
+        self.delegate = delegate
         self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!)
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": userModel.username, "state": self.userModel.state, "avatar": self.userModel.avatarString], serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
@@ -51,7 +52,7 @@ class UsersConnectivity: NSObject {
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
     }
-    
+        
 }
 
 extension UsersConnectivity: MCNearbyServiceAdvertiserDelegate {
@@ -79,11 +80,17 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
         if let userState = info!["state"] {
-            let userModel: UserModel! = UserModel(username: info!["username"]!, state: userState)
+            let userModel: UserModel! = UserModel(username: info!["username"]!, state: userState, uniqueDeviceID: peerID.displayName)
             userModel.avatarString = info!["avatar"]!
-//            if shouldShowUserDependingOnState(foundUserState: userState) {
+            let realm = try! Realm()
+            if realm.objects(UserModel.self).filter("username == %@", userModel.username).first == nil {
+                realm.beginWrite()
+                realm.add(userModel)
+                try! realm.commitWrite()
+            }
+            if shouldShowUserDependingOnState(foundUserState: userState) {
                 self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
-//            }
+            }
             
             browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
         }
@@ -129,7 +136,7 @@ extension UsersConnectivity : MCSessionDelegate {
         let messageModel = MessageModel(withDictionary: dataDict)
         if (Constants.Curses.allCurses.contains(where: { (curse) -> Bool in
             curse.rawValue == messageModel.messageString
-        })) && (self.delegate?.isPeerAGhost(peerID: peerID))! {
+        })) && (self.isPeerAGhost(peerID: peerID)) {
             let curse = Curse(rawValue: messageModel.messageString)!
             CurseManager.applyCurse(curse: curse, toUser: self.userModel)
             chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
@@ -140,12 +147,22 @@ extension UsersConnectivity : MCSessionDelegate {
             realm.beginWrite()
             realm.add(messageModel)
             try? realm.commitWrite()
-            let threadSafeMessage = ThreadSafeReference(to: messageModel)
             if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
-                chatDelegate!.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
+                let threadSafeMessage = ThreadSafeReference(to: messageModel)
+                chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
             }
         }
         
+    }
+    
+    func isPeerAGhost(peerID: MCPeerID) -> Bool {
+        let realm = try! Realm()
+        if let user = realm.objects(UserModel.self).filter("uniqueDeviceID = %@", peerID.displayName).first {
+            return user.state == "Ghost"
+        }
+        else {
+          return false
+        }
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {

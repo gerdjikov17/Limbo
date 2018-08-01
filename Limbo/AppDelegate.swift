@@ -17,7 +17,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        UIDevice.current.isBatteryMonitoringEnabled = true;        
+        UIDevice.current.isBatteryMonitoringEnabled = true;
+        let realm = try! Realm()
+        let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first
+        if spectre == nil {
+            let spectre = UserModel(username: "Spectre", state: "Spectre", uniqueDeviceID: "Spectre")
+            try! realm.write {
+                realm.add(spectre)
+            }
+        }
+        
         return true
     }
 

@@ -28,6 +28,9 @@ class NearbyUsersViewController: UIViewController {
         super.viewDidLoad()
         
         self.users = Dictionary()
+        let spectreManager = SpectreManager(nearbyUsersDelegate: self)
+        spectreManager.startLoopingForSpectres()
+
         
         navigationController?.navigationBar.barTintColor = UIColor(red:0.02, green:0.11, blue:0.16, alpha:0.5)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
@@ -48,8 +51,7 @@ class NearbyUsersViewController: UIViewController {
             self.currentUser = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first!
             self.checkForCurses(forUser: self.currentUser)
             self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
-            self.usersConnectivity = UsersConnectivity(userModel: currentUser)
-            self.usersConnectivity.delegate = self;
+            self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
             self.setUIContent(userModel: self.currentUser)
         }
         NotificationCenter.default.addObserver(self, selector: Selector(("batteryLevelDidChange:")), name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
@@ -99,8 +101,7 @@ class NearbyUsersViewController: UIViewController {
             self.userStateLabel.text = self.currentUser.state
 //        this may be problematic at some time
 //        create new UsersConnectivity which uses new user state
-            self.usersConnectivity = UsersConnectivity(userModel: currentUser)
-            self.usersConnectivity.delegate = self;
+            self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
             self.setUIContent(userModel: self.currentUser)
         }
     }
@@ -125,16 +126,13 @@ class NearbyUsersViewController: UIViewController {
             loginVC.loginDelegate = self
             self.present(loginVC, animated: true, completion: {
                 self.usersConnectivity.didSignOut()
-                let realm = try! Realm()
-                try? realm.write {
-                    realm.delete(realm.objects(UserModel.self).filter("userID == %d", -1))
-                }
             })
         }
         else {
             self.view.makeToast("You can't sign out while cursed")
         }
         
+//        self.batteryLevelDidChange(notification: NSNotification.init(name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil, userInfo: nil))
     }
     
     @objc func userImageTap() {
@@ -180,17 +178,8 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
     
     func didFindNewUser(user: UserModel, peerID: MCPeerID) {
         self.users[peerID] = user
-        let realm = try! Realm()
-        if realm.objects(UserModel.self).filter("username == %@", user.username).first == nil {
-            realm.beginWrite()
-            realm.add(user)
-            try! realm.commitWrite()
-        }
+
         self.nearbyUsersCollectionView.reloadData()
-    }
-    
-    func isPeerAGhost(peerID: MCPeerID) -> Bool {
-        return self.users[peerID]?.state == "Ghost"
     }
 }
 
@@ -198,8 +187,7 @@ extension NearbyUsersViewController: LoginDelegate {
     func didLogin(userModel: UserModel) {
         self.currentUser = userModel
         self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
-        self.usersConnectivity = UsersConnectivity(userModel: currentUser)
-        self.usersConnectivity.delegate = self;
+        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
         self.setUIContent(userModel: self.currentUser)
         UserDefaults.standard.set(true, forKey: Constants.UserDefaults.isLoged)
         UserDefaults.standard.set(userModel.userID, forKey: Constants.UserDefaults.loggedUserID)

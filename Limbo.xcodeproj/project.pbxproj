@@ -37,6 +37,8 @@
 		06262FEA210B493F003C6A1E /* pepe.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06262FE7210B493F003C6A1E /* pepe.jpg */; };
 		06262FEB210B493F003C6A1E /* spongebob.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06262FE8210B493F003C6A1E /* spongebob.jpg */; };
 		06262FED210B63EB003C6A1E /* Pastel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FEC210B63EB003C6A1E /* Pastel.framework */; };
+		0680D58521119BD500B1C926 /* Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58421119BD500B1C926 /* Spectre.swift */; };
+		0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */; };
 		069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361F92107459900D02D22 /* UsersConnectivity.swift */; };
 		069361FD210745DC00D02D22 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361FC210745DC00D02D22 /* Protocols.swift */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
@@ -75,6 +77,8 @@
 		06262FE7210B493F003C6A1E /* pepe.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pepe.jpg; sourceTree = "<group>"; };
 		06262FE8210B493F003C6A1E /* spongebob.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spongebob.jpg; sourceTree = "<group>"; };
 		06262FEC210B63EB003C6A1E /* Pastel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pastel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0680D58421119BD500B1C926 /* Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spectre.swift; sourceTree = "<group>"; };
+		0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Spectre.swift"; sourceTree = "<group>"; };
 		069361F92107459900D02D22 /* UsersConnectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersConnectivity.swift; sourceTree = "<group>"; };
 		069361FC210745DC00D02D22 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -162,6 +166,7 @@
 				069361FC210745DC00D02D22 /* Protocols.swift */,
 				06262FCA21075E79003C6A1E /* Constants.swift */,
 				061095C5211054F600A23D27 /* CurseManager.swift */,
+				0680D58421119BD500B1C926 /* Spectre.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -191,6 +196,7 @@
 			children = (
 				06262FD6210876A2003C6A1E /* MessageCell.swift */,
 				06262FD8210876BA003C6A1E /* ChatViewController.swift */,
+				0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */,
 				061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */,
 				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 			);
@@ -366,6 +372,7 @@
 			files = (
 				061095C6211054F600A23D27 /* CurseManager.swift in Sources */,
 				06262FD7210876A2003C6A1E /* MessageCell.swift in Sources */,
+				0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */,
 				061095C421104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift in Sources */,
 				06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */,
 				06262FD121076B08003C6A1E /* RegisterViewController.swift in Sources */,
@@ -375,6 +382,7 @@
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,
 				069361FD210745DC00D02D22 /* Protocols.swift in Sources */,
 				061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */,
+				0680D58521119BD500B1C926 /* Spectre.swift in Sources */,
 				060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */,
 				06262FE5210B471C003C6A1E /* AvatarCollectionViewController.swift in Sources */,
 				061095C821109BE100A23D27 /* ChatViewController+ChatDelegate.swift in Sources */,
