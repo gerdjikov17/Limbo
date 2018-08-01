@@ -18,6 +18,7 @@ class NearbyUsersViewController: UIViewController {
     var currentUser: UserModel!
     var users: [MCPeerID: UserModel]!
     var usersConnectivity: UsersConnectivity!
+    var itemsCountIfBlind = 0
     @IBOutlet weak var nearbyUsersCollectionView: UICollectionView!
     @IBOutlet weak var currentUserImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
@@ -173,12 +174,21 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
    
     func didLostUser(peerID: MCPeerID) {
         self.users.removeValue(forKey: peerID)
+        
+        if peerID.displayName == "Spectre" {
+            itemsCountIfBlind = 0
+        }
+        
         self.nearbyUsersCollectionView.reloadData()
     }
     
     func didFindNewUser(user: UserModel, peerID: MCPeerID) {
         self.users[peerID] = user
-
+        
+        if user.state == "Spectre" {
+            itemsCountIfBlind = 1
+        }
+        
         self.nearbyUsersCollectionView.reloadData()
     }
 }

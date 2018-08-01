@@ -45,8 +45,11 @@ extension ChatViewController {
             switch index {
             case 0: messageModel.messageString = Spectre.getGhostsNearby()
             case 1: messageModel.messageString = Spectre.specialAnswers[1]
-            default: messageModel.messageString = Spectre.specialAnswers.last!
+            default: messageModel.messageString = Spectre.specialAnswers[2]
             }
+        }
+        else {
+            messageModel.messageString = Spectre.specialAnswers[2]
         }
         
         let realm = try! Realm()

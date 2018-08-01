@@ -11,10 +11,11 @@ import UIKit
 import DZNEmptyDataSet
 
 extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let user = self.currentUser {
             if user.curse == .Blind {
-                return 0
+                return itemsCountIfBlind
             }
         }
         return users.count
@@ -22,8 +23,20 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyUserCell", for: indexPath) as! NearbyDevicesCollectionViewCell
-        let allUsers = Array(self.users.values)
-        let userModel = allUsers[indexPath.row]
+        
+        var userModel: UserModel
+        
+        if itemsCountIfBlind == 1 {
+            let userKV = self.users.first(where: { (key, value) -> Bool in
+                key.displayName == "Spectre"
+            })
+            userModel = (userKV?.value)!
+        }
+        else {
+            let allUsers = Array(self.users.values)
+            userModel = allUsers[indexPath.row]
+        }
+
         if let defaultImage = UIImage(named: userModel.avatarString) {
             cell.avatarImageView.image = defaultImage
         }
