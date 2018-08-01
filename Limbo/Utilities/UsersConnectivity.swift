@@ -83,10 +83,16 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
             let userModel: UserModel! = UserModel(username: info!["username"]!, state: userState, uniqueDeviceID: peerID.displayName)
             userModel.avatarString = info!["avatar"]!
             let realm = try! Realm()
-            if realm.objects(UserModel.self).filter("username == %@", userModel.username).first == nil {
+            if let realmUser = realm.objects(UserModel.self).filter("uniqueDeviceID == %@", peerID.displayName).first {
+                try? realm.write {
+                    realmUser.state = userState
+                }
+            }
+            else {
                 realm.beginWrite()
                 realm.add(userModel)
                 try! realm.commitWrite()
+                
             }
             if shouldShowUserDependingOnState(foundUserState: userState) {
                 self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
@@ -118,6 +124,12 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
+        let realm = try! Realm()
+        if let user = realm.objects(UserModel.self).filter("uniqueDeviceID == %@ AND state != %@", peerID.displayName, "Offline").filter("state != %@", "Spectre").first {
+            realm.beginWrite()
+            user.state = "Offline"
+            try! realm.commitWrite()
+        }
         self.delegate?.didLostUser(peerID: peerID)
     }
     

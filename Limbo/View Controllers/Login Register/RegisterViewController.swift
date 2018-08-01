@@ -41,6 +41,7 @@ class RegisterViewController: UIViewController {
                 let user: UserModel! = UserModel()
                 user.username = username
                 user.password = password
+                user.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!
                 user.userID = realm.objects(UserModel.self).count
                 realm.beginWrite()
                 realm.add(user)

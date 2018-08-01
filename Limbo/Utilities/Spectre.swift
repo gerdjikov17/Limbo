@@ -41,7 +41,7 @@ class SpectreManager {
         print("checkForSpectres")
         let number = drand48()
         print(number)
-        if number <= 0.1 {
+        if number <= 0.5 {
             let realm = try! Realm()
             if let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first {
                 self.nearbyUsersDelegate?.didFindNewUser(user: spectre, peerID: spectrePeerID)

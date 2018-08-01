@@ -42,10 +42,11 @@ extension ChatViewController {
     func receiveMessageFromSpectre(forMessage: String) {
         let messageModel = MessageModel()
         if let index = Spectre.specialMessages.index(of: forMessage) {
-            messageModel.messageString = Spectre.specialAnswers[index]
-        }
-        else {
-            messageModel.messageString = Spectre.specialAnswers.last!
+            switch index {
+            case 0: messageModel.messageString = Spectre.getGhostsNearby()
+            case 1: messageModel.messageString = Spectre.specialAnswers[1]
+            default: messageModel.messageString = Spectre.specialAnswers.last!
+            }
         }
         
         let realm = try! Realm()

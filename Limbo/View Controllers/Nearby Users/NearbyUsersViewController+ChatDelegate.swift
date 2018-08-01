@@ -69,8 +69,8 @@ extension NearbyUsersViewController: ChatDelegate {
     }
     
     @objc func reloadDataFromSelector() {
-        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
-        self.usersConnectivity.chatDelegate = self
+//        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
+//        self.usersConnectivity.chatDelegate = self
         DispatchQueue.main.async {
             self.nearbyUsersCollectionView.reloadData()
             self.setUIContent(userModel: self.currentUser)
