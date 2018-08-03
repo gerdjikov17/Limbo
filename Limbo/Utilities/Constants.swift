@@ -35,6 +35,10 @@ struct Constants {
         struct Identifiers {
             static let Message = "NotificationIdentifierMessage"
             static let Curse = "NotificationIdentifierCurse"
+            static let Item = "NotificationIdentifierItem"
+            static let MessageActionReply = "NotificationIdentifierMessage"
+            static let CurseActionItemCandle = "NotificationIdentifierCurseActionItemCandle"
+            static let CurseActionItemMedallion = "NotificationIdentifierCurseActionItemMedallion"
         }
         
     }

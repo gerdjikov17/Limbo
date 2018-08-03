@@ -12,6 +12,7 @@ import RealmSwift
 class RealmManager: NSObject {
     static func currentLoggedUser() -> UserModel? {
         let realm = try! Realm()
+        realm.refresh()
         if let user = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first {
            return user
         }

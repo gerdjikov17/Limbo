@@ -155,10 +155,10 @@ extension UsersConnectivity : MCSessionDelegate {
                 if resultOfCurse.0 {
                     chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
                 }
-//                else {
-//                    self.sendFailedCurseReplyMessage(toPeerID: peerID)
-//                }
-//
+                else {
+                    let remainingTime = String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.1)) + " seconds!"
+                    NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: "Someone tried to haunt you! But you are protected for " + remainingTime)
+                }
             }
         }
         else {

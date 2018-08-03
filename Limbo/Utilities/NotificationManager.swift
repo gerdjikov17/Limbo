@@ -15,7 +15,8 @@ class NotificationManager: NSObject {
     static let shared = NotificationManager()
     
     func presentNotification(withMessage message:MessageModel, fromPeerID: MCPeerID, notificationDelegate: UNUserNotificationCenterDelegate) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
             DispatchQueue.main.async {
                 if granted {
                     UIApplication.shared.registerForRemoteNotifications()
@@ -27,10 +28,11 @@ class NotificationManager: NSObject {
                     
                     content.body = message.messageString
                     content.sound = UNNotificationSound.default()
+                    content.categoryIdentifier = Constants.Notifications.Identifiers.Message
                     
                     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
                     let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Message, content: content, trigger: trigger)
-                    let center = UNUserNotificationCenter.current()
+                    
                     center.delegate = notificationDelegate
                     center.add(request, withCompletionHandler: { (err) in
                         if let err = err {
@@ -46,8 +48,9 @@ class NotificationManager: NSObject {
         })
     }
     
-    func presentNotification(withTitle title:String, andText text:String) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
+    func presentCurseNotification(withTitle title:String, andText text:String) {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
             DispatchQueue.main.async {
                 if granted {
                     UIApplication.shared.registerForRemoteNotifications()
@@ -55,10 +58,40 @@ class NotificationManager: NSObject {
                     content.title = title
                     content.body = text
                     content.sound = UNNotificationSound.default()
+                    content.categoryIdentifier = Constants.Notifications.Identifiers.Curse
                     
                     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
                     let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Curse, content: content, trigger: trigger)
-                    let center = UNUserNotificationCenter.current()
+                    
+                    center.delegate = self
+                    center.add(request, withCompletionHandler: { (err) in
+                        if let err = err {
+                            print(err)
+                        }
+                    })
+                }
+                else {
+                    //Do stuff if unsuccessful...
+                }
+            }
+        })
+    }
+    
+    func presentItemNotification(withTitle title:String, andText text:String) {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
+            DispatchQueue.main.async {
+                if granted {
+                    UIApplication.shared.registerForRemoteNotifications()
+                    let content = UNMutableNotificationContent()
+                    content.title = title
+                    content.body = text
+                    content.sound = UNNotificationSound.default()
+                    content.categoryIdentifier = Constants.Notifications.Identifiers.Item
+                    
+                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
+                    let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Item, content: content, trigger: trigger)
+                    
                     center.delegate = self
                     center.add(request, withCompletionHandler: { (err) in
                         if let err = err {
@@ -80,6 +113,27 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        switch response.actionIdentifier {
+            
+        case Constants.Notifications.Identifiers.CurseActionItemCandle :
+            if let user = RealmManager.currentLoggedUser() {
+                if user.curse != Curse.None.rawValue {
+                    NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You removed your curse using holy candle")
+                    CurseManager.removeCurse()
+                }
+                else {
+                    NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You are not cursed")
+                }
+            }
+            
+        case Constants.Notifications.Identifiers.CurseActionItemMedallion :
+            if let user = RealmManager.currentLoggedUser() {
+                CurseManager.applySpecialItem(specialItem: .SaintsMedallion, toUser: user)
+            }
+        default:
+            print("do nothing lol")
+        }
+        
         completionHandler()
     }
 }

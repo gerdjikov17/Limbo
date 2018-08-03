@@ -15,7 +15,7 @@ class CurseManager: NSObject {
         if toUser.specialItem == SpecialItem.SaintsMedallion.rawValue {
             if let lastItemDate = toUser.specialItemUsedDate {
                 if !lastItemDate.timeIntervalSinceNow.isLess(than: -180.0) {
-                    return (false, 0)
+                    return (false, lastItemDate.timeIntervalSinceNow)
                 }
             }
         }
@@ -25,12 +25,12 @@ class CurseManager: NSObject {
             toUser.curse = curse.rawValue
             toUser.curseCastDate = Date()
             toUser.specialItemUsedDate = nil
-            toUser.specialItem = "None"
+            toUser.specialItem = Curse.None.rawValue
         }
         let fireAt = Date(timeIntervalSinceNow: remainingTime)
         let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeCurse), userInfo: ["curse": curse, "user": toUser], repeats: false)
         RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
-        NotificationManager.shared.presentNotification(withTitle: "You have been cursed", andText: String(curse.rawValue + " for \(Int(remainingTime)) seconds"))
+        NotificationManager.shared.presentCurseNotification(withTitle: "You have been cursed", andText: String(curse.rawValue + " for \(Int(remainingTime)) seconds"))
         return (true, remainingTime)
 }
 
@@ -42,12 +42,14 @@ class CurseManager: NSObject {
         toUser.specialItem = specialItem.rawValue
         toUser.specialItemUsedDate = Date()
         toUser.curse = Curse.None.rawValue
+        toUser.curseCastDate = nil
         try? realm.commitWrite()
+        realm.refresh()
         
         let fireAt = Date(timeIntervalSinceNow: remainingTime)
         let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeItem), userInfo: ["item": specialItem, "user": toUser], repeats: false)
         RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
-        NotificationManager.shared.presentNotification(withTitle: "Saint's Medallion", andText: String("You are protected from curses with Saint's Medallion for " + String(Int(remainingTime)) + " seconds"))
+        NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: String("You are protected from curses with Saint's Medallion for " + String(Int(remainingTime)) + " seconds"))
     }
     
     @objc static func removeCurse() {

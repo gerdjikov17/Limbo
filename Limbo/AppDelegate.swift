@@ -29,14 +29,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         let center = UNUserNotificationCenter.current()
-        // Request permission to display alerts and play sounds.
         center.requestAuthorization(options: [.alert, .sound])
         { (granted, error) in
-            // Enable or disable features based on authorization.
+            let replyAction = UNTextInputNotificationAction(identifier: Constants.Notifications.Identifiers.MessageActionReply, title: "Reply", options: [], textInputButtonTitle: "Reply", textInputPlaceholder: "Write a message...")
+            let messageCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Message, actions: [replyAction], intentIdentifiers: [], options: [])
+            
+            let candleAction = UNNotificationAction(identifier: Constants.Notifications.Identifiers.CurseActionItemCandle, title: "Use Holy Candle", options: [])
+            let medallionAction = UNNotificationAction(identifier: Constants.Notifications.Identifiers.CurseActionItemMedallion, title: "Use Saint's Medallion", options: [])
+            let curseCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Curse, actions: [candleAction, medallionAction], intentIdentifiers: [], options: [])
+            
+            let itemCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Item, actions: [], intentIdentifiers: [], options: [])
+            center.setNotificationCategories([messageCategory, curseCategory, itemCategory])
         }
-        let messageCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Message, actions: [], intentIdentifiers: [], options: .hiddenPreviewsShowTitle)
-        let curseCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Curse, actions: [], intentIdentifiers: [], options: .hiddenPreviewsShowTitle)
-        center.setNotificationCategories([messageCategory, curseCategory])
+        
         
         return true
     }
