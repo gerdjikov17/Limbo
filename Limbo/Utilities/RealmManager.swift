@@ -38,12 +38,10 @@ class RealmManager: NSObject {
     static func registerUser(username: String, password: String) -> Bool {
         let realm = try! Realm()
         if realm.objects(UserModel.self).filter("username = %@", username).first == nil {
-            let user: UserModel! = UserModel()
-            user.username = username
-            user.password = password
+            realm.beginWrite()
+            let user: UserModel! = UserModel(username: username, password: password)
             user.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!
             user.userID = realm.objects(UserModel.self).count
-            realm.beginWrite()
             realm.add(user)
             try! realm.commitWrite()
             return true
@@ -56,6 +54,15 @@ class RealmManager: NSObject {
         let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers.uniqueDeviceID = %@) OR (sender.uniqueDeviceID = %@ AND ANY receivers.uniqueDeviceID = %@)", firstUser, secondUser.uniqueDeviceID, secondUser.uniqueDeviceID, firstUser.uniqueDeviceID)
         return results
         
+    }
+    
+    static func itemsCountForCurrentUser() -> (candles :Int, medallions: Int) {
+        if let user = self.currentLoggedUser() {
+            let candles = user.items[SpecialItem.HolyCandle.rawValue]
+            let medallions = user.items[SpecialItem.SaintsMedallion.rawValue]
+            return(candles!, medallions!)
+        }
+        return (0, 0)
     }
     
 }

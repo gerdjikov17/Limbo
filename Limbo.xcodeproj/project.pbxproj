@@ -43,6 +43,8 @@
 		069361FD210745DC00D02D22 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069361FC210745DC00D02D22 /* Protocols.swift */; };
 		06A26F5821134F650023F679 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5721134F650023F679 /* NotificationManager.swift */; };
 		06A26F5A21135E330023F679 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5921135E330023F679 /* RealmManager.swift */; };
+		06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5B211496980023F679 /* ItemPopoverViewController.swift */; };
+		06A26F5E21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +88,8 @@
 		069361FC210745DC00D02D22 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		06A26F5721134F650023F679 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		06A26F5921135E330023F679 /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
+		06A26F5B211496980023F679 /* ItemPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPopoverViewController.swift; sourceTree = "<group>"; };
+		06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersViewController+ItemPopover.swift"; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
 		9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Limbo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECBC6D0F2B39D67B3E92515C /* Pods-Limbo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.release.xcconfig"; sourceTree = "<group>"; };
@@ -184,6 +188,8 @@
 				06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */,
 				061095C121104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift */,
 				060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */,
+				06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */,
+				06A26F5B211496980023F679 /* ItemPopoverViewController.swift */,
 			);
 			path = "Nearby Users";
 			sourceTree = "<group>";
@@ -400,9 +406,11 @@
 				06262FDD2108A88A003C6A1E /* MessageModel.swift in Sources */,
 				069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */,
 				060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */,
+				06A26F5E21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift in Sources */,
 				06262FD9210876BA003C6A1E /* ChatViewController.swift in Sources */,
 				06262FDF2109C95D003C6A1E /* ChatViewController+TableView.swift in Sources */,
 				06A26F5A21135E330023F679 /* RealmManager.swift in Sources */,
+				06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */,
 				0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */,
 				06262FCB21075E7A003C6A1E /* Constants.swift in Sources */,
 			);

@@ -14,7 +14,9 @@ import Pastel
 
 class NearbyUsersViewController: UIViewController {
 
-    var currentUser: UserModel!
+    var currentUser: UserModel! {
+        return RealmManager.currentLoggedUser()
+    }
     var users: [MCPeerID: UserModel]!
     var usersConnectivity: UsersConnectivity!
     var itemsCountIfBlind = 0
@@ -22,7 +24,10 @@ class NearbyUsersViewController: UIViewController {
     @IBOutlet weak var currentUserImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var userStateLabel: UILabel!
-    
+    @IBOutlet weak var candleCountLabel: UILabel!
+    @IBOutlet weak var medallionCountLabel: UILabel!
+    @IBOutlet weak var candleImageView: UIImageView!
+    @IBOutlet weak var medallionImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,12 +36,13 @@ class NearbyUsersViewController: UIViewController {
         let spectreManager = SpectreManager(nearbyUsersDelegate: self)
         spectreManager.startLoopingForSpectres()
 
-        
         navigationController?.navigationBar.barTintColor = UIColor(red:0.02, green:0.11, blue:0.16, alpha:0.5)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign out", style: .plain, target: self, action: #selector(self.signOutButtonTap))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Reload", style: .plain, target: self, action: #selector(self.reloadDataFromSelector))
         self.currentUserImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.userImageTap)))
+        self.candleImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.candleImageTap)))
+        self.medallionImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.medallionImageTap)))
         
         self.nearbyUsersCollectionView.emptyDataSetSource = self;
         self.nearbyUsersCollectionView.emptyDataSetDelegate = self;
@@ -47,8 +53,6 @@ class NearbyUsersViewController: UIViewController {
             self.present(loginVC, animated: true, completion: nil)
         }
         else {
-            self.currentUser = RealmManager.currentLoggedUser()
-//            self.checkForItems(forUser: self.currentUser)
             self.checkForCurses(forUser: self.currentUser)
             self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
             self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
@@ -84,6 +88,9 @@ class NearbyUsersViewController: UIViewController {
             if lastCurseCastDate.timeIntervalSinceNow.isLess(than: Constants.Curses.curseTime) {
                 CurseManager.removeCurse()
             }
+            else {
+                CurseManager.reApplyCurse(curse: Curse(rawValue: forUser.curse)!, toUser: forUser, remainingTime: lastCurseCastDate.timeIntervalSinceNow)
+            }
         }
     }
     
@@ -107,6 +114,8 @@ class NearbyUsersViewController: UIViewController {
             let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: userModel.avatarString)!))
             self.currentUserImageView.image = imgurImage
         }
+        self.candleCountLabel.text = String(userModel.items[SpecialItem.HolyCandle.rawValue]!)
+        self.medallionCountLabel.text = String(userModel.items[SpecialItem.SaintsMedallion.rawValue]!)
         self.usernameLabel.text = userModel.username
         self.userStateLabel.text = userModel.state
     }
@@ -187,7 +196,6 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
 
 extension NearbyUsersViewController: LoginDelegate {
     func didLogin(userModel: UserModel) {
-        self.currentUser = userModel
         self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
         self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
         self.setUIContent(userModel: self.currentUser)

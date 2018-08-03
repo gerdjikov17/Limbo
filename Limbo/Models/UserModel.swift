@@ -22,12 +22,42 @@ class UserModel: Object {
     @objc dynamic var curseCastDate: Date? = nil
     @objc dynamic var specialItem = "None"
     @objc dynamic var specialItemUsedDate: Date? = nil
+    @objc dynamic var itemsData: Data?
+    var items: [String: Int] {
+        get {
+            guard let itemsData = itemsData else {
+                return [String: Int]()
+            }
+            do {
+                let dict = try JSONSerialization.jsonObject(with: itemsData, options: []) as? [String: Int]
+                return dict!
+            } catch {
+                return [String: Int]()
+            }
+        }
+        
+        set {
+            do {
+                let data = try JSONSerialization.data(withJSONObject: newValue, options: [])
+                itemsData = data
+            } catch {
+                itemsData = nil
+            }
+        }
+    }
     
     convenience init(username: String, state: String, uniqueDeviceID: String) {
         self.init()
         self.username = username
         self.state = state
         self.uniqueDeviceID = uniqueDeviceID
+    }
+    
+    convenience init(username: String, password: String) {
+        self.init()
+        self.username = username
+        self.password = password
+        self.items = [SpecialItem.HolyCandle.rawValue: 5, SpecialItem.SaintsMedallion.rawValue: 5]
     }
     
     override class func primaryKey() -> String? {

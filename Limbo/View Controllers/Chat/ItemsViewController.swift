@@ -25,13 +25,7 @@ class ItemsViewController: UIViewController {
     }
     
     @IBAction func holyCandleButtonTap(_ sender: Any) {
-        if user.curse != Curse.None.rawValue {
-            NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You removed your curse using holy candle")
-            CurseManager.removeCurse()
-        }
-        else {
-            NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You are not cursed")
-        }
+        CurseManager.applySpecialItem(specialItem: SpecialItem.HolyCandle, toUser: self.user)
         
         self.dismiss(animated: true, completion: nil)
     }
