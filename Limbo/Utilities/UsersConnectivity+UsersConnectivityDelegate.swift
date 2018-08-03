@@ -31,6 +31,13 @@ extension UsersConnectivity: UsersConnectivityDelegate {
         }
     }
     
+//    func sendFailedCurseReplyMessage(toPeerID: MCPeerID) {
+//        let messageModel = MessageModel()
+//        messageModel.messageString = "The user is blessed with the Saint's Medallion. You cannot curse him, fool!"
+//        self.sendMessage(messageModel: messageModel, toPeerID: toPeerID)
+//    }
+    
+    
     func setChatDelegate(newDelegate: ChatDelegate) {
         self.chatDelegate = newDelegate
     }

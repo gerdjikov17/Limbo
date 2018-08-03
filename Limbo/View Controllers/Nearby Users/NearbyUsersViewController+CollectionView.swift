@@ -9,12 +9,14 @@
 import Foundation
 import UIKit
 import DZNEmptyDataSet
+import RealmSwift
 
 extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let user = self.currentUser {
-            if user.curse == .Blind {
+        let realm = try! Realm()
+        if let user = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first {
+            if user.curse == "Blind" {
                 return itemsCountIfBlind
             }
         }
@@ -26,7 +28,7 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
         
         var userModel: UserModel
         
-        if itemsCountIfBlind == 1 && self.currentUser.curse == .Blind{
+        if self.currentUser != nil && itemsCountIfBlind == 1 && self.currentUser.curse == "Blind" {
             let userKV = self.users.first(where: { (key, value) -> Bool in
                 key.displayName == "Spectre"
             })

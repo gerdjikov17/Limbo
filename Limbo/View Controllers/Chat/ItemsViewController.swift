@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import LNRSimpleNotifications
+import UserNotifications
 
 class ItemsViewController: UIViewController {
 
@@ -25,34 +25,20 @@ class ItemsViewController: UIViewController {
     }
     
     @IBAction func holyCandleButtonTap(_ sender: Any) {
-        let notificationManager = LNRNotificationManager()
-        notificationManager.notificationsPosition = .top
-        notificationManager.notificationsBackgroundColor = .white
-        notificationManager.notificationsTitleTextColor = .black
-        notificationManager.notificationsBodyTextColor = .darkGray
-        notificationManager.notificationsSeperatorColor = .gray
-        if user.curse != .None {
-            notificationManager.showNotification(notification: LNRNotification(title: "Holy Candle", body: "You removed your curse using holy candle"))
-            user.curse = .None
+        if user.curse != Curse.None.rawValue {
+            NotificationManager.shared.presentNotification(withTitle: "Holy Candle", andText: "You removed your curse using holy candle")
+            CurseManager.removeCurse()
         }
         else {
-            notificationManager.showNotification(notification: LNRNotification(title: "Holy Candle", body: "You are not cursed"))
+            NotificationManager.shared.presentNotification(withTitle: "Holy Candle", andText: "You are not cursed")
         }
         
         self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func saintsMedallionButtonTap(_ sender: Any) {
-        
-    }
-    /*
-    // MARK: - Navigation
+        CurseManager.applySpecialItem(specialItem: SpecialItem.SaintsMedallion, toUser: self.user)
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        self.dismiss(animated: true, completion: nil)
     }
-    */
-
 }

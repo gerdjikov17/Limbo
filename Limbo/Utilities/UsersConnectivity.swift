@@ -12,7 +12,7 @@ import RealmSwift
 
 class UsersConnectivity: NSObject {
     
-    private var userModel: UserModel
+    private var userModel: UserModel?
     internal var myPeerID: MCPeerID
     private var serviceAdvertiser: MCNearbyServiceAdvertiser
     private let serviceBrowser: MCNearbyServiceBrowser
@@ -31,7 +31,7 @@ class UsersConnectivity: NSObject {
         self.userModel = userModel
         self.delegate = delegate
         self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!)
-        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": userModel.username, "state": self.userModel.state, "avatar": self.userModel.avatarString], serviceType:Constants.MCServiceType)
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": userModel.username, "state": userModel.state, "avatar": userModel.avatarString], serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
         
         super.init()
@@ -103,7 +103,7 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     }
     
     func shouldShowUserDependingOnState(foundUserState: String) -> Bool {
-        let currentUserState = self.userModel.state
+        let currentUserState = self.userModel!.state
         switch currentUserState {
         case "Human":
             if (foundUserState == "Human") { return true }
@@ -150,9 +150,18 @@ extension UsersConnectivity : MCSessionDelegate {
             curse.rawValue == messageModel.messageString
         })) && (self.isPeerAGhost(peerID: peerID)) {
             let curse = Curse(rawValue: messageModel.messageString)!
-            CurseManager.applyCurse(curse: curse, toUser: self.userModel)
-            chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
-
+            let realm = try! Realm()
+//            if let user = self.userModel {
+            if let user = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first {
+                let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
+                if resultOfCurse.0 {
+                    chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
+                }
+//                else {
+//                    self.sendFailedCurseReplyMessage(toPeerID: peerID)
+//                }
+//
+            }
         }
         else {
             let realm = try! Realm()

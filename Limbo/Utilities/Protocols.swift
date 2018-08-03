@@ -18,6 +18,7 @@ protocol NearbyUsersDelegate {
 protocol UsersConnectivityDelegate {
     func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID) -> Bool
     func setChatDelegate(newDelegate: ChatDelegate)
+    func getPeerIDForUID(uniqueID: String) -> MCPeerID?
 }
 
 protocol LoginDelegate {

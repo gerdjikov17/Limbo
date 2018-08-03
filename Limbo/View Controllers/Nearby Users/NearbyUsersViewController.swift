@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 import RealmSwift
-import LNRSimpleNotifications
 import Pastel
 
 class NearbyUsersViewController: UIViewController {
@@ -50,6 +49,7 @@ class NearbyUsersViewController: UIViewController {
         else {
             let realm = try! Realm()
             self.currentUser = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first!
+//            self.checkForItems(forUser: self.currentUser)
             self.checkForCurses(forUser: self.currentUser)
             self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
             self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
@@ -81,16 +81,9 @@ class NearbyUsersViewController: UIViewController {
     }
     
     func checkForCurses(forUser: UserModel) {
-        if let lastCurse = UserDefaults.standard.string(forKey: Constants.UserDefaults.lastCurse) {
-            if lastCurse != "" {
-                let lastCurse = Curse(rawValue: lastCurse)
-                let lastCurseDate = UserDefaults.standard.object(forKey: Constants.UserDefaults.lastCurseDate) as! Date
-                let timeInterval = Date.timeIntervalSince(Date())
-                let remainingTime = Constants.Curses.curseTime - timeInterval(lastCurseDate)
-                if remainingTime > 0 {
-                    CurseManager.reApplyCurse(curse: lastCurse!, toUser: forUser, remainingTime: remainingTime)
-                    self.didReceiveCurse(curse: lastCurse!, remainingTime: remainingTime)
-                }
+        if let lastCurseCastDate = forUser.curseCastDate {
+            if lastCurseCastDate.timeIntervalSinceNow.isLess(than: Constants.Curses.curseTime) {
+                CurseManager.removeCurse()
             }
         }
     }
@@ -120,7 +113,7 @@ class NearbyUsersViewController: UIViewController {
     }
     
     @objc func signOutButtonTap() {
-        if self.currentUser.curse == .None {
+        if self.currentUser.curse == Curse.None.rawValue {
             UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
             UserDefaults.standard.synchronize()
             let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController

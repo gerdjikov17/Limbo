@@ -13,9 +13,7 @@ import UIKit
 extension ChatViewController {
     func sendingMessageWhileSilenced() {
         let pointForToast = CGPoint(x: self.view.center.x, y: (self.navigationController?.navigationBar.frame.size.height)! + CGFloat(100))
-        let lastCurseDate = UserDefaults.standard.object(forKey: Constants.UserDefaults.lastCurseDate) as! Date
-        let timeInterval = Date.timeIntervalSince(Date())
-        let remainingTime = Constants.Curses.curseTime - timeInterval(lastCurseDate)
+        let remainingTime = Constants.Curses.curseTime + (self.currentUser?.curseCastDate?.timeIntervalSinceNow)!
         let curseRemainingTime = Int(remainingTime)
         self.view.makeToast("You are cursed with Silence", point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
     }

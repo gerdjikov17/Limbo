@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 import RealmSwift
-import LNRSimpleNotifications
 
 class ChatViewController: UIViewController {
     @IBOutlet weak var chatTableView: UITableView!
@@ -137,15 +136,15 @@ class ChatViewController: UIViewController {
             if self.userChattingWith?.state == "Spectre" {
                 self.sendMessageToSpectre(message: message)
             }
-            else if message.count > 0 && self.currentUser!.curse != .Silence {
+            else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
                 if let peerID = self.peerIDChattingWith {
-                    if self.currentUser?.curse == Curse.Posession {
+                    if self.currentUser?.curse == Curse.Posession.rawValue {
                         message = randomizeText(string: self.messageTextField.text!)
                     }
                     self.sendMessageToUser(message: message, peerID: peerID)
                 }
             }
-            else {
+            else if self.currentUser!.curse == Curse.Silence.rawValue{
                 self.sendingMessageWhileSilenced()
             }
             self.messageTextField.text = ""

@@ -9,26 +9,13 @@
 import Foundation
 import RealmSwift
 import MultipeerConnectivity
-import LNRSimpleNotifications
+import UserNotifications
 
 extension NearbyUsersViewController: ChatDelegate {
     
     func didReceiveCurse(curse: Curse, remainingTime: Double) {
+        
         DispatchQueue.main.async {
-            let notificationManager = LNRNotificationManager()
-            notificationManager.notificationsPosition = .top
-            notificationManager.notificationsBackgroundColor = .white
-            notificationManager.notificationsTitleTextColor = .black
-            notificationManager.notificationsBodyTextColor = .darkGray
-            notificationManager.notificationsSeperatorColor = .gray
-            
-            let roundedRemainingTime = Int(remainingTime)
-            notificationManager.showNotification(notification: LNRNotification(title: "You have been cursed", body: String(curse.rawValue + " for \(roundedRemainingTime) seconds"), duration: 3, onTap: {
-                
-            }, onTimeout: {
-                
-            }))
-            
             if curse == .Blind {
                 self.nearbyUsersCollectionView.reloadData()
                 
@@ -43,28 +30,7 @@ extension NearbyUsersViewController: ChatDelegate {
         DispatchQueue.main.async {
             let realm = try! Realm()
             let messageModel = realm.resolve(threadSafeMessageRef)
-            let senderUser = messageModel?.sender
-            let notificationManager = LNRNotificationManager()
-            notificationManager.notificationsPosition = .top
-            notificationManager.notificationsBackgroundColor = .white
-            notificationManager.notificationsTitleTextColor = .black
-            notificationManager.notificationsBodyTextColor = .darkGray
-            notificationManager.notificationsSeperatorColor = .gray
-            
-            notificationManager.showNotification(notification: LNRNotification(title: (senderUser?.username)!, body:messageModel?.messageString , duration: 3, onTap: {
-                
-                let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
-                self.usersConnectivity.inviteUser(peerID: fromPeerID)
-                chatVC.currentUser = self.currentUser
-                chatVC.userChattingWith = senderUser
-                chatVC.peerIDChattingWith = fromPeerID
-                chatVC.chatDelegate = self.usersConnectivity
-                self.usersConnectivity.chatDelegate = chatVC
-                self.navigationController?.pushViewController(chatVC, animated: true)
-                
-            }, onTimeout: {
-                
-            }))
+            NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
         }
     }
     
@@ -78,3 +44,33 @@ extension NearbyUsersViewController: ChatDelegate {
     }
     
 }
+
+extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
+    
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .badge, .sound])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let notification = response.notification
+        if notification.request.identifier == Constants.Notifications.Identifiers.Curse { return }
+        let userInfo = notification.request.content.userInfo
+        let userChattingWithUniqueDeviceID =  userInfo["uniqueDeviceID"] as! String
+        let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID)
+        if let peerIDChattingWith = self.usersConnectivity.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID) {
+            let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
+            self.usersConnectivity.inviteUser(peerID: peerIDChattingWith)
+            chatVC.currentUser = self.currentUser
+            chatVC.userChattingWith = userChattingWith
+            chatVC.peerIDChattingWith = peerIDChattingWith
+            chatVC.chatDelegate = self.usersConnectivity
+            self.usersConnectivity.chatDelegate = chatVC
+            self.navigationController?.pushViewController(chatVC, animated: true)
+        }
+        
+        
+        completionHandler()
+    }
+}
+

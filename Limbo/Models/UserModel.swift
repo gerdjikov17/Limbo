@@ -18,7 +18,10 @@ class UserModel: Object {
     @objc dynamic var avatarString = "ghost_avatar.png"
     @objc dynamic var state = ""
     @objc dynamic var uniqueDeviceID = ""
-    var curse: Curse = .None
+    @objc dynamic var curse = "None"
+    @objc dynamic var curseCastDate: Date? = nil
+    @objc dynamic var specialItem = "None"
+    @objc dynamic var specialItemUsedDate: Date? = nil
     
     convenience init(username: String, password: String) {
         self.init()

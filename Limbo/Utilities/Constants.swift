@@ -16,11 +16,27 @@ struct Constants {
         static let lastCurse = "UserDefaultsLastCurse"
         static let lastCurseDate = "UserDefaultsLastCurseDate"
         static let curseRemainingTime = "UserDefaultsLastCurseDate"
+        static let lastItem = "UserDefaultsLastItem"
+        static let lastItemDate = "UserDefaultsLastItemDate"
+        static let itemRemainingTime = "UserDefaultsLastItemDate"
     }
     
     struct Curses {
         static let allCurses: [Curse] = [.Blind, .Silence, .Posession]
         static let curseTime = 60.0
+    }
+    
+    struct SpecialItems {
+        static let allSpecialItems: [SpecialItem] = [.HolyCandle, .SaintsMedallion]
+        static let itemTime = 180.0
+    }
+    
+    struct Notifications {
+        struct Identifiers {
+            static let Message = "NotificationIdentifierMessage"
+            static let Curse = "NotificationIdentifierCurse"
+        }
+        
     }
     
 }
@@ -30,4 +46,10 @@ enum Curse: String {
     case Blind
     case Silence
     case Posession
+}
+
+enum SpecialItem: String {
+    case None
+    case HolyCandle
+    case SaintsMedallion
 }
