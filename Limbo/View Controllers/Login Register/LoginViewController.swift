@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import RealmSwift
 import Toast_Swift
 
 class LoginViewController: UIViewController {
@@ -17,6 +16,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signUpLabel: UILabel!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     var loginDelegate: LoginDelegate?
     
@@ -25,6 +25,8 @@ class LoginViewController: UIViewController {
         self.usernameTextField.delegate = self
         self.passwordTextField.delegate = self
         self.signUpLabel?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LoginViewController.signUpLabelTap)))
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     @objc func signUpLabelTap() {
@@ -33,21 +35,20 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func loginButtonTap(_ sender: Any) {
-        
+        self.resignAllTextFields()
         let usernameString: String! = self.usernameTextField?.text
         let passwordString: String! = self.passwordTextField?.text
         let authorization = self.authorizeUserInput(usernameString: usernameString, passwordString: passwordString)
         if authorization.success {
-            let realm = try! Realm()
-            if let user = (realm.objects(UserModel.self).filter("username = %@ and password = %@", usernameString, passwordString)).first {
+            if let user = RealmManager.userWith(username: usernameString, password: passwordString){
                 self.loginDelegate?.didLogin(userModel: user)
             }
             else {
-                self.view.makeToast("User doesn't exist", point: CGPoint(x: self.view.center.x, y: self.view.frame.size.height - 50), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+                self.view.makeToast("User doesn't exist", point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
             }
         }
         else {
-            self.view.makeToast(authorization.message, point: CGPoint(x: self.view.center.x, y: self.view.frame.size.height - 50), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+            self.view.makeToast(authorization.message, point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
         }
     }
     
@@ -73,6 +74,23 @@ class LoginViewController: UIViewController {
         let success = message == "" ? true : false
         return (success, message)
     }
+    
+    @objc func keyboardWillShow(notification:NSNotification){
+        
+        var userInfo = notification.userInfo!
+        var keyboardFrame:CGRect = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+        
+        var contentInset:UIEdgeInsets = self.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height
+        scrollView.contentInset = contentInset
+    }
+    
+    @objc func keyboardWillHide(notification:NSNotification){
+        
+        let contentInset:UIEdgeInsets = .zero
+        scrollView.contentInset = contentInset
+    }
 }
 
 extension LoginViewController: UITextFieldDelegate {
@@ -81,9 +99,15 @@ extension LoginViewController: UITextFieldDelegate {
             self.passwordTextField.becomeFirstResponder()
         }
         else {
+            textField.resignFirstResponder()
             self.loginButtonTap("")
         }
         
         return true
+    }
+    
+    func resignAllTextFields() {
+        self.usernameTextField.resignFirstResponder()
+        self.passwordTextField.resignFirstResponder()
     }
 }

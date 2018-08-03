@@ -52,7 +52,7 @@ class CurseManager: NSObject {
     
     @objc static func removeCurse() {
         let realm = try! Realm()
-        if let user = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first {
+        if let user = RealmManager.currentLoggedUser() {
             try! realm.write {
                 user.curseCastDate = nil
                 user.curse = "None"
@@ -62,7 +62,7 @@ class CurseManager: NSObject {
     
     @objc static func removeItem() {
         let realm = try! Realm()
-        if let user = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first {
+        if let user = RealmManager.currentLoggedUser() {
             try! realm.write {
                 user.specialItemUsedDate = nil
                 user.specialItem = "None"

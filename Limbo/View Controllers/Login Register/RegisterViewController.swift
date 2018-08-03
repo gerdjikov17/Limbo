@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import RealmSwift
 
 class RegisterViewController: UIViewController {
     
@@ -16,6 +15,7 @@ class RegisterViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var signInLabel: UILabel!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +23,8 @@ class RegisterViewController: UIViewController {
         self.passwordTextField.delegate = self
         self.confirmPasswordTextField.delegate = self
         self.signInLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.signInLabelTap)))
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     @objc func signInLabelTap() {
@@ -30,32 +32,24 @@ class RegisterViewController: UIViewController {
     }
     
     @IBAction func registerButtonTap(_ sender: Any) {
+        self.resignAllTextFields()
         let username: String! = self.usernameTextField.text
         let password: String! = self.passwordTextField.text
         let confirmPassword: String! = self.confirmPasswordTextField.text
         
         let authorization = self.authorizeUserInput(username: username, password: password, confirmedPassword: confirmPassword)
         if authorization.success {
-            let realm = try! Realm()
-            if realm.objects(UserModel.self).filter("username = %@", username).first == nil {
-                let user: UserModel! = UserModel()
-                user.username = username
-                user.password = password
-                user.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!
-                user.userID = realm.objects(UserModel.self).count
-                realm.beginWrite()
-                realm.add(user)
-                try! realm.commitWrite()
-                self.presentingViewController?.view.makeToast("Sign up successfully", point: CGPoint(x: self.view.center.x, y: self.view.frame.size.height - 50), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+            if RealmManager.registerUser(username: username, password: password) {
+                self.presentingViewController?.view.makeToast("Sign up successfully", point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
                 self.dismiss(animated: true, completion: nil)
             }
             else {
-                self.view.makeToast("User already exists", point: CGPoint(x: self.view.center.x, y: self.view.frame.size.height - 50), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+                self.view.makeToast("User already exists", point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
             }
             
         }
         else {
-            self.view.makeToast(authorization.message, point: CGPoint(x: self.view.center.x, y: self.view.frame.size.height - 50), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+            self.view.makeToast(authorization.message, point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
         }
 
     }
@@ -84,6 +78,23 @@ class RegisterViewController: UIViewController {
         let success = message == "" ? true : false
         return (success, message)
     }
+    
+    @objc func keyboardWillShow(notification:NSNotification){
+        
+        var userInfo = notification.userInfo!
+        var keyboardFrame:CGRect = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+        
+        var contentInset:UIEdgeInsets = self.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height
+        scrollView.contentInset = contentInset
+    }
+    
+    @objc func keyboardWillHide(notification:NSNotification){
+        
+        let contentInset:UIEdgeInsets = .zero
+        scrollView.contentInset = contentInset
+    }
 }
 
 extension RegisterViewController: UITextFieldDelegate {
@@ -99,5 +110,11 @@ extension RegisterViewController: UITextFieldDelegate {
             break
         }
         return true
+    }
+    
+    func resignAllTextFields() {
+        self.usernameTextField.resignFirstResponder()
+        self.passwordTextField.resignFirstResponder()
+        self.confirmPasswordTextField.resignFirstResponder()
     }
 }

@@ -23,13 +23,6 @@ class UserModel: Object {
     @objc dynamic var specialItem = "None"
     @objc dynamic var specialItemUsedDate: Date? = nil
     
-    convenience init(username: String, password: String) {
-        self.init()
-        let realm = try! Realm()
-        self.userID = realm.objects(UserModel.self).count
-        self.username = username
-        self.password = password
-    }
     convenience init(username: String, state: String, uniqueDeviceID: String) {
         self.init()
         self.username = username
@@ -66,7 +59,8 @@ class UserModel: Object {
     func toJSONDict() -> Dictionary<String, Any> {
         let jsonDict = [
             "userID": self.userID,
-            "username": self.username
+            "username": self.username,
+            "uniqueDeviceID": self.uniqueDeviceID
             
         ] as [String: Any]
         return jsonDict

@@ -62,21 +62,21 @@ class ChatViewController: UIViewController {
     }
     
     func queryLastHundredMessages() -> [MessageModel] {
-        
-        let realm = try! Realm()
-        let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers.username = %@) OR (sender.username = %@ AND ANY receivers.username = %@)", self.currentUser!, self.userChattingWith!.username, self.userChattingWith!.username, self.currentUser!.username)
-        if lastLoadedMessageIndex == nil {
-            lastLoadedMessageIndex = results.count
+        if let results = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!) {
+            if lastLoadedMessageIndex == nil {
+                lastLoadedMessageIndex = results.count
+            }
+            if lastLoadedMessageIndex! - 50 >= 0 {
+                let lastLoadedMessageIndex = self.lastLoadedMessageIndex!
+                self.lastLoadedMessageIndex! -= 50
+                return Array(results[lastLoadedMessageIndex - 50..<lastLoadedMessageIndex])
+            }
+            else {
+                self.areAllMessagesLoaded = true
+                return Array(results[0..<lastLoadedMessageIndex!])
+            }
         }
-        if lastLoadedMessageIndex! - 50 >= 0 {
-            let lastLoadedMessageIndex = self.lastLoadedMessageIndex!
-            self.lastLoadedMessageIndex! -= 50
-            return Array(results[lastLoadedMessageIndex - 50..<lastLoadedMessageIndex])
-        }
-        else {
-            self.areAllMessagesLoaded = true
-            return Array(results[0..<lastLoadedMessageIndex!])
-        }
+        return Array()
     }
     
     @objc func keyboardWillShow(notification: Notification) {
@@ -114,17 +114,18 @@ class ChatViewController: UIViewController {
     }
     
     @objc func clearHistoryButtonTap() {
-        let alertController = UIAlertController(title: "Clear history", message: "In result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+        let alertController = UIAlertController(title: "Clear history", message: "In a result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
             let realm = try! Realm()
             realm.beginWrite()
-            let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers.username = %@) OR (sender.username = %@ AND ANY receivers.username = %@)", self.currentUser!, self.userChattingWith!.username, self.userChattingWith!.username, self.currentUser!.username)
-            realm.delete(results)
+            if let results = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!) {
+                realm.delete(results)
+            }
             try! realm.commitWrite()
             self.messages = Array()
             self.chatTableView.reloadData()
         }))
-        alertController.addAction(UIAlertAction(title: "No", style: .destructive, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: "No", style: .default, handler: { (action) in
             
         }))
         self.present(alertController, animated: true, completion: nil)
@@ -180,11 +181,11 @@ class ChatViewController: UIViewController {
         if success! {
             self.messages.append(messageModel)
             let realm = try! Realm()
-            let userChattingWith = realm.objects(UserModel.self).filter("username == %@", self.userChattingWith!.username).first
-            try? realm.write {
-                realm.add(messageModel)
-                messageModel.receivers.append(userChattingWith!)
-                
+            if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!) {
+                try? realm.write {
+                    realm.add(messageModel)
+                    messageModel.receivers.append(userChattingWith)
+                }
                 let indexOfMessage = self.messages.count - 1
                 let indexPath = IndexPath(row: indexOfMessage, section: 0)
                 self.chatTableView.insertRows(at: [indexPath], with: .middle)

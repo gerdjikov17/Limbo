@@ -53,12 +53,12 @@ class AvatarCollectionReusableViewFooter: UICollectionReusableView, UIImagePicke
                 print("responseJSON = \(String(describing: json))")
                 let responseData = json!["data"] as? [String: Any]
                 let avatarString = responseData!["link"] as! String
-                let currentlyLoggedUserID = UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)
                 let realm = try! Realm()
-                let currentlyLoggedUser = realm.objects(UserModel.self).filter("userID = %d", currentlyLoggedUserID).first
-                realm.beginWrite()
-                currentlyLoggedUser?.avatarString = avatarString
-                try! realm.commitWrite()
+                if let currentlyLoggedUser = RealmManager.currentLoggedUser() {
+                    realm.beginWrite()
+                    currentlyLoggedUser.avatarString = avatarString
+                    try! realm.commitWrite()
+                }
             }
             task.resume()
             self.presentingVC?.dismiss(animated: true, completion:nil)

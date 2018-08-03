@@ -14,8 +14,7 @@ import RealmSwift
 extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let realm = try! Realm()
-        if let user = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first {
+        if let user = RealmManager.currentLoggedUser() {
             if user.curse == "Blind" {
                 return itemsCountIfBlind
             }

@@ -28,11 +28,10 @@ class MessageModel: Object {
         self.init()
         self.messageString = dictionary["messageString"] as! String
         self.timeSent = dictionary["timeSent"] as! Date
-        let realm = try! Realm()
         let senderDict: Dictionary = dictionary["sender"] as! Dictionary<String, Any>
-        if let username = senderDict["username"] {
-            self.sender = realm.objects(UserModel.self).filter("userID == %d AND username == %@", -1, username as! String).first
-            self.receivers.append(realm.objects(UserModel.self).filter("userID == %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first!)
+        if let uniqueDeviceID = senderDict["uniqueDeviceID"] {
+            self.sender = RealmManager.userWith(uniqueID: uniqueDeviceID as! String)
+            self.receivers.append(RealmManager.currentLoggedUser()!)
         }
     }
 }

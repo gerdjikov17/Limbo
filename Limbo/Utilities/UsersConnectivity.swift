@@ -150,9 +150,7 @@ extension UsersConnectivity : MCSessionDelegate {
             curse.rawValue == messageModel.messageString
         })) && (self.isPeerAGhost(peerID: peerID)) {
             let curse = Curse(rawValue: messageModel.messageString)!
-            let realm = try! Realm()
-//            if let user = self.userModel {
-            if let user = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first {
+            if let user = RealmManager.currentLoggedUser() {
                 let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
                 if resultOfCurse.0 {
                     chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)

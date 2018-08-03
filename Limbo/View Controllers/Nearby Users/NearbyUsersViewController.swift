@@ -47,8 +47,7 @@ class NearbyUsersViewController: UIViewController {
             self.present(loginVC, animated: true, completion: nil)
         }
         else {
-            let realm = try! Realm()
-            self.currentUser = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first!
+            self.currentUser = RealmManager.currentLoggedUser()
 //            self.checkForItems(forUser: self.currentUser)
             self.checkForCurses(forUser: self.currentUser)
             self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
