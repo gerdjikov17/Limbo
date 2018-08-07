@@ -36,6 +36,7 @@
 		06262FEA210B493F003C6A1E /* pepe.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06262FE7210B493F003C6A1E /* pepe.jpg */; };
 		06262FEB210B493F003C6A1E /* spongebob.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06262FE8210B493F003C6A1E /* spongebob.jpg */; };
 		06262FED210B63EB003C6A1E /* Pastel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FEC210B63EB003C6A1E /* Pastel.framework */; };
+		0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906221198CEE005CF741 /* PastelViewManager.swift */; };
 		0680D58521119BD500B1C926 /* Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58421119BD500B1C926 /* Spectre.swift */; };
 		0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */; };
 		0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */; };
@@ -81,6 +82,7 @@
 		06262FE7210B493F003C6A1E /* pepe.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pepe.jpg; sourceTree = "<group>"; };
 		06262FE8210B493F003C6A1E /* spongebob.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spongebob.jpg; sourceTree = "<group>"; };
 		06262FEC210B63EB003C6A1E /* Pastel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pastel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0657906221198CEE005CF741 /* PastelViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastelViewManager.swift; sourceTree = "<group>"; };
 		0680D58421119BD500B1C926 /* Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spectre.swift; sourceTree = "<group>"; };
 		0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Spectre.swift"; sourceTree = "<group>"; };
 		0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				0680D58421119BD500B1C926 /* Spectre.swift */,
 				06A26F5721134F650023F679 /* NotificationManager.swift */,
 				06A26F5921135E330023F679 /* RealmManager.swift */,
+				0657906221198CEE005CF741 /* PastelViewManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -411,6 +414,7 @@
 				06262FDF2109C95D003C6A1E /* ChatViewController+TableView.swift in Sources */,
 				06A26F5A21135E330023F679 /* RealmManager.swift in Sources */,
 				06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */,
+				0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */,
 				0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */,
 				06262FCB21075E7A003C6A1E /* Constants.swift in Sources */,
 			);

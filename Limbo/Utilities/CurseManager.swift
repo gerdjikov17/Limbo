@@ -53,11 +53,10 @@ class CurseManager: NSObject {
                     toUser.items[specialItem.rawValue] = medallionCount! - 1
                     toUser.specialItem = specialItem.rawValue
                     toUser.specialItemUsedDate = Date()
-                    toUser.curse = Curse.None.rawValue
-                    toUser.curseCastDate = nil
                     try? realm.commitWrite()
                     realm.refresh()
                     
+                    CurseManager.removeCurse()
                     let fireAt = Date(timeIntervalSinceNow: remainingTime)
                     let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeItem), userInfo: ["item": specialItem, "user": toUser], repeats: false)
                     RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)

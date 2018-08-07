@@ -130,8 +130,9 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="candle_icon" translatesAutoresizingMaskIntoConstraints="NO" id="Wb0-39-7QD">
+                            <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="candle_icon" translatesAutoresizingMaskIntoConstraints="NO" id="Wb0-39-7QD">
                                 <rect key="frame" x="49.666666666666657" y="563" width="50" height="50"/>
+                                <color key="backgroundColor" red="0.083033077418804169" green="0.24589207768440247" blue="0.36664891242980957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="bQZ-Kw-czY"/>
                                     <constraint firstAttribute="height" constant="50" id="dTT-pQ-XY2"/>
@@ -143,8 +144,9 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="candle_icon" translatesAutoresizingMaskIntoConstraints="NO" id="3FQ-9m-j0g">
+                            <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="saints_medallion" translatesAutoresizingMaskIntoConstraints="NO" id="3FQ-9m-j0g">
                                 <rect key="frame" x="314.66666666666669" y="563" width="50" height="50"/>
+                                <color key="backgroundColor" red="0.083033077418804169" green="0.24589207768440247" blue="0.36664891242980957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="HWc-v9-4DW"/>
                                     <constraint firstAttribute="height" constant="50" id="gs2-pJ-K4A"/>
@@ -765,8 +767,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="candle_icon" width="24" height="24"/>
+        <image name="candle_icon" width="139" height="120"/>
         <image name="items_button_icon" width="24" height="24"/>
+        <image name="saints_medallion" width="118" height="101"/>
         <image name="send_button_icon" width="24" height="24"/>
     </resources>
 </document>

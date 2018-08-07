@@ -117,13 +117,7 @@ extension NotificationManager: UNUserNotificationCenterDelegate {
             
         case Constants.Notifications.Identifiers.CurseActionItemCandle :
             if let user = RealmManager.currentLoggedUser() {
-                if user.curse != Curse.None.rawValue {
-                    NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You removed your curse using holy candle")
-                    CurseManager.removeCurse()
-                }
-                else {
-                    NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You are not cursed")
-                }
+                CurseManager.applySpecialItem(specialItem: SpecialItem.HolyCandle, toUser: user)
             }
             
         case Constants.Notifications.Identifiers.CurseActionItemMedallion :

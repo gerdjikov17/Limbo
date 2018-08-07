@@ -39,17 +39,30 @@ extension ChatViewController {
     
     func receiveMessageFromSpectre(forMessage: String) {
         let messageModel = MessageModel()
-        if let index = Spectre.specialMessages.index(of: forMessage) {
-            switch index {
-            case 0: messageModel.messageString = Spectre.getGhostsNearby()
-            case 1: messageModel.messageString = Spectre.specialAnswers[1]
-            default: messageModel.messageString = Spectre.specialAnswers[2]
+        var dictWithCommonWords: [String: Int] = NSDictionary.init(objects: Array.init(repeating: 0, count: Spectre.specialMessages.count) as [Int], forKeys: Spectre.specialMessages as [NSCopying]) as! [String : Int]
+        
+        for component in forMessage.components(separatedBy: " ") {
+            for message in Spectre.specialMessages {
+                if message.lowercased().range(of: component.lowercased()) != nil {
+                   dictWithCommonWords.updateValue(dictWithCommonWords[message]! + 1 , forKey: message)
+                }
             }
         }
-        else {
+        
+        for key in dictWithCommonWords.keys {
+            if dictWithCommonWords[key]! > 3 {
+                if let index = Spectre.specialMessages.index(of: key) {
+                    switch index {
+                    case 0: messageModel.messageString = Spectre.getGhostsNearby()
+                    case 1: messageModel.messageString = Spectre.specialAnswers[1]
+                    default: messageModel.messageString = Spectre.specialAnswers[2]
+                    }
+                }
+                break
+            }
             messageModel.messageString = Spectre.specialAnswers[2]
         }
-        
+
         let realm = try! Realm()
         let spectreUser = realm.objects(UserModel.self).filter("state = %@", "Spectre").first
         try? realm.write {
