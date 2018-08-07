@@ -38,6 +38,7 @@ class ChatViewController: UIViewController {
             self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
         }
         
+        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear history", style: .plain, target: self, action: #selector(self.clearHistoryButtonTap))
     }
     
@@ -113,6 +114,10 @@ class ChatViewController: UIViewController {
         })
     }
     
+    @objc func dismissKeyboard() {
+        self.view.endEditing(true)
+    }
+    
     @objc func clearHistoryButtonTap() {
         let alertController = UIAlertController(title: "Clear history", message: "In a result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
@@ -154,6 +159,8 @@ class ChatViewController: UIViewController {
     
     @IBAction func itemsButtonTap(_ sender: AnyObject) {
         let button: UIButton = sender as! UIButton
+//        using this hack because otherwise button.frame.origin.y is < 0 and popover is not visible
+        button.frame = CGRect(x: button.frame.origin.x, y: self.sendButton.frame.origin.y, width: self.sendButton.frame.size.width, height: self.sendButton.frame.size.height)
         let itemsVC = storyboard?.instantiateViewController(withIdentifier: "itemsVC") as! ItemsViewController
         itemsVC.user = self.currentUser!
         itemsVC.modalPresentationStyle = .popover
@@ -205,6 +212,10 @@ extension ChatViewController: UITextFieldDelegate {
 extension ChatViewController: UIPopoverPresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
+    }
+    
+    func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
+        print(rect)
     }
 }
 

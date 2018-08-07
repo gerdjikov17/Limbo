@@ -20,6 +20,33 @@ class Spectre {
         return String(realm.objects(UserModel.self).filter("state = %@ AND userID != %d", "Ghost", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).count)
     }
     
+    static func properAnswer(forMessage message: String) -> String {
+        if message.replacingOccurrences(of: " ", with: "").count > 10 {
+            var dictWithCommonWords: [String: Int] = NSDictionary.init(objects: Array.init(repeating: 0, count: Spectre.specialMessages.count) as [Int], forKeys: Spectre.specialMessages as [NSCopying]) as! [String : Int]
+            
+            for component in message.components(separatedBy: " ") {
+                for message in Spectre.specialMessages {
+                    if message.lowercased().range(of: component.lowercased()) != nil {
+                        dictWithCommonWords.updateValue(dictWithCommonWords[message]! + 1 , forKey: message)
+                    }
+                }
+            }
+            
+            for key in dictWithCommonWords.keys {
+                if dictWithCommonWords[key]! > 3 {
+                    if let index = Spectre.specialMessages.index(of: key) {
+                        switch index {
+                        case 0: return Spectre.getGhostsNearby()
+                        case 1: return Spectre.specialAnswers[1]
+                        default: return Spectre.specialAnswers[2]
+                        }
+                    }
+                }
+            }
+        }
+        return Spectre.specialAnswers[2]
+    }
+    
 }
 
 class SpectreManager {
