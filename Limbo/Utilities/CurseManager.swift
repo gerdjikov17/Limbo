@@ -43,7 +43,7 @@ class CurseManager: NSObject {
     static func applySpecialItem(specialItem: SpecialItem, toUser: UserModel) {
         let realm = try! Realm()
         if specialItem == SpecialItem.SaintsMedallion {
-            if toUser.specialItem != specialItem.rawValue {
+            if toUser.specialItemUsedDate == nil || (toUser.specialItemUsedDate?.timeIntervalSinceNow.isLess(than: -180.0))! {
                 
                 let medallionCount = toUser.items[specialItem.rawValue]
                 if medallionCount! > 0 {

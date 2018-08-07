@@ -73,7 +73,7 @@ class NearbyUsersViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if (self.currentUser) != nil {
+        if (UserDefaults.standard.bool(forKey: Constants.UserDefaults.isLoged) && (self.currentUser) != nil) {
             self.usersConnectivity.chatDelegate = self
         }
     }
