@@ -37,6 +37,12 @@
 		06262FEB210B493F003C6A1E /* spongebob.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06262FE8210B493F003C6A1E /* spongebob.jpg */; };
 		06262FED210B63EB003C6A1E /* Pastel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FEC210B63EB003C6A1E /* Pastel.framework */; };
 		0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906221198CEE005CF741 /* PastelViewManager.swift */; };
+		065790662119D965005CF741 /* tic-tac-toe.png in Resources */ = {isa = PBXBuildFile; fileRef = 065790642119D963005CF741 /* tic-tac-toe.png */; };
+		065790672119D965005CF741 /* tunak-tunak.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 065790652119D964005CF741 /* tunak-tunak.jpg */; };
+		06579069211ACDDE005CF741 /* UsersConnectivity+Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06579068211ACDDE005CF741 /* UsersConnectivity+Game.swift */; };
+		0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906A211ACDF1005CF741 /* UsersConnectivity+Chat.swift */; };
+		0657906D211AD3BE005CF741 /* ChatViewController+Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */; };
+		0657906F211AEEAE005CF741 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906E211AEEAE005CF741 /* Extensions.swift */; };
 		0680D58521119BD500B1C926 /* Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58421119BD500B1C926 /* Spectre.swift */; };
 		0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */; };
 		0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */; };
@@ -83,6 +89,12 @@
 		06262FE8210B493F003C6A1E /* spongebob.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spongebob.jpg; sourceTree = "<group>"; };
 		06262FEC210B63EB003C6A1E /* Pastel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pastel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0657906221198CEE005CF741 /* PastelViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastelViewManager.swift; sourceTree = "<group>"; };
+		065790642119D963005CF741 /* tic-tac-toe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tic-tac-toe.png"; sourceTree = "<group>"; };
+		065790652119D964005CF741 /* tunak-tunak.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "tunak-tunak.jpg"; sourceTree = "<group>"; };
+		06579068211ACDDE005CF741 /* UsersConnectivity+Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersConnectivity+Game.swift"; sourceTree = "<group>"; };
+		0657906A211ACDF1005CF741 /* UsersConnectivity+Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersConnectivity+Chat.swift"; sourceTree = "<group>"; };
+		0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Game.swift"; sourceTree = "<group>"; };
+		0657906E211AEEAE005CF741 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		0680D58421119BD500B1C926 /* Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spectre.swift; sourceTree = "<group>"; };
 		0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Spectre.swift"; sourceTree = "<group>"; };
 		0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
@@ -173,6 +185,8 @@
 			children = (
 				069361F92107459900D02D22 /* UsersConnectivity.swift */,
 				061095C321104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift */,
+				06579068211ACDDE005CF741 /* UsersConnectivity+Game.swift */,
+				0657906A211ACDF1005CF741 /* UsersConnectivity+Chat.swift */,
 				069361FC210745DC00D02D22 /* Protocols.swift */,
 				06262FCA21075E79003C6A1E /* Constants.swift */,
 				061095C5211054F600A23D27 /* CurseManager.swift */,
@@ -180,6 +194,7 @@
 				06A26F5721134F650023F679 /* NotificationManager.swift */,
 				06A26F5921135E330023F679 /* RealmManager.swift */,
 				0657906221198CEE005CF741 /* PastelViewManager.swift */,
+				0657906E211AEEAE005CF741 /* Extensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -215,6 +230,7 @@
 				061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */,
 				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 				0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */,
+				0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -230,6 +246,8 @@
 		06262FD321086A4F003C6A1E /* Avatars */ = {
 			isa = PBXGroup;
 			children = (
+				065790642119D963005CF741 /* tic-tac-toe.png */,
+				065790652119D964005CF741 /* tunak-tunak.jpg */,
 				06262FE6210B493E003C6A1E /* do_you_kno_da_wey.jpeg */,
 				06262FE7210B493F003C6A1E /* pepe.jpg */,
 				06262FE8210B493F003C6A1E /* spongebob.jpg */,
@@ -329,8 +347,10 @@
 				06262FEA210B493F003C6A1E /* pepe.jpg in Resources */,
 				060FC53221071DE800E5D6BB /* Assets.xcassets in Resources */,
 				06262FD521086A50003C6A1E /* ghost_avatar.png in Resources */,
+				065790662119D965005CF741 /* tic-tac-toe.png in Resources */,
 				06262FE9210B493F003C6A1E /* do_you_kno_da_wey.jpeg in Resources */,
 				06262FEB210B493F003C6A1E /* spongebob.jpg in Resources */,
+				065790672119D965005CF741 /* tunak-tunak.jpg in Resources */,
 				060FC53021071DE700E5D6BB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,12 +416,14 @@
 				06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */,
 				06262FD121076B08003C6A1E /* RegisterViewController.swift in Sources */,
 				06A26F5821134F650023F679 /* NotificationManager.swift in Sources */,
+				0657906F211AEEAE005CF741 /* Extensions.swift in Sources */,
 				061095C0210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift in Sources */,
 				060FC52B21071DE700E5D6BB /* AppDelegate.swift in Sources */,
 				06262FE12109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift in Sources */,
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,
 				069361FD210745DC00D02D22 /* Protocols.swift in Sources */,
 				061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */,
+				0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */,
 				0680D58521119BD500B1C926 /* Spectre.swift in Sources */,
 				060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */,
 				06262FE5210B471C003C6A1E /* AvatarCollectionViewController.swift in Sources */,
@@ -413,10 +435,12 @@
 				06262FD9210876BA003C6A1E /* ChatViewController.swift in Sources */,
 				06262FDF2109C95D003C6A1E /* ChatViewController+TableView.swift in Sources */,
 				06A26F5A21135E330023F679 /* RealmManager.swift in Sources */,
+				0657906D211AD3BE005CF741 /* ChatViewController+Game.swift in Sources */,
 				06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */,
 				0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */,
 				0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */,
 				06262FCB21075E7A003C6A1E /* Constants.swift in Sources */,
+				06579069211ACDDE005CF741 /* UsersConnectivity+Game.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

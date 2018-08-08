@@ -8,7 +8,7 @@
 import Foundation
 
 struct Constants {
-    static let MCServiceType = "limbo-service"
+    static let MCServiceType = "tic-tac-toe"
     
     struct UserDefaults {
         static let isLoged = "UserDefaultsIsLogged"

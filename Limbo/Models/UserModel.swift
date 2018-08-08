@@ -90,7 +90,7 @@ class UserModel: Object {
         let jsonDict = [
             "userID": self.userID,
             "username": self.username,
-            "uniqueDeviceID": self.uniqueDeviceID
+            "uniqueDeviceID": self.uniqueDeviceID.appending(".chat")
             
         ] as [String: Any]
         return jsonDict

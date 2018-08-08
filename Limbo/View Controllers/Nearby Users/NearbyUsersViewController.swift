@@ -178,10 +178,10 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
 
 extension NearbyUsersViewController: LoginDelegate {
     func didLogin(userModel: UserModel) {
-        self.initRequiredPropertiesForLoggedUser()
         UserDefaults.standard.set(true, forKey: Constants.UserDefaults.isLoged)
         UserDefaults.standard.set(userModel.userID, forKey: Constants.UserDefaults.loggedUserID)
         UserDefaults.standard.synchronize()
+        self.initRequiredPropertiesForLoggedUser()
         self.dismiss(animated: true, completion: nil)
     }
     

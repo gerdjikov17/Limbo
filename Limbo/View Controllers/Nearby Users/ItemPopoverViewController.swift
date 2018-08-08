@@ -19,7 +19,7 @@ class ItemPopoverViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let user = RealmManager.currentLoggedUser() {
+        if RealmManager.currentLoggedUser() != nil {
             if let specialItem = specialItem {
                 switch specialItem.rawValue {
                 case SpecialItem.HolyCandle.rawValue :

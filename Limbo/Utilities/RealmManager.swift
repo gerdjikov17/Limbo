@@ -44,6 +44,7 @@ class RealmManager: NSObject {
             user.userID = realm.objects(UserModel.self).count
             realm.add(user)
             try! realm.commitWrite()
+            realm.refresh()
             return true
         }
         return false

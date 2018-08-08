@@ -30,7 +30,7 @@ class UsersConnectivity: NSObject {
     init(userModel: UserModel, delegate: NearbyUsersDelegate) {
         self.userModel = userModel
         self.delegate = delegate
-        self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!)
+        self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat"))
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": userModel.username, "state": userModel.state, "avatar": userModel.avatarString], serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
         
@@ -52,7 +52,7 @@ class UsersConnectivity: NSObject {
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
     }
-        
+    
 }
 
 extension UsersConnectivity: MCNearbyServiceAdvertiserDelegate {
@@ -79,26 +79,12 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
-        if let userState = info!["state"] {
-            let userModel: UserModel! = UserModel(username: info!["username"]!, state: userState, uniqueDeviceID: peerID.displayName)
-            userModel.avatarString = info!["avatar"]!
-            let realm = try! Realm()
-            if let realmUser = realm.objects(UserModel.self).filter("uniqueDeviceID == %@", peerID.displayName).first {
-                try? realm.write {
-                    realmUser.state = userState
-                }
-            }
-            else {
-                realm.beginWrite()
-                realm.add(userModel)
-                try! realm.commitWrite()
-                
-            }
-            if shouldShowUserDependingOnState(foundUserState: userState) {
-                self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
-            }
-            
-            browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+        
+        if peerID.displayName.hasSuffix(".game") {
+            self.foundGamePeer(peerID: peerID, withDiscoveryInfo: info)
+        }
+        else if peerID.displayName.hasSuffix(".chat") {
+            self.foundChatPeer(peerID: peerID, withDiscoveryInfo: info)
         }
     }
     
@@ -138,40 +124,18 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
 extension UsersConnectivity : MCSessionDelegate {
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        NSLog("%@", "peer \(peerID) didChangeState: \(state)")
+        NSLog("%@", "peer \(peerID) didChangeState: \(state.rawValue)")
 
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         NSLog("%@", "didReceiveData: \(data)")
-        let dataDict = NSKeyedUnarchiver.unarchiveObject(with: data) as! Dictionary<String, Any>
-        let messageModel = MessageModel(withDictionary: dataDict)
-        if (Constants.Curses.allCurses.contains(where: { (curse) -> Bool in
-            curse.rawValue == messageModel.messageString
-        })) && (self.isPeerAGhost(peerID: peerID)) {
-            let curse = Curse(rawValue: messageModel.messageString)!
-            if let user = RealmManager.currentLoggedUser() {
-                let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
-                if resultOfCurse.0 {
-                    chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
-                }
-                else {
-                    let remainingTime = String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.1)) + " seconds!"
-                    NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: "Someone tried to haunt you! But you are protected for " + remainingTime)
-                }
-            }
+        if peerID.displayName.hasSuffix(".game") {
+            self.handleGameData(data: data, fromPeer: peerID)
         }
         else {
-            let realm = try! Realm()
-            realm.beginWrite()
-            realm.add(messageModel)
-            try? realm.commitWrite()
-            if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
-                let threadSafeMessage = ThreadSafeReference(to: messageModel)
-                chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
-            }
+            self.handleChatData(data: data, fromPeer: peerID)
         }
-        
     }
     
     func isPeerAGhost(peerID: MCPeerID) -> Bool {
@@ -185,15 +149,15 @@ extension UsersConnectivity : MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        NSLog("%@", "didReceiveStream")
+        
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        NSLog("%@", "didStartReceivingResourceWithName")
+        
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
-        NSLog("%@", "didFinishReceivingResourceWithName")
+        
     }
     
 }

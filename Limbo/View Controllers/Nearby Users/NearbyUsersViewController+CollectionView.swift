@@ -37,8 +37,14 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
             let allUsers = Array(self.users.values)
             userModel = allUsers[indexPath.row]
         }
-
-        if let defaultImage = UIImage(named: userModel.avatarString) {
+        
+        if userModel.state == "Tunak-Tunak-Tun" {
+            cell.avatarImageView.image = #imageLiteral(resourceName: "tunak-tunak.jpg")
+        }
+        else if userModel.state == "Tic-Tac-Toe" {
+            cell.avatarImageView.image = #imageLiteral(resourceName: "tic-tac-toe.png")
+        }
+        else if let defaultImage = UIImage(named: userModel.avatarString) {
             cell.avatarImageView.image = defaultImage
         }
         else {

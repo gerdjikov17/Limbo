@@ -65,9 +65,7 @@ class SpectreManager {
     }
     
     @objc func checkForSpectres() {
-        print("checkForSpectres")
         let number = drand48()
-        print(number)
         if number <= 0.5 {
             let realm = try! Realm()
             if let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first {

@@ -142,6 +142,9 @@ class ChatViewController: UIViewController {
             if self.userChattingWith?.state == "Spectre" {
                 self.sendMessageToSpectre(message: message)
             }
+            else if (self.peerIDChattingWith?.displayName.hasSuffix(".game"))! {
+                self.sendMessageToGame(message: message)
+            }
             else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
                 if let peerID = self.peerIDChattingWith {
                     if self.currentUser?.curse == Curse.Posession.rawValue {

@@ -15,6 +15,7 @@ extension UsersConnectivity: UsersConnectivityDelegate {
     func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID) -> Bool {
         if let toPeer = getPeerIDForUID(uniqueID: toPeerID.displayName) {
             do {
+//                let data = try! JSONSerialization.data(withJSONObject: messageModel.toDictionary(), options: .sortedKeys)
                 let data = NSKeyedArchiver.archivedData(withRootObject: messageModel.toDictionary())
                 try self.session.send(data, toPeers: [toPeer], with: .reliable)
                 return true
@@ -31,12 +32,24 @@ extension UsersConnectivity: UsersConnectivityDelegate {
         }
     }
     
-//    func sendFailedCurseReplyMessage(toPeerID: MCPeerID) {
-//        let messageModel = MessageModel()
-//        messageModel.messageString = "The user is blessed with the Saint's Medallion. You cannot curse him, fool!"
-//        self.sendMessage(messageModel: messageModel, toPeerID: toPeerID)
-//    }
-    
+    func sendJSONtoGame(dataDict: [String: String], toPeerID: MCPeerID) -> Bool {
+        if let toPeer = getPeerIDForUID(uniqueID: toPeerID.displayName) {
+            do {
+                let data = try! JSONSerialization.data(withJSONObject: dataDict, options: .sortedKeys)
+                try self.session.send(data, toPeers: [toPeer], with: .reliable)
+                return true
+            }
+            catch let error {
+                NSLog("%@", "Error for sending: \(error)")
+                return false
+            }
+        }
+        else {
+            let pointForToast = CGPoint(x: (UIApplication.shared.keyWindow?.center.x)!, y: ((UIApplication.shared.keyWindow?.bounds.height)! - CGFloat(100)))
+            UIApplication.shared.keyWindow?.makeToast("This user is offline and won't receive messages from you.", point:pointForToast , title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+            return false
+        }
+    }
     
     func setChatDelegate(newDelegate: ChatDelegate) {
         self.chatDelegate = newDelegate
