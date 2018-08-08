@@ -45,8 +45,9 @@ extension ChatViewController: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let notification = response.notification
         let userInfo = notification.request.content.userInfo
-        let userChattingWithUniqueDeviceID =  userInfo["uniqueDeviceID"] as! String
-        let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID)
+        let userChattingWithUniqueDeviceID = userInfo["uniqueDeviceID"] as! String
+        let username = userInfo["username"] as! String
+        let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID, andUsername: username)
         let peerIDChattingWith = self.chatDelegate?.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID)
         let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
         chatVC.currentUser = self.currentUser

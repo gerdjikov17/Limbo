@@ -30,7 +30,8 @@ class MessageModel: Object {
         self.timeSent = dictionary["timeSent"] as! Date
         let senderDict: Dictionary = dictionary["sender"] as! Dictionary<String, Any>
         if let uniqueDeviceID = senderDict["uniqueDeviceID"] {
-            self.sender = RealmManager.userWith(uniqueID: uniqueDeviceID as! String)
+            self.sender = RealmManager.userWith(uniqueID: uniqueDeviceID as! String, andUsername: senderDict["username"] as! String)
+            print(self.sender)
             self.receivers.append(RealmManager.currentLoggedUser()!)
         }
     }

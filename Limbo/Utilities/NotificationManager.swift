@@ -23,7 +23,7 @@ class NotificationManager: NSObject {
                     let content = UNMutableNotificationContent()
                     if let user = message.sender {
                         content.title = user.username
-                        content.userInfo = ["uniqueDeviceID": user.uniqueDeviceID]
+                        content.userInfo = ["uniqueDeviceID": user.uniqueDeviceID, "username": user.username]
                     }
                     
                     content.body = message.messageString

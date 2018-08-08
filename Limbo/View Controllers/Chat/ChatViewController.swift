@@ -191,7 +191,7 @@ class ChatViewController: UIViewController {
         if success! {
             self.messages.append(messageModel)
             let realm = try! Realm()
-            if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!) {
+            if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!, andUsername: (self.userChattingWith?.username)!) {
                 try? realm.write {
                     realm.add(messageModel)
                     messageModel.receivers.append(userChattingWith)

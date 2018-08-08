@@ -459,9 +459,7 @@
                         </subviews>
                         <color key="backgroundColor" red="0.01974067925" green="0.10892223180000001" blue="0.15902601520000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="XBl-jU-vi8" firstAttribute="top" secondItem="0w1-hb-Uuv" secondAttribute="bottom" constant="5" id="4yI-Co-fdP"/>
                             <constraint firstItem="7x7-ph-UOh" firstAttribute="bottom" secondItem="Xav-Gb-N2Y" secondAttribute="bottom" constant="5" id="53G-Hx-Lrn"/>
-                            <constraint firstItem="Ns9-Va-sj8" firstAttribute="top" secondItem="0w1-hb-Uuv" secondAttribute="bottom" constant="5" id="7mO-j5-ebg"/>
                             <constraint firstItem="Ns9-Va-sj8" firstAttribute="leading" secondItem="XBl-jU-vi8" secondAttribute="trailing" constant="2" id="7sF-CP-rKS"/>
                             <constraint firstItem="XBl-jU-vi8" firstAttribute="centerY" secondItem="Xav-Gb-N2Y" secondAttribute="centerY" id="Eol-4m-I21"/>
                             <constraint firstItem="7x7-ph-UOh" firstAttribute="trailing" secondItem="0w1-hb-Uuv" secondAttribute="trailing" id="GKH-Bc-aji"/>
@@ -470,7 +468,6 @@
                             <constraint firstItem="Xav-Gb-N2Y" firstAttribute="leading" relation="lessThanOrEqual" secondItem="7x7-ph-UOh" secondAttribute="leading" constant="5" id="l4q-OR-IxW"/>
                             <constraint firstItem="7x7-ph-UOh" firstAttribute="trailing" secondItem="Ns9-Va-sj8" secondAttribute="trailing" constant="5" id="mhu-yp-wBN"/>
                             <constraint firstItem="0w1-hb-Uuv" firstAttribute="leading" secondItem="7x7-ph-UOh" secondAttribute="leading" id="naJ-i0-M28"/>
-                            <constraint firstItem="7x7-ph-UOh" firstAttribute="bottom" secondItem="XBl-jU-vi8" secondAttribute="bottom" constant="5" id="qjb-UK-JLm"/>
                             <constraint firstItem="Xav-Gb-N2Y" firstAttribute="top" secondItem="0w1-hb-Uuv" secondAttribute="bottom" constant="5" id="rom-mj-vYb"/>
                             <constraint firstItem="Ns9-Va-sj8" firstAttribute="centerY" secondItem="Xav-Gb-N2Y" secondAttribute="centerY" id="sMS-zL-SQ0"/>
                         </constraints>
@@ -699,7 +696,7 @@
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="5dU-g5-ZEp">
                             <size key="itemSize" width="100" height="100"/>
                             <size key="headerReferenceSize" width="0.0" height="75"/>
-                            <size key="footerReferenceSize" width="50" height="75"/>
+                            <size key="footerReferenceSize" width="50" height="85"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
@@ -732,7 +729,7 @@
                             </constraints>
                         </collectionReusableView>
                         <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="footer" id="C4t-hM-sa3" customClass="AvatarCollectionReusableViewFooter" customModule="Limbo" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="175" width="414" height="75"/>
+                            <rect key="frame" x="0.0" y="175" width="414" height="85"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vnz-6R-Kx2">
@@ -743,7 +740,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9vV-zy-6ed">
-                                    <rect key="frame" x="180" y="37" width="54" height="30"/>
+                                    <rect key="frame" x="180" y="50" width="54" height="30"/>
                                     <state key="normal" title="Dismiss"/>
                                     <connections>
                                         <action selector="dismissButtonTap:" destination="C4t-hM-sa3" eventType="touchUpInside" id="4gS-gm-pB2"/>
@@ -754,7 +751,7 @@
                                 <constraint firstItem="9vV-zy-6ed" firstAttribute="centerX" secondItem="C4t-hM-sa3" secondAttribute="centerX" id="Q28-lG-Thd"/>
                                 <constraint firstItem="Vnz-6R-Kx2" firstAttribute="top" secondItem="C4t-hM-sa3" secondAttribute="top" constant="10" id="psc-yR-ysZ"/>
                                 <constraint firstItem="Vnz-6R-Kx2" firstAttribute="centerX" secondItem="C4t-hM-sa3" secondAttribute="centerX" id="r6w-BX-9n3"/>
-                                <constraint firstItem="9vV-zy-6ed" firstAttribute="top" secondItem="Vnz-6R-Kx2" secondAttribute="bottom" constant="-3" id="rtV-ww-HUl"/>
+                                <constraint firstItem="9vV-zy-6ed" firstAttribute="top" secondItem="Vnz-6R-Kx2" secondAttribute="bottom" constant="10" id="rtV-ww-HUl"/>
                             </constraints>
                         </collectionReusableView>
                         <connections>

@@ -27,6 +27,15 @@ class RealmManager: NSObject {
         return nil
     }
     
+    static func userWith(uniqueID: String, andUsername username: String) -> UserModel? {
+        let realm = try! Realm()
+        realm.refresh()
+        if let user = realm.objects(UserModel.self).filter("uniqueDeviceID = %@ AND username = %@", uniqueID, username).first {
+            return user
+        }
+        return nil
+    }
+    
     static func userWith(username: String, password: String) -> UserModel? {
         let realm = try! Realm()
         if let user = (realm.objects(UserModel.self).filter("username = %@ and password = %@", username, password)).first {
@@ -40,7 +49,7 @@ class RealmManager: NSObject {
         if realm.objects(UserModel.self).filter("username = %@", username).first == nil {
             realm.beginWrite()
             let user: UserModel! = UserModel(username: username, password: password)
-            user.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!
+            user.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat")
             user.userID = realm.objects(UserModel.self).count
             realm.add(user)
             try! realm.commitWrite()
@@ -64,6 +73,16 @@ class RealmManager: NSObject {
             return(candles!, medallions!)
         }
         return (0, 0)
+    }
+    
+    static func clearUsersStates() {
+        let realm = try! Realm()
+        let users = realm.objects(UserModel.self).filter("userID == %d AND state != %@", -1, "Offline").filter("state != %@", "Spectre")
+        realm.beginWrite()
+        users.setValue("Offline", forKey: "state")
+        try! realm.commitWrite()
+        realm.refresh()
+        
     }
     
 }

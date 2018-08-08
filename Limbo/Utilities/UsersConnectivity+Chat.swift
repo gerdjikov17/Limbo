@@ -18,7 +18,7 @@ extension UsersConnectivity {
         let messageModel = MessageModel(withDictionary: dataDict)
         if (Constants.Curses.allCurses.contains(where: { (curse) -> Bool in
             curse.rawValue == messageModel.messageString
-        })) && (self.isPeerAGhost(peerID: peerID)) {
+        })) && messageModel.sender?.state == "Ghost" {
             let curse = Curse(rawValue: messageModel.messageString)!
             if let user = RealmManager.currentLoggedUser() {
                 let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
@@ -64,6 +64,7 @@ extension UsersConnectivity {
             try! realm.commitWrite()
             
         }
+        realm.refresh()
         if shouldShowUserDependingOnState(foundUserState: userState) {
             self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
         }

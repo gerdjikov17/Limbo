@@ -61,14 +61,14 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
             let userInfo = notification.request.content.userInfo
             let userChattingWithUniqueDeviceID =  userInfo["uniqueDeviceID"] as! String
             let peerIDChattingWith = self.usersConnectivity.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID)
-            let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID)
+            let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID, andUsername: userInfo["username"] as! String)
             let messageModel = MessageModel()
             messageModel.messageString = text
             messageModel.sender = self.currentUser
             let success = self.usersConnectivity?.sendMessage(messageModel: messageModel, toPeerID: peerIDChattingWith!)
             if success! {
                 let realm = try! Realm()
-                if let userChattingWith = RealmManager.userWith(uniqueID: (userChattingWith?.uniqueDeviceID)!) {
+                if let userChattingWith = RealmManager.userWith(uniqueID: (userChattingWith?.uniqueDeviceID)!, andUsername: (userChattingWith?.username)!) {
                     try? realm.write {
                         realm.add(messageModel)
                         messageModel.receivers.append(userChattingWith)
@@ -78,8 +78,9 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
         }
         else {
             let userInfo = notification.request.content.userInfo
-            let userChattingWithUniqueDeviceID =  userInfo["uniqueDeviceID"] as! String
-            let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID)
+            let userChattingWithUniqueDeviceID = userInfo["uniqueDeviceID"] as! String
+            let username = userInfo["username"] as! String
+            let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID, andUsername: username)
             if let peerIDChattingWith = self.usersConnectivity.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID) {
                 let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
                 self.usersConnectivity.inviteUser(peerID: peerIDChattingWith)

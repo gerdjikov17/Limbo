@@ -13,6 +13,9 @@ import RealmSwift
 
 extension UsersConnectivity: UsersConnectivityDelegate {
     func sendMessage(messageModel: MessageModel, toPeerID: MCPeerID) -> Bool {
+        if !self.session.connectedPeers.contains(toPeerID) {
+            self.inviteUser(peerID: toPeerID)
+        }
         if let toPeer = getPeerIDForUID(uniqueID: toPeerID.displayName) {
             do {
 //                let data = try! JSONSerialization.data(withJSONObject: messageModel.toDictionary(), options: .sortedKeys)
@@ -33,6 +36,9 @@ extension UsersConnectivity: UsersConnectivityDelegate {
     }
     
     func sendJSONtoGame(dataDict: [String: String], toPeerID: MCPeerID) -> Bool {
+        if !self.session.connectedPeers.contains(toPeerID) {
+            self.inviteUser(peerID: toPeerID)
+        }
         if let toPeer = getPeerIDForUID(uniqueID: toPeerID.displayName) {
             do {
                 let data = try! JSONSerialization.data(withJSONObject: dataDict, options: .sortedKeys)

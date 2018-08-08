@@ -13,7 +13,11 @@ import MultipeerConnectivity
 class Spectre {
     
     static let specialMessages: [String] = ["How many ghosts are around me?", "Give me the anti-spell!"]
-    static let specialAnswers: [String] = [getGhostsNearby(), "Later", "I can't help you with that!"]
+    static var specialAnswers: [String] {
+        get {
+            return [getGhostsNearby(), "Later", "I can't help you with that!"]
+        }
+    }
     
     static func getGhostsNearby() -> String {
         let realm = try! Realm()
@@ -21,28 +25,18 @@ class Spectre {
     }
     
     static func properAnswer(forMessage message: String) -> String {
-        if message.replacingOccurrences(of: " ", with: "").count > 10 {
-            var dictWithCommonWords: [String: Int] = NSDictionary.init(objects: Array.init(repeating: 0, count: Spectre.specialMessages.count) as [Int], forKeys: Spectre.specialMessages as [NSCopying]) as! [String : Int]
-            
-            for component in message.components(separatedBy: " ") {
-                for message in Spectre.specialMessages {
-                    if message.lowercased().range(of: component.lowercased()) != nil {
-                        dictWithCommonWords.updateValue(dictWithCommonWords[message]! + 1 , forKey: message)
-                    }
-                }
+        let userMessageWords = message.components(separatedBy: " ").map { word in word.lowercased() }
+        let acc = Spectre.specialMessages.map { sentence -> Int in
+            let wordsSet = Set(sentence.components(separatedBy: " ").map { word in word.lowercased() } )
+            return wordsSet.intersection(userMessageWords).count
+        }
+        
+        print(acc)
+        if let max = acc.max() {
+            if max > 3 {
+                return specialAnswers[acc.index(of: max)!]
             }
             
-            for key in dictWithCommonWords.keys {
-                if dictWithCommonWords[key]! > 3 {
-                    if let index = Spectre.specialMessages.index(of: key) {
-                        switch index {
-                        case 0: return Spectre.getGhostsNearby()
-                        case 1: return Spectre.specialAnswers[1]
-                        default: return Spectre.specialAnswers[2]
-                        }
-                    }
-                }
-            }
         }
         return Spectre.specialAnswers[2]
     }

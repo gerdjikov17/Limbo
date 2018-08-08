@@ -116,6 +116,7 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
             user.state = "Offline"
             try! realm.commitWrite()
         }
+        realm.refresh()
         self.delegate?.didLostUser(peerID: peerID)
     }
     
@@ -138,9 +139,8 @@ extension UsersConnectivity : MCSessionDelegate {
         }
     }
     
-    func isPeerAGhost(peerID: MCPeerID) -> Bool {
-        let realm = try! Realm()
-        if let user = realm.objects(UserModel.self).filter("uniqueDeviceID = %@", peerID.displayName).first {
+    func isPeerAGhost(peerID: MCPeerID, withUsername username: String) -> Bool {
+        if let user = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: username) {
             return user.state == "Ghost"
         }
         else {
