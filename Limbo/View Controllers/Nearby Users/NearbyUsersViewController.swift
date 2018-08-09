@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import MultipeerConnectivity
+import Toast_Swift
 import RealmSwift
 import Pastel
 
@@ -69,6 +70,20 @@ class NearbyUsersViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.nearbyUsersCollectionView.reloadData()
+        if let gift = UserDefaults.standard.value(forKey: Constants.UserDefaults.gift) {
+            let gift = gift as! [String: Any]
+            if gift["username"] as? String == RealmManager.currentLoggedUser()?.username {
+                let date = gift["date"] as! Date
+                if date.timeIntervalSinceNow > -3600*24 {
+                    var style = ToastStyle()
+                    style.backgroundColor = UIColor.white
+                    style.titleColor = .black
+                    style.messageColor = .black
+                    self.view.makeToast("As a new user you are twice likely to find spectres.", duration: 3600 , point: CGPoint(x: self.currentUserImageView.center.x, y: self.currentUserImageView.center.y - 100), title: "The Gift", image: #imageLiteral(resourceName: "gift-icon.png"), style: style, completion: nil)
+                }
+            }
+        }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {

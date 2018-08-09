@@ -142,7 +142,18 @@ class SpectreManager {
     
     @objc func checkForSpectres() {
         let number = drand48()
-        if number <= 0.5 {
+        var chances = 0.25
+        if let gift = UserDefaults.standard.value(forKey: Constants.UserDefaults.gift) {
+            let gift = gift as! [String: Any]
+            if gift["username"] as? String == RealmManager.currentLoggedUser()?.username {
+                let date = gift["date"] as! Date
+                if date.timeIntervalSinceNow > -3600*24 {
+                    chances = 0.5
+                }
+            }
+        }
+        print(chances)
+        if number <= chances {
             let realm = try! Realm()
             if let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first {
                 self.nearbyUsersDelegate?.didFindNewUser(user: spectre, peerID: spectrePeerID)

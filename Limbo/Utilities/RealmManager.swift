@@ -54,8 +54,11 @@ class RealmManager: NSObject {
             realm.add(user)
             try! realm.commitWrite()
             realm.refresh()
+            let dict = ["username": username, "date": Date()] as [String : Any]
+            UserDefaults.standard.set(dict, forKey: Constants.UserDefaults.gift)
             return true
         }
+        
         return false
     }
     

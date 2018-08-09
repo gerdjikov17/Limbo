@@ -43,6 +43,7 @@
 		0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906A211ACDF1005CF741 /* UsersConnectivity+Chat.swift */; };
 		0657906D211AD3BE005CF741 /* ChatViewController+Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */; };
 		0657906F211AEEAE005CF741 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906E211AEEAE005CF741 /* Extensions.swift */; };
+		06579071211C6E94005CF741 /* gift-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 06579070211C6E93005CF741 /* gift-icon.png */; };
 		0680D58521119BD500B1C926 /* Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58421119BD500B1C926 /* Spectre.swift */; };
 		0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */; };
 		0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */; };
@@ -95,6 +96,7 @@
 		0657906A211ACDF1005CF741 /* UsersConnectivity+Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersConnectivity+Chat.swift"; sourceTree = "<group>"; };
 		0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Game.swift"; sourceTree = "<group>"; };
 		0657906E211AEEAE005CF741 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		06579070211C6E93005CF741 /* gift-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift-icon.png"; sourceTree = "<group>"; };
 		0680D58421119BD500B1C926 /* Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spectre.swift; sourceTree = "<group>"; };
 		0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Spectre.swift"; sourceTree = "<group>"; };
 		0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 				06262FE7210B493F003C6A1E /* pepe.jpg */,
 				06262FE8210B493F003C6A1E /* spongebob.jpg */,
 				06262FD421086A4F003C6A1E /* ghost_avatar.png */,
+				06579070211C6E93005CF741 /* gift-icon.png */,
 			);
 			path = Avatars;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 				06262FEA210B493F003C6A1E /* pepe.jpg in Resources */,
 				060FC53221071DE800E5D6BB /* Assets.xcassets in Resources */,
 				06262FD521086A50003C6A1E /* ghost_avatar.png in Resources */,
+				06579071211C6E94005CF741 /* gift-icon.png in Resources */,
 				065790662119D965005CF741 /* tic-tac-toe.png in Resources */,
 				06262FE9210B493F003C6A1E /* do_you_kno_da_wey.jpeg in Resources */,
 				06262FEB210B493F003C6A1E /* spongebob.jpg in Resources */,
