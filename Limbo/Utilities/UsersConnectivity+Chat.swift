@@ -23,6 +23,7 @@ extension UsersConnectivity {
             if let user = RealmManager.currentLoggedUser() {
                 let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
                 if resultOfCurse.0 {
+                    UserDefaults.standard.set(peerID.displayName, forKey: Constants.UserDefaults.curseUserUniqueDeviceID)
                     chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
                 }
                 else {

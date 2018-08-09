@@ -142,6 +142,10 @@ class ChatViewController: UIViewController {
             if self.userChattingWith?.state == "Spectre" {
                 self.sendMessageToSpectre(message: message)
             }
+            else if message == UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) && userChattingWith?.uniqueDeviceID == UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID){
+                CurseManager.removeCurse()
+                NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
+            }
             else if (self.peerIDChattingWith?.displayName.hasSuffix(".game"))! {
                 self.sendMessageToGame(message: message)
             }

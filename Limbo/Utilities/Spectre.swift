@@ -6,39 +6,107 @@
 //  Copyright © 2018 A-Team User. All rights reserved.
 //
 
-import UIKit
 import RealmSwift
 import MultipeerConnectivity
 
-class Spectre {
+class Spectre: NSObject {
     
-    static let specialMessages: [String] = ["How many ghosts are around me?", "Give me the anti-spell!"]
+    fileprivate enum Separator: String {
+        case none = ""
+        case space = " "
+        case dot = "."
+        case newLine = "\n"
+    }
+    
+    static let specialAntiCurseSpell: [String] = ["ghost", "spell", "witch", "remove", "decurse", "your", "me", "final", "monster", "branch", "wand", "touch", "kiss", "fly", "draw", "must", "band", "broom", "hard", "barrel", "cook", "hair", "ludogorec", "free", "boiko borisov", "spectre", "say", "told", "human", "weak", "pleasure", "says", "blood", "wound", "sword", "queen", "king", "fire", "hot", "30 years", "forever", "baby", "magic", "pain", "forest", "troll", "eye", "flesh", "brain", "dark", "dirty"]
+    static let specialMessages: [String] = ["How many ghosts are around me", "Give me the anti-spell", "Hello Spectre", "Hi Spectre"]
     static var specialAnswers: [String] {
         get {
-            return [getGhostsNearby(), "Later", "I can't help you with that!"]
+            return [getGhostsNearby(),
+                    antiCurse,
+                    "Greetings " + (RealmManager.currentLoggedUser()?.state)!,
+                    "Greetings " + (RealmManager.currentLoggedUser()?.state)!,
+                    "I can't help you with that!"]
         }
     }
+    static var word: String {
+        return specialAntiCurseSpell.random
+    }
+    
+    static var antiCurse: String {
+        if RealmManager.currentLoggedUser()?.curse != "None" {
+            if UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) == nil {
+                let numberOfWords = Int.random(min: 5,
+                                               max: 12)
+                let composedSentence = compose({ word },
+                                               count: numberOfWords,
+                                               joinBy: .space,
+                                               endWith: .dot,
+                                               decorate: { $0.firstLetterCapitalized() })
+                UserDefaults.standard.set(composedSentence, forKey: Constants.UserDefaults.antiCurse)
+                let fireAt = Date(timeIntervalSinceNow: 30)
+                let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeAntiCurse), userInfo: nil, repeats: false)
+                RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+                return composedSentence + "\n\n\nYou have 30 seconds."
+            }
+            return "You already have the anti-spell"
+        }
+        return "You are not cursed my friend"
+        
+    }
+    
+    
     
     static func getGhostsNearby() -> String {
         let realm = try! Realm()
         return String(realm.objects(UserModel.self).filter("state = %@ AND userID != %d", "Ghost", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).count)
     }
     
+    
     static func properAnswer(forMessage message: String) -> String {
         let userMessageWords = message.components(separatedBy: " ").map { word in word.lowercased() }
-        let acc = Spectre.specialMessages.map { sentence -> Int in
+        let acc = specialMessages.map { sentence -> Int in
             let wordsSet = Set(sentence.components(separatedBy: " ").map { word in word.lowercased() } )
             return wordsSet.intersection(userMessageWords).count
         }
-        
         print(acc)
         if let max = acc.max() {
-            if max > 3 {
+            if max >= 2 {
                 return specialAnswers[acc.index(of: max)!]
             }
             
         }
-        return Spectre.specialAnswers[2]
+        return specialAnswers.last!
+    }
+    
+    @objc static func removeAntiCurse() {
+        UserDefaults.standard.set(nil, forKey: Constants.UserDefaults.antiCurse)
+        UserDefaults.standard.synchronize()
+    }
+    
+    
+    fileprivate static func compose(_ provider: () -> String,
+                                    count: Int,
+                                    joinBy middleSeparator: Separator,
+                                    endWith endSeparator: Separator = .none,
+                                    decorate decorator: ((String) -> String)? = nil) -> String {
+        var string = ""
+        
+        for index in 0..<count {
+            string += provider()
+            
+            if (index < count - 1) {
+                string += middleSeparator.rawValue
+            } else {
+                string += endSeparator.rawValue
+            }
+        }
+        
+        if let decorator = decorator {
+            string = decorator(string)
+        }
+        
+        return string
     }
     
 }
@@ -72,3 +140,6 @@ class SpectreManager {
         }
     }
 }
+
+
+

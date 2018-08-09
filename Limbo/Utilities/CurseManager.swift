@@ -6,7 +6,6 @@
 //  Copyright © 2018 A-Team User. All rights reserved.
 //
 
-import UIKit
 import RealmSwift
 import UserNotifications
 
@@ -98,12 +97,18 @@ class CurseManager: NSObject {
     }
     
     @objc static func removeCurse() {
-        print("\nCurse Removed\n")
+        
         let realm = try! Realm()
         if let user = RealmManager.currentLoggedUser() {
-            try! realm.write {
-                user.curseCastDate = nil
-                user.curse = "None"
+            if user.curse != "None" {
+                print("\nCurse Removed\n")
+                try! realm.write {
+                    user.curseCastDate = nil
+                    user.curse = "None"
+                }
+                UserDefaults.standard.set(nil, forKey: Constants.UserDefaults.antiCurse)
+                UserDefaults.standard.set(nil, forKey: Constants.UserDefaults.curseUserUniqueDeviceID)
+                UserDefaults.standard.synchronize()
             }
         }
     }

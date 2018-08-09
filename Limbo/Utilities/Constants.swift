@@ -13,12 +13,8 @@ struct Constants {
     struct UserDefaults {
         static let isLoged = "UserDefaultsIsLogged"
         static let loggedUserID = "UserDefaultsLoggedUserID"
-        static let lastCurse = "UserDefaultsLastCurse"
-        static let lastCurseDate = "UserDefaultsLastCurseDate"
-        static let curseRemainingTime = "UserDefaultsLastCurseDate"
-        static let lastItem = "UserDefaultsLastItem"
-        static let lastItemDate = "UserDefaultsLastItemDate"
-        static let itemRemainingTime = "UserDefaultsLastItemDate"
+        static let antiCurse = "UserDefaultsAntiCurse"
+        static let curseUserUniqueDeviceID = "UserDefaultsCurseUserUniqueDeviceID"
     }
     
     struct Curses {
