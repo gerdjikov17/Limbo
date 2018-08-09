@@ -137,30 +137,31 @@ class ChatViewController: UIViewController {
     }
     
     @IBAction func sendButtonTap() {
-        
-        if var message = self.messageTextField.text {
-            if self.userChattingWith?.state == "Spectre" {
-                self.sendMessageToSpectre(message: message)
-            }
-            else if message == UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) && userChattingWith?.uniqueDeviceID == UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID){
-                CurseManager.removeCurse()
-                NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
-            }
-            else if (self.peerIDChattingWith?.displayName.hasSuffix(".game"))! {
-                self.sendMessageToGame(message: message)
-            }
-            else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
-                if let peerID = self.peerIDChattingWith {
-                    if self.currentUser?.curse == Curse.Posession.rawValue {
-                        message = randomizeText(string: self.messageTextField.text!)
-                    }
-                    self.sendMessageToUser(message: message, peerID: peerID)
+        if (self.messageTextField.text?.count)! > 0 {
+            if var message = self.messageTextField.text {
+                if self.userChattingWith?.state == "Spectre" {
+                    self.sendMessageToSpectre(message: message)
                 }
+                else if message == UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) && userChattingWith?.uniqueDeviceID == UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID){
+                    CurseManager.removeCurse()
+                    NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
+                }
+                else if (self.peerIDChattingWith?.displayName.hasSuffix(".game"))! {
+                    self.sendMessageToGame(message: message)
+                }
+                else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
+                    if let peerID = self.peerIDChattingWith {
+                        if self.currentUser?.curse == Curse.Posession.rawValue {
+                            message = randomizeText(string: self.messageTextField.text!)
+                        }
+                        self.sendMessageToUser(message: message, peerID: peerID)
+                    }
+                }
+                else if self.currentUser!.curse == Curse.Silence.rawValue{
+                    self.sendingMessageWhileSilenced()
+                }
+                self.messageTextField.text = ""
             }
-            else if self.currentUser!.curse == Curse.Silence.rawValue{
-                self.sendingMessageWhileSilenced()
-            }
-            self.messageTextField.text = ""
         }
     }
     
