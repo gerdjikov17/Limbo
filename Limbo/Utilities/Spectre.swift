@@ -19,13 +19,15 @@ class Spectre: NSObject {
     }
     
     static let specialAntiCurseSpell: [String] = ["ghost", "spell", "witch", "remove", "decurse", "your", "me", "final", "monster", "branch", "wand", "touch", "kiss", "fly", "draw", "must", "band", "broom", "hard", "barrel", "cook", "hair", "ludogorec", "free", "boiko borisov", "spectre", "say", "told", "human", "weak", "pleasure", "says", "blood", "wound", "sword", "queen", "king", "fire", "hot", "30 years", "forever", "baby", "magic", "pain", "forest", "troll", "eye", "flesh", "brain", "dark", "dirty"]
-    static let specialMessages: [String] = ["How many ghosts are around me", "Give me the anti-spell", "Hello Spectre", "Hi Spectre"]
+    static let specialMessages: [String] = ["How many ghosts are around me", "Give me the anti-spell", "Hello Spectre", "Hi Spectre", "Who cursed me", "Who is haunting me"]
     static var specialAnswers: [String] {
         get {
             return [getGhostsNearby(),
                     antiCurse,
                     "Greetings " + (RealmManager.currentLoggedUser()?.state)!,
                     "Greetings " + (RealmManager.currentLoggedUser()?.state)!,
+                    theLastOneWhoHaunted(),
+                    theLastOneWhoHaunted(),
                     "I can't help you with that!"]
         }
     }
@@ -47,7 +49,7 @@ class Spectre: NSObject {
                 let fireAt = Date(timeIntervalSinceNow: 30)
                 let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeAntiCurse), userInfo: nil, repeats: false)
                 RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
-                return composedSentence + "\n\n\nYou have 30 seconds."
+                return composedSentence + "\n\n\nYou have 30 seconds.\nSay the anti-spell to the one who cursed you."
             }
             return "You already have the anti-spell"
         }
@@ -62,6 +64,15 @@ class Spectre: NSObject {
         return String(realm.objects(UserModel.self).filter("state = %@ AND userID != %d", "Ghost", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).count)
     }
     
+    static func theLastOneWhoHaunted() -> String {
+        if let userUniqueDeviceID = UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID) {
+            if let username = UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUsername) {
+                return "You are cursed by " + (RealmManager.userWith(uniqueID:  userUniqueDeviceID, andUsername: username)?.username)!
+            }
+        }
+        return "I can't find the last ghost who haunted you!"
+    }
+    
     
     static func properAnswer(forMessage message: String) -> String {
         let userMessageWords = message.components(separatedBy: " ").map { word in word.lowercased() }
@@ -71,10 +82,11 @@ class Spectre: NSObject {
         }
         print(acc)
         if let max = acc.max() {
-            if max >= 2 {
-                return specialAnswers[acc.index(of: max)!]
+            if max > 0 {
+                if (specialMessages[acc.index(of: max)!].components(separatedBy: " ").count - 1) <= max {
+                    return specialAnswers[acc.index(of: max)!]
+                }
             }
-            
         }
         return specialAnswers.last!
     }

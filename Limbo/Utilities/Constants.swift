@@ -15,6 +15,7 @@ struct Constants {
         static let loggedUserID = "UserDefaultsLoggedUserID"
         static let antiCurse = "UserDefaultsAntiCurse"
         static let curseUserUniqueDeviceID = "UserDefaultsCurseUserUniqueDeviceID"
+        static let curseUserUsername = "UserDefaultsCurseUserUsername"
     }
     
     struct Curses {

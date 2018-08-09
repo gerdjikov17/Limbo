@@ -24,6 +24,7 @@ extension UsersConnectivity {
                 let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
                 if resultOfCurse.0 {
                     UserDefaults.standard.set(peerID.displayName, forKey: Constants.UserDefaults.curseUserUniqueDeviceID)
+                    UserDefaults.standard.set(messageModel.sender?.username, forKey: Constants.UserDefaults.curseUserUsername)
                     chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
                 }
                 else {
