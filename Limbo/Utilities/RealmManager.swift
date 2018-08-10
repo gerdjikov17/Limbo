@@ -63,7 +63,7 @@ class RealmManager: NSObject {
     
     static func getMessagesForUsers(firstUser: UserModel, secondUser: UserModel) -> Results<MessageModel>? {
         let realm = try! Realm()
-        let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers.uniqueDeviceID = %@) OR (sender.uniqueDeviceID = %@ AND ANY receivers.uniqueDeviceID = %@)", firstUser, secondUser.uniqueDeviceID, secondUser.uniqueDeviceID, firstUser.uniqueDeviceID)
+        let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers = %@) OR (sender = %@ AND ANY receivers = %@)", firstUser, secondUser, secondUser, firstUser)
         return results
         
     }

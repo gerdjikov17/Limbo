@@ -63,16 +63,14 @@ extension ChatViewController: UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y == 0 {
-            if !self.areAllMessagesLoaded {
-                let newResultsOfMessages = queryLastHundredMessages()
-                let mergedArray = newResultsOfMessages + messages
-                self.messages = mergedArray
-                chatTableView.reloadData()
-                
-                let indexPath = IndexPath(item: newResultsOfMessages.count, section: 0)
-                self.chatTableView.scrollToRow(at: indexPath, at: .top, animated: false)
-            }
+        if scrollView.contentOffset.y == 0 && !self.areAllMessagesLoaded{
+            let newResultsOfMessages = queryLastHundredMessages()
+            let mergedArray = newResultsOfMessages + messages
+            self.messages = mergedArray
+            chatTableView.reloadData()
+            
+            let indexPath = IndexPath(item: newResultsOfMessages.count, section: 0)
+            self.chatTableView.scrollToRow(at: indexPath, at: .top, animated: false)
         }
     }
     
@@ -91,10 +89,8 @@ extension ChatViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let height: CGFloat = self.calculateHeight(forMessage: self.messages[indexPath.row])
-        if let selectedIndexPath = self.selectedIndexPathForTimeStamp {
-            if indexPath == selectedIndexPath {
-                return height + 17
-            }
+        if self.selectedIndexPathForTimeStamp != nil && self.selectedIndexPathForTimeStamp == indexPath {
+            return height + 17
         }
         return height + 6
     }

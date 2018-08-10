@@ -25,13 +25,13 @@ extension UsersConnectivity {
             }
             
             let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
-            if resultOfCurse.0 {
+            if resultOfCurse.success {
                 UserDefaults.standard.set(peerID.displayName, forKey: Constants.UserDefaults.curseUserUniqueDeviceID)
                 UserDefaults.standard.set(messageModel.sender?.username, forKey: Constants.UserDefaults.curseUserUsername)
                 chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
             }
             else {
-                let remainingTime = String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.1)) + " seconds!"
+                let remainingTime = String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.remainingTime)) + " seconds!"
                 NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: "Someone tried to haunt you! But you are protected for " + remainingTime)
                 let answerMessage = MessageModel()
                 answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"

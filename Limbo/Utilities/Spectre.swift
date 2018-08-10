@@ -151,7 +151,8 @@ class SpectreManager {
             let gift = gift as! [String: Any]
             if gift["username"] as? String == RealmManager.currentLoggedUser()?.username {
                 let date = gift["date"] as! Date
-                if date.timeIntervalSinceNow > -3600*24 {
+                let oneDayTimeInterval = -86400.0
+                if date.timeIntervalSinceNow > oneDayTimeInterval {
                     chances = 0.5
                 }
             }

@@ -10,7 +10,7 @@ import RealmSwift
 import UserNotifications
 
 class CurseManager: NSObject {
-    static func applyCurse(curse: Curse, toUser: UserModel) -> (Bool, Double) {
+    static func applyCurse(curse: Curse, toUser: UserModel) -> (success: Bool, remainingTime: Double) {
         if toUser.specialItem == SpecialItem.SaintsMedallion.rawValue, let lastItemDate = toUser.specialItemUsedDate {
             if !lastItemDate.timeIntervalSinceNow.isLess(than: -Constants.Curses.curseTime) {
                 return (false, lastItemDate.timeIntervalSinceNow)

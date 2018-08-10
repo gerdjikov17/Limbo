@@ -107,11 +107,13 @@ class NearbyUsersViewController: UIViewController {
             let gift = gift as! [String: Any]
             if gift["username"] as? String == RealmManager.currentLoggedUser()?.username {
                 let date = gift["date"] as! Date
-                if date.timeIntervalSinceNow > -3600*24 {
+                let oneDayTimeInterval = -86400.0
+                if date.timeIntervalSinceNow > oneDayTimeInterval {
                     var style = ToastStyle()
                     style.backgroundColor = UIColor.white
                     style.titleColor = .black
                     style.messageColor = .black
+                    self.view.hideToast()
                     self.view.makeToast("As a new user you are twice likely to find spectres.", duration: 3600 , point: CGPoint(x: self.currentUserImageView.center.x, y: self.currentUserImageView.center.y - 100), title: "The Gift", image: #imageLiteral(resourceName: "gift-icon.png"), style: style, completion: nil)
                 }
             }
@@ -162,19 +164,18 @@ class NearbyUsersViewController: UIViewController {
     //MARK: Button taps
     
     @objc func signOutButtonTap() {
-        if self.currentUser.curse == Curse.None.rawValue {
-            UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
-            UserDefaults.standard.synchronize()
-            let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
-            loginVC.loginDelegate = self
-            loginVC.modalTransitionStyle = .crossDissolve
-            self.present(loginVC, animated: true, completion: {
-                self.usersConnectivity.didSignOut()
-            })
-        }
-        else {
+        guard self.currentUser.curse == Curse.None.rawValue else {
             self.view.makeToast("You can't sign out while cursed")
+            return
         }
+        UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
+        UserDefaults.standard.synchronize()
+        let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
+        loginVC.loginDelegate = self
+        loginVC.modalTransitionStyle = .crossDissolve
+        self.present(loginVC, animated: true, completion: {
+            self.usersConnectivity.didSignOut()
+        })
         
 //        self.batteryLevelDidChange(notification: NSNotification.init(name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil, userInfo: nil))
     }
