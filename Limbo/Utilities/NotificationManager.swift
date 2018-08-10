@@ -18,32 +18,31 @@ class NotificationManager: NSObject {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
             DispatchQueue.main.async {
-                if granted {
-                    UIApplication.shared.registerForRemoteNotifications()
-                    let content = UNMutableNotificationContent()
-                    if let user = message.sender {
-                        content.title = user.username
-                        content.userInfo = ["uniqueDeviceID": user.uniqueDeviceID, "username": user.username]
+                guard granted else {
+                    print("Notification not granted")
+                    return
+                }
+                UIApplication.shared.registerForRemoteNotifications()
+                let content = UNMutableNotificationContent()
+                if let user = message.sender {
+                    content.title = user.username
+                    content.userInfo = ["uniqueDeviceID": user.uniqueDeviceID, "username": user.username]
+                }
+                
+                content.body = message.messageString
+                content.sound = UNNotificationSound.default()
+                content.categoryIdentifier = Constants.Notifications.Identifiers.Message
+                
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
+                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Message, content: content, trigger: trigger)
+                
+                center.delegate = notificationDelegate
+                center.add(request, withCompletionHandler: { (err) in
+                    if let err = err {
+                        print(err)
                     }
                     
-                    content.body = message.messageString
-                    content.sound = UNNotificationSound.default()
-                    content.categoryIdentifier = Constants.Notifications.Identifiers.Message
-                    
-                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
-                    let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Message, content: content, trigger: trigger)
-                    
-                    center.delegate = notificationDelegate
-                    center.add(request, withCompletionHandler: { (err) in
-                        if let err = err {
-                            print(err)
-                        }
-                        
-                    })
-                }
-                else {
-                    //Do stuff if unsuccessful...
-                }
+                })
             }
         })
     }
@@ -52,27 +51,26 @@ class NotificationManager: NSObject {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
             DispatchQueue.main.async {
-                if granted {
-                    UIApplication.shared.registerForRemoteNotifications()
-                    let content = UNMutableNotificationContent()
-                    content.title = title
-                    content.body = text
-                    content.sound = UNNotificationSound.default()
-                    content.categoryIdentifier = Constants.Notifications.Identifiers.Curse
-                    
-                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
-                    let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Curse, content: content, trigger: trigger)
-                    
-                    center.delegate = self
-                    center.add(request, withCompletionHandler: { (err) in
-                        if let err = err {
-                            print(err)
-                        }
-                    })
+                guard granted else {
+                    print("Notification not granted")
+                    return
                 }
-                else {
-                    //Do stuff if unsuccessful...
-                }
+                UIApplication.shared.registerForRemoteNotifications()
+                let content = UNMutableNotificationContent()
+                content.title = title
+                content.body = text
+                content.sound = UNNotificationSound.default()
+                content.categoryIdentifier = Constants.Notifications.Identifiers.Curse
+                
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
+                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Curse, content: content, trigger: trigger)
+                
+                center.delegate = self
+                center.add(request, withCompletionHandler: { (err) in
+                    if let err = err {
+                        print(err)
+                    }
+                })
             }
         })
     }
@@ -81,27 +79,26 @@ class NotificationManager: NSObject {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
             DispatchQueue.main.async {
-                if granted {
-                    UIApplication.shared.registerForRemoteNotifications()
-                    let content = UNMutableNotificationContent()
-                    content.title = title
-                    content.body = text
-                    content.sound = UNNotificationSound.default()
-                    content.categoryIdentifier = Constants.Notifications.Identifiers.Item
-                    
-                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
-                    let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Item, content: content, trigger: trigger)
-                    
-                    center.delegate = self
-                    center.add(request, withCompletionHandler: { (err) in
-                        if let err = err {
-                            print(err)
-                        }
-                    })
+                guard granted else {
+                    print("Notification not granted")
+                    return
                 }
-                else {
-                    //Do stuff if unsuccessful...
-                }
+                UIApplication.shared.registerForRemoteNotifications()
+                let content = UNMutableNotificationContent()
+                content.title = title
+                content.body = text
+                content.sound = UNNotificationSound.default()
+                content.categoryIdentifier = Constants.Notifications.Identifiers.Item
+                
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
+                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Item, content: content, trigger: trigger)
+                
+                center.delegate = self
+                center.add(request, withCompletionHandler: { (err) in
+                    if let err = err {
+                        print(err)
+                    }
+                })
             }
         })
     }

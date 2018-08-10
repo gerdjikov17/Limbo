@@ -43,7 +43,7 @@ extension ChatViewController: UITableViewDataSource {
 
 extension ChatViewController: UITableViewDelegate {
     
-    @objc func didTapOnMessage(recognizer: UITapGestureRecognizer) {
+    @objc private func didTapOnMessage(recognizer: UITapGestureRecognizer) {
         let touchPoint = recognizer.location(in: self.chatTableView)
         let indexPath: IndexPath = self.chatTableView.indexPathForRow(at: touchPoint)!
         
@@ -76,7 +76,7 @@ extension ChatViewController: UITableViewDelegate {
         }
     }
     
-    func calculateHeight(forMessage message: MessageModel) -> CGFloat {
+    private func calculateHeight(forMessage message: MessageModel) -> CGFloat {
         
         let messageString = message.messageString
         let attributes: [NSAttributedStringKey : Any] = [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14.0)]

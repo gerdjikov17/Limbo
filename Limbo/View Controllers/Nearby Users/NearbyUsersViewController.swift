@@ -15,6 +15,8 @@ import Pastel
 
 class NearbyUsersViewController: UIViewController {
 
+    //    MARK: Properties
+    
     var currentUser: UserModel! {
         return RealmManager.currentLoggedUser()
     }
@@ -30,6 +32,8 @@ class NearbyUsersViewController: UIViewController {
     @IBOutlet weak var medallionCountLabel: UILabel!
     @IBOutlet weak var candleImageView: UIImageView!
     @IBOutlet weak var medallionImageView: UIImageView!
+    
+    //    MARK: Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,20 +74,7 @@ class NearbyUsersViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.nearbyUsersCollectionView.reloadData()
-        if let gift = UserDefaults.standard.value(forKey: Constants.UserDefaults.gift) {
-            let gift = gift as! [String: Any]
-            if gift["username"] as? String == RealmManager.currentLoggedUser()?.username {
-                let date = gift["date"] as! Date
-                if date.timeIntervalSinceNow > -3600*24 {
-                    var style = ToastStyle()
-                    style.backgroundColor = UIColor.white
-                    style.titleColor = .black
-                    style.messageColor = .black
-                    self.view.makeToast("As a new user you are twice likely to find spectres.", duration: 3600 , point: CGPoint(x: self.currentUserImageView.center.x, y: self.currentUserImageView.center.y - 100), title: "The Gift", image: #imageLiteral(resourceName: "gift-icon.png"), style: style, completion: nil)
-                }
-            }
-        }
-
+        self.checkForGifts()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,7 +89,9 @@ class NearbyUsersViewController: UIViewController {
         PastelViewManager.addPastelViewToCollectionViewBackground(collectionView: self.nearbyUsersCollectionView, withSuperView: self.view)
     }
     
-    func checkForCurses(forUser: UserModel) {
+    //    MARK: Business Logic
+    
+    private func checkForCurses(forUser: UserModel) {
         if let lastCurseCastDate = forUser.curseCastDate {
             if lastCurseCastDate.timeIntervalSinceNow.isLess(than: Constants.Curses.curseTime) {
                 CurseManager.removeCurse()
@@ -109,18 +102,23 @@ class NearbyUsersViewController: UIViewController {
         }
     }
     
-    func batteryLevelDidChange(notification: NSNotification) {
-        let batteryLevel = UIDevice.current.batteryLevel
-        self.currentUser.setState(batteryLevel: batteryLevel)
-        if self.userStateLabel.text != self.currentUser.state {
-            self.userStateLabel.text = self.currentUser.state
-//        this may be problematic at some time
-//        create new UsersConnectivity which uses new user state
-            self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
+    private func checkForGifts() {
+        if let gift = UserDefaults.standard.value(forKey: Constants.UserDefaults.gift) {
+            let gift = gift as! [String: Any]
+            if gift["username"] as? String == RealmManager.currentLoggedUser()?.username {
+                let date = gift["date"] as! Date
+                if date.timeIntervalSinceNow > -3600*24 {
+                    var style = ToastStyle()
+                    style.backgroundColor = UIColor.white
+                    style.titleColor = .black
+                    style.messageColor = .black
+                    self.view.makeToast("As a new user you are twice likely to find spectres.", duration: 3600 , point: CGPoint(x: self.currentUserImageView.center.x, y: self.currentUserImageView.center.y - 100), title: "The Gift", image: #imageLiteral(resourceName: "gift-icon.png"), style: style, completion: nil)
+                }
+            }
         }
     }
     
-    func setUIContent(userModel: UserModel) {
+    private func setUIContent(userModel: UserModel) {
         if let defaultImage = UIImage(named: userModel.avatarString) {
             self.currentUserImageView.image = defaultImage
         }
@@ -134,12 +132,42 @@ class NearbyUsersViewController: UIViewController {
         self.userStateLabel.text = userModel.state
     }
     
+    private func initRequiredPropertiesForLoggedUser() {
+        self.checkForCurses(forUser: self.currentUser)
+        self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
+        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
+        self.setUIContent(userModel: self.currentUser)
+        self.notificationToken = self.currentUser.observe { (objectChange) in
+            self.setUIContent(userModel: self.currentUser)
+        }
+    }
+    
+    func batteryLevelDidChange(notification: NSNotification) {
+        let batteryLevel = UIDevice.current.batteryLevel
+        self.currentUser.setState(batteryLevel: batteryLevel)
+        if self.userStateLabel.text != self.currentUser.state {
+            self.userStateLabel.text = self.currentUser.state
+//        create new UsersConnectivity which uses new user state
+            self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
+        }
+    }
+    
+    @objc func reloadDataFromSelector() {
+        DispatchQueue.main.async {
+            self.nearbyUsersCollectionView.reloadData()
+            self.setUIContent(userModel: self.currentUser)
+        }
+    }
+    
+    //MARK: Button taps
+    
     @objc func signOutButtonTap() {
         if self.currentUser.curse == Curse.None.rawValue {
             UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
             UserDefaults.standard.synchronize()
             let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
             loginVC.loginDelegate = self
+            loginVC.modalTransitionStyle = .crossDissolve
             self.present(loginVC, animated: true, completion: {
                 self.usersConnectivity.didSignOut()
             })
@@ -156,17 +184,10 @@ class NearbyUsersViewController: UIViewController {
         avatarChooseVC.currentUser = self.currentUser
         self.navigationController?.present(avatarChooseVC, animated: true, completion: nil)
     }
-    
-    func initRequiredPropertiesForLoggedUser() {
-        self.checkForCurses(forUser: self.currentUser)
-        self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
-        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
-        self.setUIContent(userModel: self.currentUser)
-        self.notificationToken = self.currentUser.observe { (objectChange) in
-            self.setUIContent(userModel: self.currentUser)
-        }
-    }
+
 }
+
+//MAKR: Protocol Conforms
 
 extension NearbyUsersViewController: NearbyUsersDelegate {
    

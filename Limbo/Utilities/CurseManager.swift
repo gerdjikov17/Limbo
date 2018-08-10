@@ -13,7 +13,7 @@ class CurseManager: NSObject {
     static func applyCurse(curse: Curse, toUser: UserModel) -> (Bool, Double) {
         if toUser.specialItem == SpecialItem.SaintsMedallion.rawValue {
             if let lastItemDate = toUser.specialItemUsedDate {
-                if !lastItemDate.timeIntervalSinceNow.isLess(than: -180.0) {
+                if !lastItemDate.timeIntervalSinceNow.isLess(than: -Constants.Curses.curseTime) {
                     return (false, lastItemDate.timeIntervalSinceNow)
                 }
             }

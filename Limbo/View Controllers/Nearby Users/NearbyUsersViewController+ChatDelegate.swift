@@ -26,20 +26,10 @@ extension NearbyUsersViewController: ChatDelegate {
     }
     
     func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
-        //        create a notificiation that message is received
         DispatchQueue.main.async {
             let realm = try! Realm()
             let messageModel = realm.resolve(threadSafeMessageRef)
             NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
-        }
-    }
-    
-    @objc func reloadDataFromSelector() {
-//        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
-//        self.usersConnectivity.chatDelegate = self
-        DispatchQueue.main.async {
-            self.nearbyUsersCollectionView.reloadData()
-            self.setUIContent(userModel: self.currentUser)
         }
     }
     
@@ -58,44 +48,52 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
         if response.actionIdentifier == Constants.Notifications.Identifiers.MessageActionReply {
             let response = response as! UNTextInputNotificationResponse
             let text = response.userText
-            let userInfo = notification.request.content.userInfo
-            let userChattingWithUniqueDeviceID =  userInfo["uniqueDeviceID"] as! String
-            let peerIDChattingWith = self.usersConnectivity.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID)
-            let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID, andUsername: userInfo["username"] as! String)
-            let messageModel = MessageModel()
-            messageModel.messageString = text
-            messageModel.sender = self.currentUser
-            let success = self.usersConnectivity?.sendMessage(messageModel: messageModel, toPeerID: peerIDChattingWith!)
-            if success! {
-                let realm = try! Realm()
-                if let userChattingWith = RealmManager.userWith(uniqueID: (userChattingWith?.uniqueDeviceID)!, andUsername: (userChattingWith?.username)!) {
-                    try? realm.write {
-                        realm.add(messageModel)
-                        messageModel.receivers.append(userChattingWith)
-                    }
-                }
-            }
+            replyAction(withText: text, andUserInfo: notification.request.content.userInfo)
         }
         else {
-            let userInfo = notification.request.content.userInfo
-            let userChattingWithUniqueDeviceID = userInfo["uniqueDeviceID"] as! String
-            let username = userInfo["username"] as! String
-            let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID, andUsername: username)
-            if let peerIDChattingWith = self.usersConnectivity.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID) {
-                let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
-                self.usersConnectivity.inviteUser(peerID: peerIDChattingWith)
-                chatVC.currentUser = self.currentUser
-                chatVC.userChattingWith = userChattingWith
-                chatVC.peerIDChattingWith = peerIDChattingWith
-                chatVC.chatDelegate = self.usersConnectivity
-                self.usersConnectivity.chatDelegate = chatVC
-                self.navigationController?.pushViewController(chatVC, animated: true)
-            }
+            notificationTapAction(withUserInfo: notification.request.content.userInfo)
         }
         
-        
-        
         completionHandler()
+    }
+    
+    private func replyAction(withText text: String, andUserInfo userInfo: [AnyHashable: Any]) {
+        let userSendingMessageToUniqueDeviceID = userInfo["uniqueDeviceID"] as! String
+        let peerIDSendingMessageTo = self.usersConnectivity.getPeerIDForUID(uniqueID: userSendingMessageToUniqueDeviceID)
+        guard let userSendingMessageTo = RealmManager.userWith(uniqueID: userSendingMessageToUniqueDeviceID, andUsername: userInfo["username"] as! String) else {
+            return
+        }
+        let messageModel = MessageModel()
+        messageModel.messageString = text
+        messageModel.sender = self.currentUser
+        
+        guard let success = self.usersConnectivity?.sendMessage(messageModel: messageModel, toPeerID: peerIDSendingMessageTo!) else {
+            return
+        }
+        if success {
+            let realm = try! Realm()
+            realm.beginWrite()
+            realm.add(messageModel)
+            messageModel.receivers.append(userSendingMessageTo)
+            try! realm.commitWrite()
+        }
+    }
+    
+    private func notificationTapAction(withUserInfo userInfo: [AnyHashable: Any]) {
+        let userChattingWithUniqueDeviceID = userInfo["uniqueDeviceID"] as! String
+        let username = userInfo["username"] as! String
+        let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID, andUsername: username)
+        guard let peerIDChattingWith = self.usersConnectivity.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID) else {
+            return
+        }
+        let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
+        self.usersConnectivity.inviteUser(peerID: peerIDChattingWith)
+        chatVC.currentUser = self.currentUser
+        chatVC.userChattingWith = userChattingWith
+        chatVC.peerIDChattingWith = peerIDChattingWith
+        chatVC.chatDelegate = self.usersConnectivity
+        self.usersConnectivity.chatDelegate = chatVC
+        self.navigationController?.pushViewController(chatVC, animated: true)
     }
 }
 

@@ -52,23 +52,26 @@ extension UsersConnectivity {
     
     func foundChatPeer(peerID: MCPeerID, withDiscoveryInfo info: [String: String]?)  {
         let userState = info!["state"]!
-        let userModel: UserModel! = UserModel(username: info!["username"]!, state: userState, uniqueDeviceID: peerID.displayName)
-        userModel.avatarString = info!["avatar"]!
         let realm = try! Realm()
-        if let realmUser = realm.objects(UserModel.self).filter("uniqueDeviceID == %@", peerID.displayName).first {
-            try? realm.write {
-                realmUser.state = userState
+        var user: UserModel
+        if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: info!["username"]!) {
+            if let realmUser = realm.objects(UserModel.self).filter("uniqueDeviceID == %@", peerID.displayName).first {
+                try? realm.write {
+                    realmUser.state = userState
+                }
             }
+            user = realmUser
         }
         else {
+            user = UserModel(username: info!["username"]!, state: userState, uniqueDeviceID: peerID.displayName)
+            user.avatarString = info!["avatar"]!
             realm.beginWrite()
-            realm.add(userModel)
+            realm.add(user)
             try! realm.commitWrite()
-            
+            realm.refresh()
         }
-        realm.refresh()
         if shouldShowUserDependingOnState(foundUserState: userState) {
-            self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
+            self.delegate?.didFindNewUser(user: user, peerID: peerID)
         }
         
         //            browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)

@@ -11,14 +11,42 @@ import UIKit
 
 class RegisterViewController: UIViewController {
     
+    //    MARK: Properties
+    
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var signInLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var greyContainerView: UIView!
+    
+    //    MARK: Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let context = CIContext(options: nil)
+        
+        let currentFilter = CIFilter(name: "CIGaussianBlur")
+        let beginImage = CIImage(image: #imageLiteral(resourceName: "login_background.jpg"))
+        currentFilter!.setValue(beginImage, forKey: kCIInputImageKey)
+        currentFilter!.setValue(5, forKey: kCIInputRadiusKey)
+        
+        let cropFilter = CIFilter(name: "CICrop")
+        cropFilter!.setValue(currentFilter!.outputImage, forKey: kCIInputImageKey)
+        cropFilter!.setValue(CIVector(cgRect: beginImage!.extent), forKey: "inputRectangle")
+        
+        let output = cropFilter!.outputImage
+        let cgimg = context.createCGImage(output!, from: output!.extent)
+        let processedImage = UIImage(cgImage: cgimg!)
+        scrollView.backgroundColor = UIColor(patternImage: processedImage)
+        
+        self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.1, green: 0.2, blue: 0.3, alpha: 0.5)
+        
+        self.usernameTextField.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        self.confirmPasswordTextField.attributedPlaceholder = NSAttributedString(string: "Confirm password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        
         self.usernameTextField.delegate = self
         self.passwordTextField.delegate = self
         self.confirmPasswordTextField.delegate = self
@@ -26,6 +54,8 @@ class RegisterViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
+    
+    //    MARK: Button taps
     
     @objc func signInLabelTap() {
         self.dismiss(animated: true, completion: nil)
@@ -79,6 +109,8 @@ class RegisterViewController: UIViewController {
         return (success, message)
     }
     
+    //    MARK: Keyboard notifications
+    
     @objc func keyboardWillShow(notification:NSNotification){
         
         var userInfo = notification.userInfo!
@@ -94,6 +126,20 @@ class RegisterViewController: UIViewController {
         
         let contentInset:UIEdgeInsets = .zero
         scrollView.contentInset = contentInset
+    }
+    
+    //    MARK: Overriding var supportedOrientation
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        get {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                return .all
+            }
+            else {
+                return UIInterfaceOrientationMask.portrait
+            }
+            
+        }
     }
 }
 

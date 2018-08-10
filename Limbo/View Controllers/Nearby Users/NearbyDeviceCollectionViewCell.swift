@@ -15,8 +15,4 @@ class NearbyDevicesCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var state: UILabel!
     
-    func setCellContent(user: UserModel) {
-        self.usernameLabel.text = user.username
-        self.state.text = user.state
-    }
 }

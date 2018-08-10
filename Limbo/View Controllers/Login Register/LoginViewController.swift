@@ -12,16 +12,44 @@ import Toast_Swift
 
 class LoginViewController: UIViewController {
     
+    //    MARK: Properties
+    
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signUpLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var greyContainerView: UIView!
     
     var loginDelegate: LoginDelegate?
     
+    //    MARK: Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let context = CIContext(options: nil)
+        
+        let currentFilter = CIFilter(name: "CIGaussianBlur")
+        let beginImage = CIImage(image: #imageLiteral(resourceName: "login_background.jpg"))
+        currentFilter!.setValue(beginImage, forKey: kCIInputImageKey)
+        currentFilter!.setValue(5, forKey: kCIInputRadiusKey)
+        
+        let cropFilter = CIFilter(name: "CICrop")
+        cropFilter!.setValue(currentFilter!.outputImage, forKey: kCIInputImageKey)
+        cropFilter!.setValue(CIVector(cgRect: beginImage!.extent), forKey: "inputRectangle")
+        
+        let output = cropFilter!.outputImage
+        let cgimg = context.createCGImage(output!, from: output!.extent)
+        let processedImage = UIImage(cgImage: cgimg!)
+        scrollView.backgroundColor = UIColor(patternImage: processedImage)
+        
+        self.usernameTextField.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        
+        self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.1, green: 0.2, blue: 0.3, alpha: 0.5)
+        
+        
         self.usernameTextField.delegate = self
         self.passwordTextField.delegate = self
         self.signUpLabel?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LoginViewController.signUpLabelTap)))
@@ -29,8 +57,11 @@ class LoginViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
+    //    MARK: Button taps
+    
     @objc func signUpLabelTap() {
         let registerVC = (storyboard?.instantiateViewController(withIdentifier: "registerVC"))
+        registerVC?.modalTransitionStyle = .crossDissolve
         self.present(registerVC!, animated: true, completion: nil)
     }
     
@@ -52,7 +83,7 @@ class LoginViewController: UIViewController {
         }
     }
     
-    func authorizeUserInput(usernameString: String, passwordString: String) -> (success: Bool, message: String) {
+    private func authorizeUserInput(usernameString: String, passwordString: String) -> (success: Bool, message: String) {
         let message: String
         
         if usernameString.count < 4 {
@@ -75,7 +106,9 @@ class LoginViewController: UIViewController {
         return (success, message)
     }
     
-    @objc func keyboardWillShow(notification:NSNotification){
+    //    MARK: Keyboard Notifications
+    
+    @objc private func keyboardWillShow(notification:NSNotification){
         
         var userInfo = notification.userInfo!
         var keyboardFrame:CGRect = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
@@ -86,12 +119,27 @@ class LoginViewController: UIViewController {
         scrollView.contentInset = contentInset
     }
     
-    @objc func keyboardWillHide(notification:NSNotification){
+    @objc private func keyboardWillHide(notification:NSNotification){
         
         let contentInset:UIEdgeInsets = .zero
         scrollView.contentInset = contentInset
     }
+    
+    //    MARK: Override var supportedOrientation
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        get {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                return .all
+            }
+            else {
+                return UIInterfaceOrientationMask.portrait
+            }
+        }
+    }
 }
+
+//MARK: Protocol conforms
 
 extension LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

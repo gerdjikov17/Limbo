@@ -12,6 +12,7 @@ import MultipeerConnectivity
 import RealmSwift
 
 class ChatViewController: UIViewController {
+    //    MARK: Properties
     @IBOutlet weak var chatTableView: UITableView!
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
@@ -24,6 +25,9 @@ class ChatViewController: UIViewController {
     var selectedIndexPathForTimeStamp: IndexPath?
     var lastLoadedMessageIndex: Int?
     var areAllMessagesLoaded: Bool!
+    
+    
+    //    MARK: Activity life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,23 +66,7 @@ class ChatViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    func queryLastHundredMessages() -> [MessageModel] {
-        if let results = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!) {
-            if lastLoadedMessageIndex == nil {
-                lastLoadedMessageIndex = results.count
-            }
-            if lastLoadedMessageIndex! - 50 >= 0 {
-                let lastLoadedMessageIndex = self.lastLoadedMessageIndex!
-                self.lastLoadedMessageIndex! -= 50
-                return Array(results[lastLoadedMessageIndex - 50..<lastLoadedMessageIndex])
-            }
-            else {
-                self.areAllMessagesLoaded = true
-                return Array(results[0..<lastLoadedMessageIndex!])
-            }
-        }
-        return Array()
-    }
+    //    MARK: Keyboard Notifications
     
     @objc func keyboardWillShow(notification: Notification) {
         let info = notification.userInfo!
@@ -118,6 +106,26 @@ class ChatViewController: UIViewController {
         self.view.endEditing(true)
     }
     
+    func queryLastHundredMessages() -> [MessageModel] {
+        if let results = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!) {
+            if lastLoadedMessageIndex == nil {
+                lastLoadedMessageIndex = results.count
+            }
+            if lastLoadedMessageIndex! - 50 >= 0 {
+                let lastLoadedMessageIndex = self.lastLoadedMessageIndex!
+                self.lastLoadedMessageIndex! -= 50
+                return Array(results[lastLoadedMessageIndex - 50..<lastLoadedMessageIndex])
+            }
+            else {
+                self.areAllMessagesLoaded = true
+                return Array(results[0..<lastLoadedMessageIndex!])
+            }
+        }
+        return Array()
+    }
+    
+    //    MARK: Button taps
+    
     @objc func clearHistoryButtonTap() {
         let alertController = UIAlertController(title: "Clear history", message: "In a result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
@@ -152,7 +160,7 @@ class ChatViewController: UIViewController {
                 else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
                     if let peerID = self.peerIDChattingWith {
                         if self.currentUser?.curse == Curse.Posession.rawValue {
-                            message = randomizeText(string: self.messageTextField.text!)
+                            message = message.shuffle()
                         }
                         self.sendMessageToUser(message: message, peerID: peerID)
                     }
@@ -181,13 +189,6 @@ class ChatViewController: UIViewController {
         self.navigationController?.present(itemsVC, animated: true, completion: nil)
     }
     
-    func randomizeText(string: String) -> String {
-        let shuffledString = string.sorted { (_, _) -> Bool in
-            arc4random() < arc4random()
-        }
-        return String(shuffledString)
-    }
-    
     func sendMessageToUser(message: String, peerID: MCPeerID) {
         let messageModel = MessageModel()
         messageModel.messageString = message
@@ -209,6 +210,8 @@ class ChatViewController: UIViewController {
         }
     }
 }
+
+// MARK: Protocol Conforms
 
 extension ChatViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

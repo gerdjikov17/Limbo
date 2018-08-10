@@ -47,7 +47,6 @@ class ItemPopoverViewController: UIViewController {
             CurseManager.applySpecialItem(specialItem: self.specialItem!, toUser: user)
         }
         self.presentingViewController?.dismiss(animated: true, completion: nil)
-        popoverPresentationController?.delegate?.popoverPresentationControllerDidDismissPopover!(popoverPresentationController!)
     }
     
     @IBAction func stepperValueChanged(_ sender: Any) {
@@ -61,6 +60,5 @@ class ItemPopoverViewController: UIViewController {
         try? realm.commitWrite()
         realm.refresh()
         self.presentingViewController?.dismiss(animated: true, completion: nil)
-        popoverPresentationController?.delegate?.popoverPresentationControllerDidDismissPopover!(popoverPresentationController!)
     }
 }

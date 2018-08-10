@@ -25,33 +25,11 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyUserCell", for: indexPath) as! NearbyDevicesCollectionViewCell
         
-        var userModel: UserModel
-        
-        if self.currentUser != nil && itemsCountIfBlind == 1 && self.currentUser.curse == "Blind" {
-            let userKV = self.users.first(where: { (key, value) -> Bool in
-                key.displayName == "Spectre"
-            })
-            userModel = (userKV?.value)!
-        }
-        else {
-            let allUsers = Array(self.users.values)
-            userModel = allUsers[indexPath.row]
-        }
-        
-        if userModel.state == "Tunak-Tunak-Tun" {
-            cell.avatarImageView.image = #imageLiteral(resourceName: "tunak-tunak.jpg")
-        }
-        else if userModel.state == "Tic-Tac-Toe" {
-            cell.avatarImageView.image = #imageLiteral(resourceName: "tic-tac-toe.png")
-        }
-        else if let defaultImage = UIImage(named: userModel.avatarString) {
-            cell.avatarImageView.image = defaultImage
-        }
-        else {
-            let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: userModel.avatarString)!))
-            cell.avatarImageView.image = imgurImage
-        }
-        cell.setCellContent(user: userModel)
+        let userModel = getUserModel(forIndexPath: indexPath)
+        cell.avatarImageView.image = self.getImageForUser(userModel: userModel)
+
+        cell.usernameLabel.text = userModel.username
+        cell.state.text = userModel.state
         
         return cell
     }
@@ -68,6 +46,39 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
         self.usersConnectivity.chatDelegate = chatVC
         self.navigationController?.pushViewController(chatVC, animated: true)
         
+    }
+    
+    //    MARK: Cell content help functions
+    
+    private func getUserModel(forIndexPath indexPath: IndexPath) -> UserModel {
+        if self.currentUser != nil && itemsCountIfBlind == 1 && self.currentUser.curse == "Blind" {
+            let userKV = self.users.first(where: { (key, value) -> Bool in
+                key.displayName == "Spectre"
+            })
+            return (userKV?.value)!
+        }
+        else {
+            let allUsers = Array(self.users.values)
+            return allUsers[indexPath.row]
+        }
+    }
+    
+    private func getImageForUser(userModel: UserModel) -> UIImage {
+        if userModel.state == "Tunak-Tunak-Tun" {
+            return #imageLiteral(resourceName: "tunak-tunak.jpg")
+        }
+        else if userModel.state == "Tic-Tac-Toe" {
+            return #imageLiteral(resourceName: "tic-tac-toe.png")
+        }
+        else if let defaultImage = UIImage(named: userModel.avatarString) {
+            return defaultImage
+        }
+        else {
+            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: userModel.avatarString)!)) {
+                return imgurImage
+            }
+            return #imageLiteral(resourceName: "ghost_avatar.png")
+        }
     }
 
 }

@@ -44,6 +44,7 @@
 		0657906D211AD3BE005CF741 /* ChatViewController+Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */; };
 		0657906F211AEEAE005CF741 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906E211AEEAE005CF741 /* Extensions.swift */; };
 		06579071211C6E94005CF741 /* gift-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 06579070211C6E93005CF741 /* gift-icon.png */; };
+		06579073211C8003005CF741 /* login_background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06579072211C8001005CF741 /* login_background.jpg */; };
 		0680D58521119BD500B1C926 /* Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58421119BD500B1C926 /* Spectre.swift */; };
 		0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */; };
 		0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */; };
@@ -97,6 +98,7 @@
 		0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Game.swift"; sourceTree = "<group>"; };
 		0657906E211AEEAE005CF741 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		06579070211C6E93005CF741 /* gift-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gift-icon.png"; sourceTree = "<group>"; };
+		06579072211C8001005CF741 /* login_background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = login_background.jpg; sourceTree = "<group>"; };
 		0680D58421119BD500B1C926 /* Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spectre.swift; sourceTree = "<group>"; };
 		0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Spectre.swift"; sourceTree = "<group>"; };
 		0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
@@ -205,8 +207,8 @@
 			isa = PBXGroup;
 			children = (
 				060FC53F210732DF00E5D6BB /* NearbyUsersViewController.swift */,
-				06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */,
 				061095C121104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift */,
+				06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */,
 				060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */,
 				06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */,
 				06A26F5B211496980023F679 /* ItemPopoverViewController.swift */,
@@ -240,6 +242,7 @@
 		06262FD221086A4F003C6A1E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				06579072211C8001005CF741 /* login_background.jpg */,
 				06262FD321086A4F003C6A1E /* Avatars */,
 			);
 			path = Resources;
@@ -355,6 +358,7 @@
 				06262FE9210B493F003C6A1E /* do_you_kno_da_wey.jpeg in Resources */,
 				06262FEB210B493F003C6A1E /* spongebob.jpg in Resources */,
 				065790672119D965005CF741 /* tunak-tunak.jpg in Resources */,
+				06579073211C8003005CF741 /* login_background.jpg in Resources */,
 				060FC53021071DE700E5D6BB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

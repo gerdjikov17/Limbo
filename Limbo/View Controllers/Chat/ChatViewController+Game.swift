@@ -26,7 +26,7 @@ extension ChatViewController {
         if messageBeforeThis == QUESTION_NAME {
             key = KEY_NAME
         }
-        else if messageBeforeThis!.contains("|") {
+        else if messageBeforeThis!.contains("|") || messageBeforeThis!.contains("Invalid") {
             key = KEY_COORDINATES
         }
         else {

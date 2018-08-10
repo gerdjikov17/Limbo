@@ -44,4 +44,11 @@ extension String {
         return self[startIndex...startIndex].uppercased() + self[index(after: startIndex)..<endIndex]
     }
     
+    func shuffle() -> String {
+        let shuffledString = self.sorted { (_, _) -> Bool in
+            arc4random() < arc4random()
+        }
+        return String(shuffledString)
+    }
+    
 }
