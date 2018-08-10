@@ -79,7 +79,7 @@ class RealmManager: NSObject {
     
     static func clearUsersStates() {
         let realm = try! Realm()
-        let users = realm.objects(UserModel.self).filter("userID == %d AND state != %@", -1, "Offline").filter("state != %@", "Spectre")
+        let users = realm.objects(UserModel.self).filter("state != %@", "Offline").filter("state != %@", "Spectre")
         realm.beginWrite()
         users.setValue("Offline", forKey: "state")
         try! realm.commitWrite()

@@ -168,6 +168,7 @@ class NearbyUsersViewController: UIViewController {
             self.view.makeToast("You can't sign out while cursed")
             return
         }
+        RealmManager.clearUsersStates()
         UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
         UserDefaults.standard.synchronize()
         let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
