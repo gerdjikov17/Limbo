@@ -15,6 +15,7 @@ class UsersConnectivity: NSObject {
     //    MARK: Properties
     
     private var userModel: UserModel?
+    var notificationToken: NotificationToken?
     internal var myPeerID: MCPeerID
     private var serviceAdvertiser: MCNearbyServiceAdvertiser
     private let serviceBrowser: MCNearbyServiceBrowser
@@ -44,6 +45,22 @@ class UsersConnectivity: NSObject {
         
         self.serviceBrowser.delegate = self
         self.serviceBrowser.startBrowsingForPeers()
+        
+        self.notificationToken = userModel.observe({ change in
+            switch change {
+            case .change(let properties) :
+                for property in properties {
+                    if property.name == "avatarString" {
+                        self.serviceAdvertiser.stopAdvertisingPeer()
+                        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": userModel.username, "state": userModel.state, "avatar": property.newValue as! String], serviceType:Constants.MCServiceType)
+                        self.serviceAdvertiser.delegate = self
+                        self.serviceAdvertiser.startAdvertisingPeer()
+                    }
+                }
+            default:
+                break
+            }
+        })
     }
     
     deinit {

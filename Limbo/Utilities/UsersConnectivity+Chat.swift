@@ -57,10 +57,9 @@ extension UsersConnectivity {
         let realm = try! Realm()
         var user: UserModel
         if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: info!["username"]!) {
-            if let realmUser = realm.objects(UserModel.self).filter("uniqueDeviceID == %@", peerID.displayName).first {
-                try? realm.write {
-                    realmUser.state = userState
-                }
+            try? realm.write {
+                realmUser.state = userState
+                realmUser.avatarString = info!["avatar"]!
             }
             user = realmUser
         }
