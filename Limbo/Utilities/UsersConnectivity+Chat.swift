@@ -14,28 +14,30 @@ extension UsersConnectivity {
     
     func handleChatData(data: Data, fromPeer peerID: MCPeerID) {
         let dataDict = NSKeyedUnarchiver.unarchiveObject(with: data) as! Dictionary<String, Any>
-        //            let dataDict = try! JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as! [String: Any]
         let messageModel = MessageModel(withDictionary: dataDict)
         if (Constants.Curses.allCurses.contains(where: { (curse) -> Bool in
             curse.rawValue == messageModel.messageString
         })) && messageModel.sender?.state == "Ghost" {
             let curse = Curse(rawValue: messageModel.messageString)!
-            if let user = RealmManager.currentLoggedUser() {
-                let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
-                if resultOfCurse.0 {
-                    UserDefaults.standard.set(peerID.displayName, forKey: Constants.UserDefaults.curseUserUniqueDeviceID)
-                    UserDefaults.standard.set(messageModel.sender?.username, forKey: Constants.UserDefaults.curseUserUsername)
-                    chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
-                }
-                else {
-                    let remainingTime = String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.1)) + " seconds!"
-                    NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: "Someone tried to haunt you! But you are protected for " + remainingTime)
-                        let answerMessage = MessageModel()
-                        answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"
-                        answerMessage.sender = user
-                        answerMessage.receivers.append(messageModel.sender!)
-                    _ = self.sendMessage(messageModel: answerMessage, toPeerID: peerID)
-                }
+            
+            guard let user = RealmManager.currentLoggedUser() else {
+                return
+            }
+            
+            let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
+            if resultOfCurse.0 {
+                UserDefaults.standard.set(peerID.displayName, forKey: Constants.UserDefaults.curseUserUniqueDeviceID)
+                UserDefaults.standard.set(messageModel.sender?.username, forKey: Constants.UserDefaults.curseUserUsername)
+                chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
+            }
+            else {
+                let remainingTime = String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.1)) + " seconds!"
+                NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: "Someone tried to haunt you! But you are protected for " + remainingTime)
+                let answerMessage = MessageModel()
+                answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"
+                answerMessage.sender = user
+                answerMessage.receivers.append(messageModel.sender!)
+                _ = self.sendMessage(messageModel: answerMessage, toPeerID: peerID)
             }
         }
         else {

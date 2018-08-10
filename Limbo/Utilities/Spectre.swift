@@ -18,6 +18,8 @@ class Spectre: NSObject {
         case newLine = "\n"
     }
     
+    //    MARK: Properties
+    
     static let specialAntiCurseSpell: [String] = ["ghost", "spell", "witch", "remove", "decurse", "your", "me", "final", "monster", "branch", "wand", "touch", "kiss", "fly", "draw", "must", "band", "broom", "hard", "barrel", "cook", "hair", "ludogorec", "free", "boiko borisov", "spectre", "say", "told", "human", "weak", "pleasure", "says", "blood", "wound", "sword", "queen", "king", "fire", "hot", "30 years", "forever", "baby", "magic", "pain", "forest", "troll", "eye", "flesh", "brain", "dark", "dirty", "👻", "☠️", "💀", "🎃", "👽", "🧙‍♀️", "🧝‍♂️", "🧙‍♂️", "🕷", "🦂", "🦇", "🦉", "🐉", "🐲", "🌙", "🌪"]
     static let specialMessages: [String] = ["How many ghosts are around me", "Give me the anti-spell", "Hello Spectre", "Hi Spectre", "Who cursed me", "Who is haunting me", "What is the afterlife", "\u{0001F44B}"]
     static var specialAnswers: [String] {
@@ -59,7 +61,7 @@ class Spectre: NSObject {
         
     }
     
-    
+    //    MARK: Functions
     
     static func getGhostsNearby() -> String {
         let realm = try! Realm()
@@ -124,6 +126,8 @@ class Spectre: NSObject {
     }
     
 }
+
+//MARK: SpectreManager class
 
 class SpectreManager {
     

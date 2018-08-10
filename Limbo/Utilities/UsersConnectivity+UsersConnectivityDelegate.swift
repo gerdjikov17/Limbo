@@ -18,7 +18,6 @@ extension UsersConnectivity: UsersConnectivityDelegate {
         }
         if let toPeer = getPeerIDForUID(uniqueID: toPeerID.displayName) {
             do {
-//                let data = try! JSONSerialization.data(withJSONObject: messageModel.toDictionary(), options: .sortedKeys)
                 let data = NSKeyedArchiver.archivedData(withRootObject: messageModel.toDictionary())
                 try self.session.send(data, toPeers: [toPeer], with: .reliable)
                 return true

@@ -46,20 +46,19 @@ class RealmManager: NSObject {
     
     static func registerUser(username: String, password: String) -> Bool {
         let realm = try! Realm()
-        if realm.objects(UserModel.self).filter("username = %@", username).first == nil {
-            realm.beginWrite()
-            let user: UserModel! = UserModel(username: username, password: password)
-            user.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat")
-            user.userID = realm.objects(UserModel.self).count
-            realm.add(user)
-            try! realm.commitWrite()
-            realm.refresh()
-            let dict = ["username": username, "date": Date()] as [String : Any]
-            UserDefaults.standard.set(dict, forKey: Constants.UserDefaults.gift)
-            return true
+        guard realm.objects(UserModel.self).filter("username = %@", username).first == nil else {
+            return false
         }
-        
-        return false
+        realm.beginWrite()
+        let user: UserModel! = UserModel(username: username, password: password)
+        user.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat")
+        user.userID = realm.objects(UserModel.self).count
+        realm.add(user)
+        try! realm.commitWrite()
+        realm.refresh()
+        let dict = ["username": username, "date": Date()] as [String : Any]
+        UserDefaults.standard.set(dict, forKey: Constants.UserDefaults.gift)
+        return true
     }
     
     static func getMessagesForUsers(firstUser: UserModel, secondUser: UserModel) -> Results<MessageModel>? {

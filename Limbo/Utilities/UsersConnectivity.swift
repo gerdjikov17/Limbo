@@ -12,6 +12,8 @@ import RealmSwift
 
 class UsersConnectivity: NSObject {
     
+    //    MARK: Properties
+    
     private var userModel: UserModel?
     internal var myPeerID: MCPeerID
     private var serviceAdvertiser: MCNearbyServiceAdvertiser
@@ -26,6 +28,7 @@ class UsersConnectivity: NSObject {
     var delegate: NearbyUsersDelegate?
     var chatDelegate: ChatDelegate?
     
+    //    MARK: Initialization
     
     init(userModel: UserModel, delegate: NearbyUsersDelegate) {
         self.userModel = userModel
@@ -54,6 +57,8 @@ class UsersConnectivity: NSObject {
     }
     
 }
+
+// MARK: Protocol conforms
 
 extension UsersConnectivity: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
