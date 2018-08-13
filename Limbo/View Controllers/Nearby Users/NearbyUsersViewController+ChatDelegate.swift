@@ -58,6 +58,13 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
     }
     
     private func replyAction(withText text: String, andUserInfo userInfo: [AnyHashable: Any]) {
+        guard self.currentUser.curse != "Silence" else {
+            let pointForToast = CGPoint(x: self.view.center.x, y: (self.navigationController?.navigationBar.frame.size.height)! + CGFloat(100))
+            let remainingTime = Constants.Curses.curseTime + (self.currentUser?.curseCastDate?.timeIntervalSinceNow)!
+            let curseRemainingTime = Int(remainingTime)
+            self.view.makeToast("You are cursed with Silence", point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+            return
+        }
         let userSendingMessageToUniqueDeviceID = userInfo["uniqueDeviceID"] as! String
         let peerIDSendingMessageTo = self.usersConnectivity.getPeerIDForUID(uniqueID: userSendingMessageToUniqueDeviceID)
         guard let userSendingMessageTo = RealmManager.userWith(uniqueID: userSendingMessageToUniqueDeviceID, andUsername: userInfo["username"] as! String) else {

@@ -63,14 +63,18 @@ extension ChatViewController: UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y == 0 && !self.areAllMessagesLoaded{
-            let newResultsOfMessages = queryLastHundredMessages()
-            let mergedArray = newResultsOfMessages + messages
-            self.messages = mergedArray
+        if scrollView.contentOffset.y == 0 {
+            let countBeforeUpdate = self.messages.count
+            guard countBeforeUpdate > 0 else {
+                return
+            }
+            
+            rangeOfMessagesToShow += 50
+            self.messages = Array(self.messagesResults[self.startIndex...])
             chatTableView.reloadData()
             
-            let indexPath = IndexPath(item: newResultsOfMessages.count, section: 0)
-            self.chatTableView.scrollToRow(at: indexPath, at: .top, animated: false)
+            let countAfterUpdate = self.messages.count
+            self.chatTableView.scrollToRow(at: IndexPath(row: countAfterUpdate - countBeforeUpdate, section: 0), at: .top, animated: false)
         }
     }
     

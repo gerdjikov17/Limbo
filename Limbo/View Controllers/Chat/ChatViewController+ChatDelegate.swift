@@ -19,18 +19,9 @@ extension ChatViewController: ChatDelegate {
     
     func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
         DispatchQueue.main.async {
+            if fromPeerID.displayName != self.peerIDChattingWith?.displayName {
             let realm = try! Realm()
             let messageModel = realm.resolve(threadSafeMessageRef)
-            if fromPeerID.displayName == self.peerIDChattingWith?.displayName {
-                
-                self.messages.append(messageModel!)
-                let indexOfMessage = self.messages.count - 1
-                let indexPath = IndexPath(row: indexOfMessage, section: 0)
-                self.chatTableView.insertRows(at: [indexPath], with: .middle)
-                self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-            }
-            else {
-                
                 NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
             }
         }

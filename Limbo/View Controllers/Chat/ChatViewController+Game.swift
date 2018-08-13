@@ -35,17 +35,12 @@ extension ChatViewController {
         let dataDict = [key: message]
         let success = self.chatDelegate?.sendJSONtoGame(dataDict: dataDict, toPeerID: self.peerIDChattingWith!)
         if success! {
-            self.messages.append(messageModel)
             let realm = try! Realm()
             if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!, andUsername: (self.userChattingWith?.username)!) {
                 try? realm.write {
                     realm.add(messageModel)
                     messageModel.receivers.append(userChattingWith)
                 }
-                let indexOfMessage = self.messages.count - 1
-                let indexPath = IndexPath(row: indexOfMessage, section: 0)
-                self.chatTableView.insertRows(at: [indexPath], with: .middle)
-                self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
             }
         }
     }

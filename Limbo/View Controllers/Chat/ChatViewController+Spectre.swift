@@ -21,18 +21,12 @@ extension ChatViewController {
     func sendMessageToSpectre(message: String) {
         let messageModel = MessageModel()
         messageModel.messageString = message
-        self.messages.append(messageModel)
         let realm = try! Realm()
         let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first
         try? realm.write {
             realm.add(messageModel)
             messageModel.sender = self.currentUser
             messageModel.receivers.append(spectre!)
-            
-            let indexOfMessage = self.messages.count - 1
-            let indexPath = IndexPath(row: indexOfMessage, section: 0)
-            self.chatTableView.insertRows(at: [indexPath], with: .middle)
-            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
         }
         self.receiveMessageFromSpectre(forMessage: message)
     }
@@ -48,12 +42,6 @@ extension ChatViewController {
             realm.add(messageModel)
             messageModel.sender = spectreUser
             messageModel.receivers.append(self.currentUser!)
-            
-            self.messages.append(messageModel)
-            let indexOfMessage = self.messages.count - 1
-            let indexPath = IndexPath(row: indexOfMessage, section: 0)
-            self.chatTableView.insertRows(at: [indexPath], with: .middle)
-            self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
 
     }

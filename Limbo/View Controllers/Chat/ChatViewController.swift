@@ -21,18 +21,27 @@ class ChatViewController: UIViewController {
     var userChattingWith: UserModel?
     var peerIDChattingWith: MCPeerID?
     var currentUser: UserModel?
+    var messagesResults: Results<MessageModel>!
     var messages: [MessageModel]!
+    var startIndex: Int! {
+        get {
+            var returnIndex = self.messagesResults.count - self.rangeOfMessagesToShow
+            if returnIndex < 0 {
+                returnIndex = 0
+            }
+            return returnIndex
+        }
+    }
     var selectedIndexPathForTimeStamp: IndexPath?
-    var lastLoadedMessageIndex: Int?
-    var areAllMessagesLoaded: Bool!
+    var notificationToken: NotificationToken!
+    var rangeOfMessagesToShow = 50
     
-    
-    //    MARK: Activity life cycle
+    //    MARK: Life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.areAllMessagesLoaded = false
-        self.messages = queryLastHundredMessages()
+        self.messagesResults = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!)!
+        self.messages = Array(self.messagesResults[startIndex...])
         self.chatTableView.dataSource = self
         self.chatTableView.delegate = self
         self.messageTextField.delegate = self;
@@ -44,6 +53,9 @@ class ChatViewController: UIViewController {
         
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear history", style: .plain, target: self, action: #selector(self.clearHistoryButtonTap))
+        
+        self.initNotificationToken()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,6 +76,7 @@ class ChatViewController: UIViewController {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        self.notificationToken.invalidate()
     }
     
     //    MARK: Keyboard Notifications
@@ -106,24 +119,6 @@ class ChatViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-    func queryLastHundredMessages() -> [MessageModel] {
-        if let results = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!) {
-            if lastLoadedMessageIndex == nil {
-                lastLoadedMessageIndex = results.count
-            }
-            if lastLoadedMessageIndex! - 50 >= 0 {
-                let lastLoadedMessageIndex = self.lastLoadedMessageIndex!
-                self.lastLoadedMessageIndex! -= 50
-                return Array(results[lastLoadedMessageIndex - 50..<lastLoadedMessageIndex])
-            }
-            else {
-                self.areAllMessagesLoaded = true
-                return Array(results[0..<lastLoadedMessageIndex!])
-            }
-        }
-        return Array()
-    }
-    
     //    MARK: Button taps
     
     @objc func clearHistoryButtonTap() {
@@ -135,7 +130,7 @@ class ChatViewController: UIViewController {
                 realm.delete(results)
             }
             try! realm.commitWrite()
-            self.messages = Array()
+            self.messages = Array(self.messagesResults)
             self.chatTableView.reloadData()
         }))
         alertController.addAction(UIAlertAction(title: "No", style: .default, handler: { (action) in
@@ -195,20 +190,44 @@ class ChatViewController: UIViewController {
         messageModel.sender = self.currentUser
         let success = self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID)
         if success! {
-            self.messages.append(messageModel)
             let realm = try! Realm()
             if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!, andUsername: (self.userChattingWith?.username)!) {
                 try? realm.write {
                     realm.add(messageModel)
                     messageModel.receivers.append(userChattingWith)
                 }
-                let indexOfMessage = self.messages.count - 1
-                let indexPath = IndexPath(row: indexOfMessage, section: 0)
-                self.chatTableView.insertRows(at: [indexPath], with: .middle)
-                self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: true)
             }
         }
     }
+    
+    //    MARK: Other functions
+    func initNotificationToken() {
+        self.notificationToken = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!)?.observe({ changes in
+            switch changes {
+            case .initial:
+                self.chatTableView.reloadData()
+            case .update(_, _, let insertions, _):
+                
+                self.chatTableView.beginUpdates()
+                
+                if insertions.count > 0 {
+                    self.messages.append(self.messagesResults.last!)
+                    self.chatTableView.insertRows(at: [IndexPath(row: self.messages.count - 1, section: 0)],
+                                                  with: .automatic)
+                }
+                
+                self.chatTableView.endUpdates()
+                
+                if insertions.count > 0 {
+                    
+                    self.chatTableView.scrollToRow(at: IndexPath(row: self.messages.count - 1, section: 0), at: .middle, animated: true)
+                }
+            case .error(let error):
+                print(error)
+            }
+        })
+    }
+    
 }
 
 // MARK: Protocol Conforms
