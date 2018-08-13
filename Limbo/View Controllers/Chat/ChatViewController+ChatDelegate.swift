@@ -11,23 +11,6 @@ import RealmSwift
 import MultipeerConnectivity
 import UserNotifications
 
-extension ChatViewController: ChatDelegate {
-    
-    func didReceiveCurse(curse: Curse, remainingTime: Double) {
-
-    }
-    
-    func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
-        DispatchQueue.main.async {
-            if fromPeerID.displayName != self.peerIDChattingWith?.displayName {
-            let realm = try! Realm()
-            let messageModel = realm.resolve(threadSafeMessageRef)
-                NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
-            }
-        }
-    }
-}
-
 extension ChatViewController: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.alert, .badge, .sound])
@@ -45,7 +28,6 @@ extension ChatViewController: UNUserNotificationCenterDelegate {
         chatVC.userChattingWith = userChattingWith
         chatVC.peerIDChattingWith = peerIDChattingWith
         chatVC.chatDelegate = self.chatDelegate
-        self.chatDelegate?.setChatDelegate(newDelegate: chatVC)
         var viewControllers = self.navigationController?.viewControllers
         viewControllers?.removeLast()
         viewControllers?.append(chatVC)

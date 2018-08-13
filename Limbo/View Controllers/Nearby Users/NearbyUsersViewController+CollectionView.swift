@@ -24,42 +24,56 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyUserCell", for: indexPath) as! NearbyDevicesCollectionViewCell
-        
-        let userModel = getUserModel(forIndexPath: indexPath)
+        let userModelAndUnreadMessages = getUserModelAndUnreadMessages(forIndexPath: indexPath)
+        let userModel = userModelAndUnreadMessages.userModel
+        let unreadMessages = userModelAndUnreadMessages.unreadMessages
         cell.avatarImageView.image = self.getImageForUser(userModel: userModel)
 
         cell.usernameLabel.text = userModel.username
         cell.state.text = userModel.state
+        if unreadMessages > 0 {
+            cell.notSeenMessagesLabel.layer.cornerRadius = cell.notSeenMessagesLabel.frame.size.height / 2
+            cell.notSeenMessagesLabel.clipsToBounds = true
+            cell.notSeenMessagesLabel.attributedText = NSAttributedString(string: String(" " + String(unreadMessages) + " "), attributes: [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.backgroundColor: UIColor.red])
+            
+        }
+        else {
+            cell.notSeenMessagesLabel.attributedText = NSAttributedString(string: "")
+        }
+        
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedUser = Array(self.users.values)[indexPath.row]
+        let selectedUser = getUserModelAndUnreadMessages(forIndexPath: indexPath)
         let selectedPeerID = Array(self.users.keys)[indexPath.row]
+        self.lastSelectedPeerID = selectedPeerID
         self.usersConnectivity.inviteUser(peerID: selectedPeerID)
         let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
         chatVC.currentUser = self.currentUser
-        chatVC.userChattingWith = selectedUser
+        chatVC.userChattingWith = selectedUser.userModel
         chatVC.peerIDChattingWith = selectedPeerID
         chatVC.chatDelegate = self.usersConnectivity
-        self.usersConnectivity.chatDelegate = chatVC
+        
+        self.users[selectedPeerID]? = (selectedUser.userModel, 0)
+        
         self.navigationController?.pushViewController(chatVC, animated: true)
         
     }
     
     //    MARK: Cell content help functions
     
-    private func getUserModel(forIndexPath indexPath: IndexPath) -> UserModel {
+    private func getUserModelAndUnreadMessages(forIndexPath indexPath: IndexPath) -> (userModel: UserModel, unreadMessages: Int) {
         if self.currentUser != nil && itemsCountIfBlind == 1 && self.currentUser.curse == "Blind" {
             let userKV = self.users.first(where: { (key, value) -> Bool in
                 key.displayName == "Spectre"
             })
-            return (userKV?.value)!
+            return ((userKV?.value)!.user, (userKV?.value)!.unreadMessages)
         }
         else {
             let allUsers = Array(self.users.values)
-            return allUsers[indexPath.row]
+            return (allUsers[indexPath.row].user, allUsers[indexPath.row].unreadMessages)
         }
     }
     

@@ -21,7 +21,8 @@ class NearbyUsersViewController: UIViewController {
         return RealmManager.currentLoggedUser()
     }
     var notificationToken: NotificationToken?
-    var users: [MCPeerID: UserModel]!
+    var users: [MCPeerID: (user: UserModel, unreadMessages: Int)]!
+    var lastSelectedPeerID: MCPeerID?
     var usersConnectivity: UsersConnectivity!
     var itemsCountIfBlind = 0
     @IBOutlet weak var nearbyUsersCollectionView: UICollectionView!
@@ -73,6 +74,7 @@ class NearbyUsersViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.lastSelectedPeerID = nil
         self.nearbyUsersCollectionView.reloadData()
         self.checkForGifts()
     }
@@ -170,6 +172,7 @@ class NearbyUsersViewController: UIViewController {
         }
         RealmManager.clearUsersStates()
         UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
+//        UserDefaults.standard.set(nil, forKey: Constants.UserDefaults.loggedUserID)
         UserDefaults.standard.synchronize()
         let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
         loginVC.loginDelegate = self
@@ -204,7 +207,7 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
     }
     
     func didFindNewUser(user: UserModel, peerID: MCPeerID) {
-        self.users[peerID] = user
+        self.users[peerID] = (user, 0)
         
         if user.state == "Spectre" {
             itemsCountIfBlind = 1

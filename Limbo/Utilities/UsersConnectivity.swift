@@ -107,6 +107,7 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
         }
         else if peerID.displayName.hasSuffix(".chat") {
             self.foundChatPeer(peerID: peerID, withDiscoveryInfo: info)
+            self.inviteUser(peerID: peerID)
         }
     }
     

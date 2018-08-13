@@ -14,5 +14,6 @@ class NearbyDevicesCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var state: UILabel!
+    @IBOutlet weak var notSeenMessagesLabel: UILabel!
     
 }

@@ -54,19 +54,36 @@
                                                     <color key="textColor" white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n1B-T0-FX3">
+                                                    <rect key="frame" x="80" y="41" width="8" height="21"/>
+                                                    <attributedString key="attributedText">
+                                                        <fragment content="1">
+                                                            <attributes>
+                                                                <color key="NSBackgroundColor" red="0.99611192941665649" green="0.045651383697986603" blue="0.0031450181268155575" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <color key="NSColor" red="0.996257483959198" green="0.99363070726394653" blue="0.99299103021621704" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <font key="NSFont" metaFont="system" size="17"/>
+                                                            </attributes>
+                                                        </fragment>
+                                                    </attributedString>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                         </view>
                                         <constraints>
                                             <constraint firstItem="N06-Bz-jK6" firstAttribute="top" secondItem="a3E-do-1jY" secondAttribute="top" constant="7" id="0OI-tJ-aSk"/>
+                                            <constraint firstAttribute="trailing" secondItem="n1B-T0-FX3" secondAttribute="trailing" constant="12" id="2lY-io-U3T"/>
                                             <constraint firstItem="bfN-x9-ydu" firstAttribute="top" secondItem="N06-Bz-jK6" secondAttribute="bottom" constant="2" id="5GE-g9-F3i"/>
                                             <constraint firstAttribute="bottom" secondItem="O8B-oH-E2n" secondAttribute="bottom" constant="1" id="6sv-8i-75E"/>
+                                            <constraint firstItem="n1B-T0-FX3" firstAttribute="top" secondItem="a3E-do-1jY" secondAttribute="top" constant="41" id="OSg-6y-ZVs"/>
                                             <constraint firstItem="bfN-x9-ydu" firstAttribute="centerX" secondItem="a3E-do-1jY" secondAttribute="centerX" id="aOP-2d-f6M"/>
                                             <constraint firstItem="O8B-oH-E2n" firstAttribute="centerX" secondItem="a3E-do-1jY" secondAttribute="centerX" id="fqs-PC-Q9z"/>
                                             <constraint firstItem="N06-Bz-jK6" firstAttribute="centerX" secondItem="a3E-do-1jY" secondAttribute="centerX" id="hRz-kZ-kAs"/>
+                                            <constraint firstItem="n1B-T0-FX3" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="a3E-do-1jY" secondAttribute="leading" symbolic="YES" id="uf6-9d-mHI"/>
                                         </constraints>
                                         <size key="customSize" width="100" height="100"/>
                                         <connections>
                                             <outlet property="avatarImageView" destination="N06-Bz-jK6" id="BZe-du-I9I"/>
+                                            <outlet property="notSeenMessagesLabel" destination="n1B-T0-FX3" id="cb3-iA-kZQ"/>
                                             <outlet property="state" destination="O8B-oH-E2n" id="pvW-9h-VRY"/>
                                             <outlet property="usernameLabel" destination="bfN-x9-ydu" id="jDM-RZ-6Hi"/>
                                         </connections>
@@ -434,7 +451,7 @@
                                 <color key="separatorColor" red="0.019607843137254902" green="0.10980392156862745" blue="0.16078431372549018" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="sectionIndexBackgroundColor" red="0.01974067925" green="0.10892223180000001" blue="0.15902601520000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="receivedMessageCell" id="osl-xa-wjv" customClass="MessageCell" customModule="Limbo">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="receivedMessageCell" id="osl-xa-wjv" customClass="MessageCell" customModule="Limbo">
                                         <rect key="frame" x="0.0" y="28" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="osl-xa-wjv" id="HYg-Qg-3GB">
@@ -471,7 +488,7 @@
                                             <outlet property="receivedMessageTimestampLabel" destination="iMz-Nm-q0D" id="cv9-nS-hlQ"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="sentMessageCell" id="fxh-DO-c9P" customClass="MessageCell" customModule="Limbo">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="sentMessageCell" id="fxh-DO-c9P" customClass="MessageCell" customModule="Limbo">
                                         <rect key="frame" x="0.0" y="72" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fxh-DO-c9P" id="m9J-Ow-Sqo">

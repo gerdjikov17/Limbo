@@ -27,9 +27,25 @@ extension NearbyUsersViewController: ChatDelegate {
     
     func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
         DispatchQueue.main.async {
-            let realm = try! Realm()
-            let messageModel = realm.resolve(threadSafeMessageRef)
-            NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
+            if let lastSelectedPeer = self.lastSelectedPeerID {
+                if lastSelectedPeer != fromPeerID {
+                    let realm = try! Realm()
+                    let messageModel = realm.resolve(threadSafeMessageRef)
+                    let unreadMessages = self.users[lastSelectedPeer]?.unreadMessages
+                    self.users[lastSelectedPeer]?.unreadMessages = unreadMessages! + 1
+                    NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
+                }
+            }
+            else {
+                let realm = try! Realm()
+                let messageModel = realm.resolve(threadSafeMessageRef)
+                let unreadMessages = self.users[fromPeerID]?.unreadMessages
+                self.users[fromPeerID]?.unreadMessages = unreadMessages! + 1
+                NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
+            }
+            if let index = Array(self.users.keys).index(of: fromPeerID) {
+                self.nearbyUsersCollectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
+            }
         }
     }
     
@@ -39,12 +55,15 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
     
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        guard UserDefaults.standard.bool(forKey: Constants.UserDefaults.isLoged) else {
+            return
+        }
         completionHandler([.alert, .badge, .sound])
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let notification = response.notification
-        if notification.request.identifier == Constants.Notifications.Identifiers.Curse { return }
+        if notification.request.identifier == Constants.Notifications.Identifiers.Curse && notification.request.identifier == Constants.Notifications.Identifiers.Item { return }
         if response.actionIdentifier == Constants.Notifications.Identifiers.MessageActionReply {
             let response = response as! UNTextInputNotificationResponse
             let text = response.userText
@@ -99,7 +118,10 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
         chatVC.userChattingWith = userChattingWith
         chatVC.peerIDChattingWith = peerIDChattingWith
         chatVC.chatDelegate = self.usersConnectivity
-        self.usersConnectivity.chatDelegate = chatVC
+        
+        self.users[peerIDChattingWith] = (userChattingWith!, 0)
+        self.lastSelectedPeerID = peerIDChattingWith
+        
         self.navigationController?.pushViewController(chatVC, animated: true)
     }
 }
