@@ -84,7 +84,6 @@ class RealmManager: NSObject {
         users.setValue("Offline", forKey: "state")
         try! realm.commitWrite()
         realm.refresh()
-        
     }
     
 }
