@@ -65,7 +65,7 @@ class Spectre: NSObject {
     
     static func getGhostsNearby() -> String {
         let realm = try! Realm()
-        return String(realm.objects(UserModel.self).filter("state = %@ AND userID != %d", "Ghost", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).count)
+        return String(realm.objects(UserModel.self).filter("state = %@ AND userID == %d", "Ghost", -1).count)
     }
     
     static func theLastOneWhoHaunted() -> String {

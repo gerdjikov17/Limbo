@@ -27,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let spectre = UserModel(username: "Spectre", state: "Spectre", uniqueDeviceID: "Spectre")
             try! realm.write {
                 realm.add(spectre)
+                spectre.userID = -2
             }
         }
         let center = UNUserNotificationCenter.current()
@@ -41,9 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let itemCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Item, actions: [], intentIdentifiers: [], options: [])
             center.setNotificationCategories([messageCategory, curseCategory, itemCategory])
-        }
-        
-        
+        }        
         return true
     }
 
@@ -65,7 +64,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-        RealmManager.currentLoggedUser()?.setState(batteryLevel: UIDevice.current.batteryLevel)
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
