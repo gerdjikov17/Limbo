@@ -27,21 +27,26 @@ extension NearbyUsersViewController: ChatDelegate {
     
     func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID) {
         DispatchQueue.main.async {
+            let realm = try! Realm()
+            let messageModel = realm.resolve(threadSafeMessageRef)
+            NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
+            guard self.users.keys.contains(where: { (key) -> Bool in
+                key == fromPeerID
+            }) else {
+                print("users do not contain this peer")
+                
+                return
+            }
             if let lastSelectedPeer = self.lastSelectedPeerID {
                 if lastSelectedPeer != fromPeerID {
-                    let realm = try! Realm()
-                    let messageModel = realm.resolve(threadSafeMessageRef)
                     let unreadMessages = self.users[lastSelectedPeer]?.unreadMessages
                     self.users[lastSelectedPeer]?.unreadMessages = unreadMessages! + 1
-                    NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
                 }
             }
             else {
-                let realm = try! Realm()
-                let messageModel = realm.resolve(threadSafeMessageRef)
                 let unreadMessages = self.users[fromPeerID]?.unreadMessages
                 self.users[fromPeerID]?.unreadMessages = unreadMessages! + 1
-                NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
+                
             }
             if let index = Array(self.users.keys).index(of: fromPeerID) {
                 self.nearbyUsersCollectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
@@ -119,7 +124,12 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
         chatVC.peerIDChattingWith = peerIDChattingWith
         chatVC.chatDelegate = self.usersConnectivity
         
-        self.users[peerIDChattingWith] = (userChattingWith!, 0)
+        if (self.users.contains(where: { (key, value) -> Bool in
+            key == peerIDChattingWith
+        })) {
+            self.users[peerIDChattingWith] = (userChattingWith!, 0)
+        }
+        
         self.lastSelectedPeerID = peerIDChattingWith
         
         self.navigationController?.pushViewController(chatVC, animated: true)

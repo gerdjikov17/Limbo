@@ -54,9 +54,11 @@ extension UsersConnectivity {
     
     func foundChatPeer(peerID: MCPeerID, withDiscoveryInfo info: [String: String]?)  {
         let userState = info!["state"]!
+        print(userState)
         let realm = try! Realm()
         var user: UserModel
         if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: info!["username"]!) {
+            print(realmUser)
             try? realm.write {
                 realmUser.state = userState
                 realmUser.avatarString = info!["avatar"]!
@@ -69,8 +71,8 @@ extension UsersConnectivity {
             realm.beginWrite()
             realm.add(user)
             try! realm.commitWrite()
-            realm.refresh()
         }
+        realm.refresh()
         if shouldShowUserDependingOnState(foundUserState: userState) {
             self.delegate?.didFindNewUser(user: user, peerID: peerID)
         }

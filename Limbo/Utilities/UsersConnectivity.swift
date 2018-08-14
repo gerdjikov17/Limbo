@@ -133,6 +133,7 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
+        
         let realm = try! Realm()
         if let user = realm.objects(UserModel.self).filter("uniqueDeviceID == %@ AND state != %@", peerID.displayName, "Offline").filter("state != %@", "Spectre").first {
             realm.beginWrite()
@@ -149,7 +150,7 @@ extension UsersConnectivity : MCSessionDelegate {
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         NSLog("%@", "peer \(peerID) didChangeState: \(state.rawValue)")
-
+        
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {

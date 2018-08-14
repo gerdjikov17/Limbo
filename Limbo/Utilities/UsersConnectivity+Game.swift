@@ -35,6 +35,7 @@ extension UsersConnectivity {
         print(peerID)
         let username = String(peerID.displayName.prefix(upTo: peerID.displayName.index(peerID.displayName.startIndex, offsetBy: peerID.displayName.count - 5)))
         let userModel = UserModel(username: username, state: info!["gameName"]!, uniqueDeviceID: peerID.displayName)
+        userModel.userID = -3
         let realm = try! Realm()
         if realm.objects(UserModel.self).filter("uniqueDeviceID == %@", peerID.displayName).first == nil {
             realm.beginWrite()
