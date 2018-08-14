@@ -172,7 +172,6 @@ class NearbyUsersViewController: UIViewController {
         }
         RealmManager.clearUsersStates()
         UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
-//        UserDefaults.standard.set(nil, forKey: Constants.UserDefaults.loggedUserID)
         UserDefaults.standard.synchronize()
         let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
         loginVC.loginDelegate = self

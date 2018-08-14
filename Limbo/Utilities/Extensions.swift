@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension StringProtocol {
     var ascii: [UInt32] {
@@ -51,4 +52,18 @@ extension String {
         return String(shuffledString)
     }
     
+}
+
+extension CALayer {
+    
+    func addPulsingAnimation() {
+        let pulseAnimation = CABasicAnimation(keyPath: "opacity")
+        pulseAnimation.duration = 1
+        pulseAnimation.fromValue = 1
+        pulseAnimation.toValue = 0.5
+        pulseAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        pulseAnimation.autoreverses = true
+        pulseAnimation.repeatCount = .greatestFiniteMagnitude
+        self.add(pulseAnimation, forKey: "opacityAnimation")
+    }
 }

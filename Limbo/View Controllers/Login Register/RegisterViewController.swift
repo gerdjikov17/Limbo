@@ -20,6 +20,7 @@ class RegisterViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var greyContainerView: UIView!
     
+    @IBOutlet weak var backgroundView: UIView!
     //    MARK: Lifecycle
     
     override func viewDidLoad() {
@@ -39,7 +40,7 @@ class RegisterViewController: UIViewController {
         let output = cropFilter!.outputImage
         let cgimg = context.createCGImage(output!, from: output!.extent)
         let processedImage = UIImage(cgImage: cgimg!)
-        scrollView.backgroundColor = UIColor(patternImage: processedImage)
+        backgroundView.backgroundColor = UIColor(patternImage: processedImage)
         
         self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.1, green: 0.2, blue: 0.3, alpha: 0.5)
         
@@ -53,6 +54,12 @@ class RegisterViewController: UIViewController {
         self.signInLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.signInLabelTap)))
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.backgroundView.layer.addPulsingAnimation()
     }
     
     //    MARK: Button taps
@@ -127,20 +134,7 @@ class RegisterViewController: UIViewController {
         let contentInset:UIEdgeInsets = .zero
         scrollView.contentInset = contentInset
     }
-    
-    //    MARK: Overriding var supportedOrientation
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        get {
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                return .all
-            }
-            else {
-                return UIInterfaceOrientationMask.portrait
-            }
-            
-        }
-    }
+
 }
 
 extension RegisterViewController: UITextFieldDelegate {
