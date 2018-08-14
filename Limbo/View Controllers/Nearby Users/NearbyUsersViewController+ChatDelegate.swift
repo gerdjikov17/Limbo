@@ -29,23 +29,25 @@ extension NearbyUsersViewController: ChatDelegate {
         DispatchQueue.main.async {
             let realm = try! Realm()
             let messageModel = realm.resolve(threadSafeMessageRef)
-            NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
+            
             guard self.users.keys.contains(where: { (key) -> Bool in
                 key == fromPeerID
             }) else {
                 print("users do not contain this peer")
-                
+                NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
                 return
             }
             if let lastSelectedPeer = self.lastSelectedPeerID {
                 if lastSelectedPeer != fromPeerID {
                     let unreadMessages = self.users[lastSelectedPeer]?.unreadMessages
                     self.users[lastSelectedPeer]?.unreadMessages = unreadMessages! + 1
+                    NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
                 }
             }
             else {
                 let unreadMessages = self.users[fromPeerID]?.unreadMessages
                 self.users[fromPeerID]?.unreadMessages = unreadMessages! + 1
+                NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
                 
             }
             if let index = Array(self.users.keys).index(of: fromPeerID) {
@@ -132,7 +134,24 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
         
         self.lastSelectedPeerID = peerIDChattingWith
         
-        self.navigationController?.pushViewController(chatVC, animated: true)
+        self.properlyPushChatVC(chatVC: chatVC)
+    }
+    
+    private func properlyPushChatVC(chatVC: ChatViewController) {
+        guard var viewControllers = self.navigationController?.viewControllers else {
+            return
+        }
+        guard let lastViewController = viewControllers.last else {
+            return
+        }
+        if lastViewController.isKind(of: ChatViewController.self) {
+            _ = viewControllers.popLast()
+            viewControllers.append(chatVC)
+            self.navigationController?.setViewControllers(viewControllers, animated: true)
+        }
+        else {
+            self.navigationController?.pushViewController(chatVC, animated: true)
+        }
     }
 }
 
