@@ -66,4 +66,27 @@ extension CALayer {
         pulseAnimation.repeatCount = .greatestFiniteMagnitude
         self.add(pulseAnimation, forKey: "opacityAnimation")
     }
+    
+    func addScaleXAnimation() {
+        let scaleAnimation = CABasicAnimation(keyPath: "transform.scale.x")
+        scaleAnimation.duration = 2
+        scaleAnimation.fromValue = 1
+        scaleAnimation.toValue = 1.05
+        scaleAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        scaleAnimation.autoreverses = true
+        scaleAnimation.repeatCount = .greatestFiniteMagnitude
+        self.add(scaleAnimation, forKey: "scaleXAnimation")
+    }
+    
+    func addScaleYAnimation() {
+        let scaleAnimation = CABasicAnimation(keyPath: "transform.scale.y")
+        scaleAnimation.duration = 2
+        scaleAnimation.fromValue = 1
+        scaleAnimation.toValue = 1.05
+        scaleAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        scaleAnimation.autoreverses = true
+        scaleAnimation.repeatCount = .greatestFiniteMagnitude
+        self.add(scaleAnimation, forKey: "scaleYAnimation")
+    }
+
 }

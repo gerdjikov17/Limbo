@@ -24,10 +24,7 @@ class AvatarCollectionViewController: UICollectionViewController {
         // Register cell classes
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
-        imageStrings.append("ghost_avatar.png")
-        imageStrings.append("do_you_kno_da_wey.jpeg")
-        imageStrings.append("pepe.jpg")
-        imageStrings.append("spongebob.jpg")
+        imageStrings = self.readImagesFromResourcesFolder()
         
         let gesture = UISwipeGestureRecognizer(target: self, action: #selector(self.dismissSelf))
         gesture.direction = UISwipeGestureRecognizerDirection.down
@@ -39,6 +36,11 @@ class AvatarCollectionViewController: UICollectionViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    private func readImagesFromResourcesFolder() -> [String] {
+        return try! FileManager.default.contentsOfDirectory(atPath: Bundle.main.resourcePath!.appending("/Avatars/"))
+    }
+    
 
     // MARK: UICollectionViewDataSource
 

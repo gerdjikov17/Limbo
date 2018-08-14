@@ -49,7 +49,7 @@ class LoginViewController: UIViewController {
         self.usernameTextField.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
         self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
         
-        self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.1, green: 0.2, blue: 0.3, alpha: 0.5)
+        self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.2, green: 0.3, blue: 0.4, alpha: 0.5)
         
         
         self.usernameTextField.delegate = self
@@ -63,6 +63,8 @@ class LoginViewController: UIViewController {
         super.viewDidAppear(animated)
         
         self.backgroundView.layer.addPulsingAnimation()
+        self.backgroundView.layer.addScaleXAnimation()
+        self.backgroundView.layer.addScaleYAnimation()
     }
     
     //    MARK: Button taps
