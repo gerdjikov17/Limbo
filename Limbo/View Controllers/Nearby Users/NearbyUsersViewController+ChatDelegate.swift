@@ -30,13 +30,6 @@ extension NearbyUsersViewController: ChatDelegate {
             let realm = try! Realm()
             let messageModel = realm.resolve(threadSafeMessageRef)
             
-            guard self.users.keys.contains(where: { (key) -> Bool in
-                key == fromPeerID
-            }) else {
-                print("users do not contain this peer")
-                NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
-                return
-            }
             if let lastSelectedPeer = self.lastSelectedPeerID {
                 if lastSelectedPeer != fromPeerID {
                     let unreadMessages = self.users[lastSelectedPeer]?.unreadMessages
@@ -45,8 +38,11 @@ extension NearbyUsersViewController: ChatDelegate {
                 }
             }
             else {
-                let unreadMessages = self.users[fromPeerID]?.unreadMessages
-                self.users[fromPeerID]?.unreadMessages = unreadMessages! + 1
+                if self.users.keys.contains(fromPeerID) {
+                    let unreadMessages = self.users[fromPeerID]?.unreadMessages
+                    self.users[fromPeerID]?.unreadMessages = unreadMessages! + 1
+                }
+                
                 NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
                 
             }

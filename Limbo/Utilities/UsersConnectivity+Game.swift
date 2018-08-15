@@ -16,10 +16,10 @@ extension UsersConnectivity {
         let dictWithData = try! JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as! [String: Any]
         let messageModel = MessageModel()
         messageModel.messageString = dictWithData.first?.value as! String
-        let realm = try! Realm()
-        realm.beginWrite()
         messageModel.sender = RealmManager.userWith(uniqueID: peerID.displayName)
         messageModel.receivers.append(RealmManager.currentLoggedUser()!)
+        let realm = try! Realm()
+        realm.beginWrite()
         realm.add(messageModel)
         try? realm.commitWrite()
         if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
@@ -27,21 +27,29 @@ extension UsersConnectivity {
             chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
         }
         
-        print(dictWithData)
+        print(messageModel)
     }
     
     func foundGamePeer(peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         print(info as Any)
         print(peerID)
         let username = String(peerID.displayName.prefix(upTo: peerID.displayName.index(peerID.displayName.startIndex, offsetBy: peerID.displayName.count - 5)))
-        let userModel = UserModel(username: username, state: info!["gameName"]!, uniqueDeviceID: peerID.displayName)
-        userModel.userID = -3
+        var userModel: UserModel
         let realm = try! Realm()
-        if realm.objects(UserModel.self).filter("uniqueDeviceID == %@", peerID.displayName).first == nil {
+        if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName) {
+            try! realm.write {
+                realmUser.state = info!["gameName"]!
+            }
+            userModel = realmUser
+        }
+        else {
+            userModel = UserModel(username: username, state: info!["gameName"]!, uniqueDeviceID: peerID.displayName)
+            userModel.userID = -3
             realm.beginWrite()
             realm.add(userModel)
             try! realm.commitWrite()
         }
+        realm.refresh()
         self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
     }
 }
