@@ -45,7 +45,9 @@ class NearbyUsersViewController: UIViewController {
 
         navigationController?.navigationBar.barTintColor = UIColor(red:0.02, green:0.11, blue:0.16, alpha:0.5)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign out", style: .plain, target: self, action: #selector(self.signOutButtonTap))
+        let rightButtonItemSignOut = UIBarButtonItem(title: "Sign out", style: .plain, target: self, action: #selector(self.signOutButtonTap))
+        let rightButtonItemChangeState = UIBarButtonItem(title: "Ghost", style: .plain, target: self, action: #selector(self.becomeGhost))
+        navigationItem.rightBarButtonItems = [rightButtonItemSignOut, rightButtonItemChangeState]
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Reload", style: .plain, target: self, action: #selector(self.reloadDataFromSelector))
         self.currentUserImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.userImageTap)))
         self.candleImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.candleImageTap)))
@@ -66,6 +68,7 @@ class NearbyUsersViewController: UIViewController {
             
         }
         NotificationCenter.default.addObserver(self, selector: Selector(("batteryLevelDidChange:")), name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.reinitUsersConnectivity), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -139,10 +142,11 @@ class NearbyUsersViewController: UIViewController {
     private func initRequiredPropertiesForLoggedUser() {
         self.checkForCurses(forUser: self.currentUser)
         self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
-        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
+        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self, peerID: nil)
         self.setUIContent(userModel: self.currentUser)
         self.notificationToken = self.currentUser.observe { (objectChange) in
             self.setUIContent(userModel: self.currentUser)
+            self.filterUsersToShow()
         }
     }
     
@@ -151,9 +155,17 @@ class NearbyUsersViewController: UIViewController {
         self.currentUser.setState(batteryLevel: batteryLevel)
         if self.userStateLabel.text != self.currentUser.state {
             self.userStateLabel.text = self.currentUser.state
-//        create new UsersConnectivity which uses new user state
-            self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self)
         }
+    }
+    
+    @objc func reinitUsersConnectivity() {
+        let myPeerID = self.usersConnectivity.myPeerID
+        self.usersConnectivity.didSignOut()
+        sleep(1)
+        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self, peerID: myPeerID)
+        self.usersConnectivity.chatDelegate = self
+        
+
     }
     
     @objc func reloadDataFromSelector() {
@@ -161,6 +173,37 @@ class NearbyUsersViewController: UIViewController {
             self.nearbyUsersCollectionView.reloadData()
             self.setUIContent(userModel: self.currentUser)
         }
+    }
+    
+    @objc func becomeGhost() {
+        var batteryLevel: Float
+        if self.currentUser.state == "Human" {
+            batteryLevel = 0.047
+        }
+        else if self.currentUser.state == "Ghost" {
+            batteryLevel = 0.26
+        }
+        else if self.currentUser.state == "Dying" {
+            batteryLevel = 0.51
+        }
+        else {
+            batteryLevel = 0.11
+        }
+        self.currentUser.setState(batteryLevel: batteryLevel)
+        if self.userStateLabel.text != self.currentUser.state {
+            self.userStateLabel.text = self.currentUser.state
+        }
+    }
+    
+    private func filterUsersToShow() {
+        var newUsers: [MCPeerID: (user: UserModel, unreadMessages: Int)] = Dictionary()
+        for key in self.users.keys {
+            if self.usersConnectivity.shouldShowUserDependingOnState(currentUserState: self.currentUser.state, foundUserState: (self.users[key]?.user.state)!) {
+                newUsers[key] = self.users[key]
+            }
+        }
+        self.users = newUsers
+        self.reloadDataFromSelector()
     }
     
     //MARK: Button taps

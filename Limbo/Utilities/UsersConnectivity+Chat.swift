@@ -58,11 +58,10 @@ extension UsersConnectivity {
         let realm = try! Realm()
         var user: UserModel
         if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: info!["username"]!) {
-            print(realmUser)
-            try? realm.write {
+            realm.beginWrite()
                 realmUser.state = userState
                 realmUser.avatarString = info!["avatar"]!
-            }
+            try! realm.commitWrite()
             user = realmUser
         }
         else {
@@ -73,7 +72,8 @@ extension UsersConnectivity {
             try! realm.commitWrite()
         }
         realm.refresh()
-        if shouldShowUserDependingOnState(foundUserState: userState) {
+        print(user)
+        if shouldShowUserDependingOnState(currentUserState: RealmManager.currentLoggedUser()!.state, foundUserState: userState) {
             self.delegate?.didFindNewUser(user: user, peerID: peerID)
         }
         

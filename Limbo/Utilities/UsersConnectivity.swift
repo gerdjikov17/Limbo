@@ -16,7 +16,7 @@ class UsersConnectivity: NSObject {
     
     private var userModel: UserModel?
     var notificationToken: NotificationToken?
-    internal var myPeerID: MCPeerID
+    var myPeerID: MCPeerID
     private var serviceAdvertiser: MCNearbyServiceAdvertiser
     private let serviceBrowser: MCNearbyServiceBrowser
     
@@ -31,11 +31,17 @@ class UsersConnectivity: NSObject {
     
     //    MARK: Initialization
     
-    init(userModel: UserModel, delegate: NearbyUsersDelegate) {
-        self.userModel = userModel
+    init(userModel: UserModel, delegate: NearbyUsersDelegate, peerID: MCPeerID?) {
+        self.userModel = RealmManager.currentLoggedUser()!
         self.delegate = delegate
-        self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat"))
-        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": userModel.username, "state": userModel.state, "avatar": userModel.avatarString], serviceType:Constants.MCServiceType)
+        if let unwrappedPeerID = peerID {
+            self.myPeerID = unwrappedPeerID
+        }
+        else {
+            self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat"))
+        }
+        print(self.userModel?.state)
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": self.userModel!.username, "state": self.userModel!.state, "avatar": self.userModel!.avatarString] as Dictionary, serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
         
         super.init()
@@ -47,28 +53,56 @@ class UsersConnectivity: NSObject {
         self.serviceBrowser.startBrowsingForPeers()
         
         self.notificationToken = userModel.observe({ change in
+            
             switch change {
             case .change(let properties) :
                 for property in properties {
+                    var discoveryInfo: Dictionary<String, String>
                     if property.name == "avatarString" {
+                        discoveryInfo = ["username": userModel.username, "state": userModel.state, "avatar": property.newValue as! String]
+                    }
+                    else if property.name == "state" {
+                        discoveryInfo = ["username": userModel.username, "state": property.newValue as! String, "avatar": userModel.avatarString]
+                    }
+                    else {
+                        discoveryInfo = ["username": userModel.username, "state": userModel.state, "avatar": userModel.avatarString]
+                    }
+                    print("setting new advertiser with discovery info = %@", discoveryInfo)
+                    DispatchQueue.global(qos: .background).async {
                         self.serviceAdvertiser.stopAdvertisingPeer()
-                        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": userModel.username, "state": userModel.state, "avatar": property.newValue as! String], serviceType:Constants.MCServiceType)
+                        self.serviceBrowser.stopBrowsingForPeers()
+                        //                    sleep(2)
+                        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: discoveryInfo, serviceType:Constants.MCServiceType)
                         self.serviceAdvertiser.delegate = self
                         self.serviceAdvertiser.startAdvertisingPeer()
+                        sleep(2)
+                        self.serviceAdvertiser.stopAdvertisingPeer()
+                        sleep(2)
+                        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: discoveryInfo, serviceType:Constants.MCServiceType)
+                        self.serviceAdvertiser.delegate = self
+                        self.serviceAdvertiser.startAdvertisingPeer()
+                        self.serviceBrowser.startBrowsingForPeers()
                     }
                 }
             default:
                 break
             }
+            
         })
     }
     
     deinit {
+        self.notificationToken?.invalidate()
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
+        
     }
     
     func didSignOut() {
+//        self.session = nil
+//        self.serviceAdvertiser.delegate = nil
+        self.notificationToken?.invalidate()
+        self.session.disconnect()
         self.serviceAdvertiser.stopAdvertisingPeer()
         self.serviceBrowser.stopBrowsingForPeers()
     }
@@ -111,8 +145,7 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
         }
     }
     
-    func shouldShowUserDependingOnState(foundUserState: String) -> Bool {
-        let currentUserState = self.userModel!.state
+    func shouldShowUserDependingOnState(currentUserState: String, foundUserState: String) -> Bool {
         switch currentUserState {
         case "Human":
             if (foundUserState == "Human") { return true }
