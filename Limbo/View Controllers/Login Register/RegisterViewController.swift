@@ -31,7 +31,7 @@ class RegisterViewController: UIViewController {
         let currentFilter = CIFilter(name: "CIGaussianBlur")
         let beginImage = CIImage(image: #imageLiteral(resourceName: "login_background.jpg"))
         currentFilter!.setValue(beginImage, forKey: kCIInputImageKey)
-        currentFilter!.setValue(5, forKey: kCIInputRadiusKey)
+        currentFilter!.setValue(8, forKey: kCIInputRadiusKey)
         
         let cropFilter = CIFilter(name: "CICrop")
         cropFilter!.setValue(currentFilter!.outputImage, forKey: kCIInputImageKey)
