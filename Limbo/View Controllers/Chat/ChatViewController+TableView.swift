@@ -26,33 +26,18 @@ extension ChatViewController: UITableViewDataSource {
         case MessageType.Message.rawValue:
             let formatter = DateFormatter()
             formatter.dateFormat = "HH:mm"
-            if (messageModel.sender == self.currentUser) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: sentMessageCellIdentifier, for: indexPath) as! MessageCell
-                cell.sentMessage.text = self.messages[indexPath.row].messageString
-                cell.sentMessageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
-                cell.sentMessage.layer.masksToBounds = true;
-                cell.sentMessage.layer.cornerRadius = 5
-                cell.sentMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
-                mainCell = cell
-            }
-            else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: receivedMessageCellIdentifier, for: indexPath) as! MessageCell
-                cell.receivedMessage.text = self.messages[indexPath.row].messageString
-                cell.receivedMessageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
-                cell.receivedMessage.layer.masksToBounds = true;
-                cell.receivedMessage.layer.cornerRadius = 5
-                cell.receivedMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
-                mainCell = cell
-            }
+            let identifier = messageModel.sender == self.currentUser ? sentMessageCellIdentifier : receivedMessageCellIdentifier
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! MessageCell
+            cell.messageLabel.text = self.messages[indexPath.row].messageString
+            cell.messageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
+            cell.messageLabel.layer.masksToBounds = true;
+            cell.messageLabel.layer.cornerRadius = 5
+            cell.messageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+            mainCell = cell
             
         case MessageType.Photo.rawValue:
-            var cell: PhotoTableViewCell
-            if messageModel.sender == self.currentUser {
-                cell = tableView.dequeueReusableCell(withIdentifier: sentPhotoCellIdentifier, for: indexPath) as! PhotoTableViewCell
-            }
-            else {
-                cell = tableView.dequeueReusableCell(withIdentifier: receivedPhotoCellIdentifier, for: indexPath) as! PhotoTableViewCell
-            }
+            let identifier = messageModel.sender == self.currentUser ? sentPhotoCellIdentifier : receivedPhotoCellIdentifier
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! PhotoTableViewCell
             cell.setCellUI(forMessageModel: messageModel)
             cell.sentPhotoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnImage(recognizer:))))
             mainCell = cell
