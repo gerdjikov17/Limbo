@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+let sentMessageCellIdentifier = "sentMessageCell"
+let receivedMessageCellIdentifier = "receivedMessageCell"
+let sentPhotoCellIdentifier = "sentPhotoCell"
+let receivedPhotoCellIdentifier = "receivedPhotoCell"
+
 extension ChatViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.messages.count
@@ -16,28 +21,46 @@ extension ChatViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let messageModel = self.messages[indexPath.row]
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        let cell: MessageCell
-        if (messageModel.sender == self.currentUser) {
-            cell = tableView.dequeueReusableCell(withIdentifier: "sentMessageCell", for: indexPath) as! MessageCell
-            cell.sentMessage.text = self.messages[indexPath.row].messageString
-            cell.sentMessageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
-            cell.sentMessage.layer.masksToBounds = true;
-            cell.sentMessage.layer.cornerRadius = 5
-            cell.sentMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+        var mainCell: UITableViewCell
+        switch messageModel.messageType {
+        case MessageType.Message.rawValue:
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm"
+            if (messageModel.sender == self.currentUser) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: sentMessageCellIdentifier, for: indexPath) as! MessageCell
+                cell.sentMessage.text = self.messages[indexPath.row].messageString
+                cell.sentMessageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
+                cell.sentMessage.layer.masksToBounds = true;
+                cell.sentMessage.layer.cornerRadius = 5
+                cell.sentMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+                mainCell = cell
+            }
+            else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: receivedMessageCellIdentifier, for: indexPath) as! MessageCell
+                cell.receivedMessage.text = self.messages[indexPath.row].messageString
+                cell.receivedMessageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
+                cell.receivedMessage.layer.masksToBounds = true;
+                cell.receivedMessage.layer.cornerRadius = 5
+                cell.receivedMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+                mainCell = cell
+            }
             
-        }
-        else {
-            cell = tableView.dequeueReusableCell(withIdentifier: "receivedMessageCell", for: indexPath) as! MessageCell
-            cell.receivedMessage.text = self.messages[indexPath.row].messageString
-            cell.receivedMessageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
-            cell.receivedMessage.layer.masksToBounds = true;
-            cell.receivedMessage.layer.cornerRadius = 5
-            cell.receivedMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+        case MessageType.Photo.rawValue:
+            var cell: PhotoTableViewCell
+            if messageModel.sender == self.currentUser {
+                cell = tableView.dequeueReusableCell(withIdentifier: sentPhotoCellIdentifier, for: indexPath) as! PhotoTableViewCell
+            }
+            else {
+                cell = tableView.dequeueReusableCell(withIdentifier: receivedPhotoCellIdentifier, for: indexPath) as! PhotoTableViewCell
+            }
+            cell.setCellUI(forMessageModel: messageModel)
+            mainCell = cell
+        default:
+            mainCell = tableView.dequeueReusableCell(withIdentifier: sentMessageCellIdentifier, for: indexPath) as! MessageCell
         }
         
-        return cell;
+        
+        return mainCell;
     }
 }
 
@@ -92,11 +115,18 @@ extension ChatViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let height: CGFloat = self.calculateHeight(forMessage: self.messages[indexPath.row])
-        if self.selectedIndexPathForTimeStamp != nil && self.selectedIndexPathForTimeStamp == indexPath {
-            return height + 17
+        let message = self.messages[indexPath.row]
+        if message.messageType == MessageType.Message.rawValue {
+            let height: CGFloat = self.calculateHeight(forMessage: self.messages[indexPath.row])
+            if self.selectedIndexPathForTimeStamp != nil && self.selectedIndexPathForTimeStamp == indexPath {
+                return height + 17
+            }
+            return height + 6
         }
-        return height + 6
+        else {
+            return 165
+        }
+        
     }
 
 }

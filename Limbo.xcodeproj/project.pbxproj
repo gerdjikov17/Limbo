@@ -54,6 +54,9 @@
 		066C84AC2122F6150022CA95 /* pepe8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 066C84A02122F6150022CA95 /* pepe8.jpg */; };
 		066C84AD2122F6150022CA95 /* pepe9.png in Resources */ = {isa = PBXBuildFile; fileRef = 066C84A12122F6150022CA95 /* pepe9.png */; };
 		066C84AE2122F6150022CA95 /* spongebob.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 066C84A22122F6150022CA95 /* spongebob.jpg */; };
+		066C84B0212443130022CA95 /* ChatViewController+ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066C84AF212443130022CA95 /* ChatViewController+ImagePicker.swift */; };
+		066C84B2212448E10022CA95 /* PhotoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */; };
+		066C84B4212455B80022CA95 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066C84B3212455B80022CA95 /* ImageCache.swift */; };
 		0680D58521119BD500B1C926 /* Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58421119BD500B1C926 /* Spectre.swift */; };
 		0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */; };
 		0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */; };
@@ -117,6 +120,9 @@
 		066C84A02122F6150022CA95 /* pepe8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pepe8.jpg; sourceTree = "<group>"; };
 		066C84A12122F6150022CA95 /* pepe9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pepe9.png; sourceTree = "<group>"; };
 		066C84A22122F6150022CA95 /* spongebob.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spongebob.jpg; sourceTree = "<group>"; };
+		066C84AF212443130022CA95 /* ChatViewController+ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+ImagePicker.swift"; sourceTree = "<group>"; };
+		066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoTableViewCell.swift; sourceTree = "<group>"; };
+		066C84B3212455B80022CA95 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		0680D58421119BD500B1C926 /* Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spectre.swift; sourceTree = "<group>"; };
 		0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Spectre.swift"; sourceTree = "<group>"; };
 		0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
@@ -217,6 +223,7 @@
 				06A26F5921135E330023F679 /* RealmManager.swift */,
 				0657906221198CEE005CF741 /* PastelViewManager.swift */,
 				0657906E211AEEAE005CF741 /* Extensions.swift */,
+				066C84B3212455B80022CA95 /* ImageCache.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -251,8 +258,10 @@
 				061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */,
 				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 				0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */,
+				066C84AF212443130022CA95 /* ChatViewController+ImagePicker.swift */,
 				0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */,
 				06262FD6210876A2003C6A1E /* MessageCell.swift */,
+				066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -458,10 +467,12 @@
 				0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */,
 				061095C421104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift in Sources */,
 				06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */,
+				066C84B0212443130022CA95 /* ChatViewController+ImagePicker.swift in Sources */,
 				06262FD121076B08003C6A1E /* RegisterViewController.swift in Sources */,
 				06A26F5821134F650023F679 /* NotificationManager.swift in Sources */,
 				0657906F211AEEAE005CF741 /* Extensions.swift in Sources */,
 				061095C0210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift in Sources */,
+				066C84B2212448E10022CA95 /* PhotoTableViewCell.swift in Sources */,
 				060FC52B21071DE700E5D6BB /* AppDelegate.swift in Sources */,
 				06262FE12109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift in Sources */,
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,
@@ -472,6 +483,7 @@
 				060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */,
 				06262FE5210B471C003C6A1E /* AvatarCollectionViewController.swift in Sources */,
 				061095C821109BE100A23D27 /* ChatViewController+ChatDelegate.swift in Sources */,
+				066C84B4212455B80022CA95 /* ImageCache.swift in Sources */,
 				06262FDD2108A88A003C6A1E /* MessageModel.swift in Sources */,
 				069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */,
 				060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */,

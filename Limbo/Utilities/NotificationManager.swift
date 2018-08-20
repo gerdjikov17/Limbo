@@ -29,7 +29,20 @@ class NotificationManager: NSObject {
                     content.userInfo = ["uniqueDeviceID": user.uniqueDeviceID, "username": user.username]
                 }
                 
-                content.body = message.messageString
+                switch message.messageType {
+                case MessageType.Message.rawValue:
+                    content.body = message.messageString
+                case MessageType.Photo.rawValue:
+                    content.body = "Photo"
+                case MessageType.Message_Photo.rawValue:
+                    content.body = message.messageString
+                    content.subtitle = "Photo"
+                case MessageType.Voice_Record.rawValue:
+                    content.body = "Voice Message"
+                default:
+                    content.body = message.messageString
+                }
+                
                 content.sound = UNNotificationSound.default()
                 content.categoryIdentifier = Constants.Notifications.Identifiers.Message
                 

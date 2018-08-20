@@ -42,7 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let itemCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Item, actions: [], intentIdentifiers: [], options: [])
             center.setNotificationCategories([messageCategory, curseCategory, itemCategory])
-        }        
+        }
+        try? FileManager.default.createDirectory(at: FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true), withIntermediateDirectories: true, attributes: nil)
         return true
     }
 

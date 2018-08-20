@@ -17,6 +17,7 @@ class ChatViewController: UIViewController {
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var messageTextFieldBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var addPhotoButton: UIButton!
     var chatDelegate: UsersConnectivityDelegate?
     var userChattingWith: UserModel?
     var peerIDChattingWith: MCPeerID?
@@ -76,7 +77,7 @@ class ChatViewController: UIViewController {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        self.notificationToken.invalidate()
+//        self.notificationToken.invalidate()
     }
     
     //    MARK: Keyboard Notifications
@@ -167,6 +168,14 @@ class ChatViewController: UIViewController {
         }
     }
     
+    @IBAction func addPhotoButtonTap(_ sender: AnyObject) {
+        let imgPicker = UIImagePickerController()
+        imgPicker.delegate = self
+        imgPicker.allowsEditing = false
+        imgPicker.sourceType = .photoLibrary
+        self.present(imgPicker, animated: true, completion: nil)
+    }
+    
     @IBAction func itemsButtonTap(_ sender: AnyObject) {
         let button: UIButton = sender as! UIButton
 //        using this hack because otherwise button.frame.origin.y is < 0 and popover is not visible
@@ -186,9 +195,9 @@ class ChatViewController: UIViewController {
     func sendMessageToUser(message: String, peerID: MCPeerID) {
         let messageModel = MessageModel()
         messageModel.messageString = message
+        messageModel.messageType = MessageType.Message.rawValue
         messageModel.sender = self.currentUser
-        let success = self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID)
-        if success! {
+        if let _ = self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID) {
             let realm = try! Realm()
             if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!, andUsername: (self.userChattingWith?.username)!) {
                 try? realm.write {
@@ -201,7 +210,7 @@ class ChatViewController: UIViewController {
     
     //    MARK: Other functions
     func initNotificationToken() {
-        self.notificationToken = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!)?.observe({ changes in
+        self.notificationToken = self.messagesResults.observe({ changes in
             switch changes {
             case .initial:
                 self.chatTableView.reloadData()
@@ -210,6 +219,7 @@ class ChatViewController: UIViewController {
                 self.chatTableView.beginUpdates()
                 
                 if insertions.count > 0 {
+                    print("new insertion\n\n")
                     self.messages.append(self.messagesResults.last!)
                     self.chatTableView.insertRows(at: [IndexPath(row: self.messages.count - 1, section: 0)],
                                                   with: .automatic)

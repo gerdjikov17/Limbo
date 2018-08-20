@@ -55,3 +55,11 @@ enum SpecialItem: String {
     case HolyCandle
     case SaintsMedallion
 }
+
+enum MessageType: Int {
+    case Message = 0
+    case Photo = 1
+    case Message_Photo = 2
+    case Voice_Record = 3
+    case System = 4
+}

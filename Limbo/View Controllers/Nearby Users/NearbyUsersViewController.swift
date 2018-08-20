@@ -68,7 +68,6 @@ class NearbyUsersViewController: UIViewController {
             
         }
         NotificationCenter.default.addObserver(self, selector: Selector(("batteryLevelDidChange:")), name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(self.reinitUsersConnectivity), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -156,16 +155,6 @@ class NearbyUsersViewController: UIViewController {
         if self.userStateLabel.text != self.currentUser.state {
             self.userStateLabel.text = self.currentUser.state
         }
-    }
-    
-    @objc func reinitUsersConnectivity() {
-        let myPeerID = self.usersConnectivity.myPeerID
-        self.usersConnectivity.didSignOut()
-        sleep(1)
-        self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self, peerID: myPeerID)
-        self.usersConnectivity.chatDelegate = self
-        
-
     }
     
     @objc func reloadDataFromSelector() {
