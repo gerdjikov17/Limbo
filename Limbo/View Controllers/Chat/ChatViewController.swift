@@ -53,7 +53,7 @@ class ChatViewController: UIViewController {
         }
         
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard)))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear history", style: .plain, target: self, action: #selector(self.clearHistoryButtonTap))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(self.optionsButtonTap))
         
         self.initNotificationToken()
         
@@ -122,22 +122,16 @@ class ChatViewController: UIViewController {
     
     //    MARK: Button taps
     
-    @objc func clearHistoryButtonTap() {
-        let alertController = UIAlertController(title: "Clear history", message: "In a result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
-            let realm = try! Realm()
-            realm.beginWrite()
-            if let results = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!) {
-                realm.delete(results)
-            }
-            try! realm.commitWrite()
-            self.messages = Array(self.messagesResults)
-            self.chatTableView.reloadData()
-        }))
-        alertController.addAction(UIAlertAction(title: "No", style: .default, handler: { (action) in
-            
-        }))
-        self.present(alertController, animated: true, completion: nil)
+    @objc func optionsButtonTap() {
+        let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "optionsVC") as! OptionsViewController
+        optionsVC.optionsDelegate = self
+        optionsVC.modalPresentationStyle = .popover
+        let popOver = optionsVC.popoverPresentationController
+        popOver?.delegate = self
+        popOver?.barButtonItem = self.navigationItem.rightBarButtonItem
+        
+        present(optionsVC, animated: true, completion: nil)
+        
     }
     
     @IBAction func sendButtonTap() {
@@ -245,6 +239,32 @@ extension ChatViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.sendButtonTap()
         return true
+    }
+}
+
+extension ChatViewController: OptionsDelegate {
+    func clearHistory() {
+        let alertController = UIAlertController(title: "Clear history", message: "In a result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
+            let realm = try! Realm()
+            realm.beginWrite()
+            if let results = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!) {
+                realm.delete(results)
+            }
+            try! realm.commitWrite()
+            self.messages = Array(self.messagesResults)
+            self.chatTableView.reloadData()
+        }))
+        alertController.addAction(UIAlertAction(title: "No", style: .default, handler: { (action) in
+            
+        }))
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func showImages() {
+        let imagesCVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "imagesCVC") as! ImagesCollectionViewController
+        imagesCVC.messagesHistory = self.messagesResults
+        self.navigationController?.pushViewController(imagesCVC, animated: true)
     }
 }
 

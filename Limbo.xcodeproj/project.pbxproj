@@ -68,6 +68,9 @@
 		06A26F5E21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */; };
 		06CADED0212ADA04005A59A2 /* ChatImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */; };
 		06CADED4212AED79005A59A2 /* notfound.png in Resources */ = {isa = PBXBuildFile; fileRef = 06CADED3212AED78005A59A2 /* notfound.png */; };
+		06CADED7212AF3D3005A59A2 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADED6212AF3D3005A59A2 /* OptionsViewController.swift */; };
+		06CADED9212AF833005A59A2 /* ImagesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADED8212AF833005A59A2 /* ImagesCollectionViewController.swift */; };
+		06CADEDB212AFA50005A59A2 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADEDA212AFA50005A59A2 /* ImageCollectionViewCell.swift */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
 /* End PBXBuildFile section */
 
@@ -136,6 +139,9 @@
 		06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersViewController+ItemPopover.swift"; sourceTree = "<group>"; };
 		06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatImageViewController.swift; sourceTree = "<group>"; };
 		06CADED3212AED78005A59A2 /* notfound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notfound.png; sourceTree = "<group>"; };
+		06CADED6212AF3D3005A59A2 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
+		06CADED8212AF833005A59A2 /* ImagesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesCollectionViewController.swift; sourceTree = "<group>"; };
+		06CADEDA212AFA50005A59A2 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
 		9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Limbo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECBC6D0F2B39D67B3E92515C /* Pods-Limbo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.release.xcconfig"; sourceTree = "<group>"; };
@@ -257,16 +263,15 @@
 		061095CB2110AC4500A23D27 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				06CADED5212AF3B2005A59A2 /* Options */,
 				06262FD8210876BA003C6A1E /* ChatViewController.swift */,
 				0680D5882111AF0900B1C926 /* ChatViewController+Spectre.swift */,
 				061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */,
 				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 				0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */,
 				066C84AF212443130022CA95 /* ChatViewController+ImagePicker.swift */,
-				0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */,
 				06262FD6210876A2003C6A1E /* MessageCell.swift */,
 				066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */,
-				06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -302,6 +307,18 @@
 				066C84A22122F6150022CA95 /* spongebob.jpg */,
 			);
 			path = Avatars;
+			sourceTree = "<group>";
+		};
+		06CADED5212AF3B2005A59A2 /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */,
+				06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */,
+				06CADED6212AF3D3005A59A2 /* OptionsViewController.swift */,
+				06CADED8212AF833005A59A2 /* ImagesCollectionViewController.swift */,
+				06CADEDA212AFA50005A59A2 /* ImageCollectionViewCell.swift */,
+			);
+			path = Options;
 			sourceTree = "<group>";
 		};
 		1DC3AF52497DCF1AF8048988 /* Frameworks */ = {
@@ -484,6 +501,7 @@
 				06262FE12109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift in Sources */,
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,
 				069361FD210745DC00D02D22 /* Protocols.swift in Sources */,
+				06CADEDB212AFA50005A59A2 /* ImageCollectionViewCell.swift in Sources */,
 				061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */,
 				0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */,
 				0680D58521119BD500B1C926 /* Spectre.swift in Sources */,
@@ -499,9 +517,11 @@
 				06262FDF2109C95D003C6A1E /* ChatViewController+TableView.swift in Sources */,
 				06A26F5A21135E330023F679 /* RealmManager.swift in Sources */,
 				0657906D211AD3BE005CF741 /* ChatViewController+Game.swift in Sources */,
+				06CADED9212AF833005A59A2 /* ImagesCollectionViewController.swift in Sources */,
 				06CADED0212ADA04005A59A2 /* ChatImageViewController.swift in Sources */,
 				06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */,
 				0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */,
+				06CADED7212AF3D3005A59A2 /* OptionsViewController.swift in Sources */,
 				0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */,
 				06262FCB21075E7A003C6A1E /* Constants.swift in Sources */,
 				06579069211ACDDE005CF741 /* UsersConnectivity+Game.swift in Sources */,

@@ -30,3 +30,8 @@ protocol ChatDelegate: AnyObject {
     func didReceiveMessage(threadSafeMessageRef: ThreadSafeReference<MessageModel>, fromPeerID: MCPeerID)
     func didReceiveCurse(curse: Curse, remainingTime: Double)
 }
+
+protocol OptionsDelegate {
+    func clearHistory()
+    func showImages()
+}
