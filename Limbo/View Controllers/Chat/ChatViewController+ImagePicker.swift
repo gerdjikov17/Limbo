@@ -45,4 +45,24 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
         }
         picker.dismiss(animated: true, completion: nil)
     }
+    
+    @objc func didTapOnImage(recognizer: UITapGestureRecognizer) {
+        let touchPoint = recognizer.location(in: self.chatTableView)
+        let indexPath: IndexPath = self.chatTableView.indexPathForRow(at: touchPoint)!
+        guard let cell = self.chatTableView.cellForRow(at: indexPath) as? PhotoTableViewCell else {
+            return
+        }
+        guard let image = cell.sentPhotoImageView.image else {
+            return
+        }
+        let message = self.messages[indexPath.row]
+        guard let sender = message.sender else {
+            return
+        }
+        let chatImageVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatImageVC") as! ChatImageViewController
+        chatImageVC.image = image
+        chatImageVC.senderUsername = sender.username
+        self.navigationController!.present(chatImageVC, animated: true, completion: nil)
+        
+    }
 }

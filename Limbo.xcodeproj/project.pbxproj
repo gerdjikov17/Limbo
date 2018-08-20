@@ -66,6 +66,8 @@
 		06A26F5A21135E330023F679 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5921135E330023F679 /* RealmManager.swift */; };
 		06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5B211496980023F679 /* ItemPopoverViewController.swift */; };
 		06A26F5E21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */; };
+		06CADED0212ADA04005A59A2 /* ChatImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */; };
+		06CADED4212AED79005A59A2 /* notfound.png in Resources */ = {isa = PBXBuildFile; fileRef = 06CADED3212AED78005A59A2 /* notfound.png */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
 /* End PBXBuildFile section */
 
@@ -132,6 +134,8 @@
 		06A26F5921135E330023F679 /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 		06A26F5B211496980023F679 /* ItemPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPopoverViewController.swift; sourceTree = "<group>"; };
 		06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersViewController+ItemPopover.swift"; sourceTree = "<group>"; };
+		06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatImageViewController.swift; sourceTree = "<group>"; };
+		06CADED3212AED78005A59A2 /* notfound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notfound.png; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
 		9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Limbo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECBC6D0F2B39D67B3E92515C /* Pods-Limbo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.release.xcconfig"; sourceTree = "<group>"; };
@@ -262,6 +266,7 @@
 				0680D58A2111F8AF00B1C926 /* ItemsViewController.swift */,
 				06262FD6210876A2003C6A1E /* MessageCell.swift */,
 				066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */,
+				06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -275,6 +280,7 @@
 				066C84762122F2BC0022CA95 /* tic-tac-toe.png */,
 				066C84752122F2BC0022CA95 /* tunak-tunak.jpg */,
 				06579072211C8001005CF741 /* login_background.jpg */,
+				06CADED3212AED78005A59A2 /* notfound.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -395,6 +401,7 @@
 				066C84782122F2BD0022CA95 /* tunak-tunak.jpg in Resources */,
 				066C84A72122F6150022CA95 /* pepe3.jpg in Resources */,
 				066C84AA2122F6150022CA95 /* pepe6.jpg in Resources */,
+				06CADED4212AED79005A59A2 /* notfound.png in Resources */,
 				066C84A92122F6150022CA95 /* pepe5.png in Resources */,
 				066C84AE2122F6150022CA95 /* spongebob.jpg in Resources */,
 				066C84A82122F6150022CA95 /* pepe4.png in Resources */,
@@ -492,6 +499,7 @@
 				06262FDF2109C95D003C6A1E /* ChatViewController+TableView.swift in Sources */,
 				06A26F5A21135E330023F679 /* RealmManager.swift in Sources */,
 				0657906D211AD3BE005CF741 /* ChatViewController+Game.swift in Sources */,
+				06CADED0212ADA04005A59A2 /* ChatImageViewController.swift in Sources */,
 				06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */,
 				0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */,
 				0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */,

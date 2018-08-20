@@ -36,6 +36,12 @@ class PhotoTableViewCell: UITableViewCell {
                     ImageCache.shared.cacheImage(image: image, forKey: (messageModel.messageString as NSString))
                     self.sentPhotoImageView.image = image
                 }
+                else {
+                    self.sentPhotoImageView.image = #imageLiteral(resourceName: "notfound.png")
+                }
+            }
+            else {
+                self.sentPhotoImageView.image = #imageLiteral(resourceName: "notfound.png")
             }
             
             

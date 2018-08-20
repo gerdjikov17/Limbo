@@ -54,6 +54,7 @@ extension ChatViewController: UITableViewDataSource {
                 cell = tableView.dequeueReusableCell(withIdentifier: receivedPhotoCellIdentifier, for: indexPath) as! PhotoTableViewCell
             }
             cell.setCellUI(forMessageModel: messageModel)
+            cell.sentPhotoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnImage(recognizer:))))
             mainCell = cell
         default:
             mainCell = tableView.dequeueReusableCell(withIdentifier: sentMessageCellIdentifier, for: indexPath) as! MessageCell
