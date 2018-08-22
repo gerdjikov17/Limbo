@@ -20,6 +20,8 @@ extension UsersConnectivity {
             self.handleMessageTypeMessage(messageModel: messageModel, peerID: peerID)
         case MessageType.Photo.rawValue:
             self.handleMessageTypePhoto(messageModel: messageModel, peerID: peerID)
+        case MessageType.Voice_Record.rawValue:
+            self.handleMessageTypeVoiceRecord(messageModel: messageModel, peerID: peerID)
         default:
             break;
         }
@@ -53,13 +55,16 @@ extension UsersConnectivity {
         //            browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
+    private func handleMessageTypeVoiceRecord(messageModel: MessageModel, peerID: MCPeerID) {
+        self.handleMessageTypePhoto(messageModel: messageModel, peerID: peerID)
+    }
     
     private func handleMessageTypePhoto(messageModel: MessageModel, peerID: MCPeerID) {
         guard let imageData = messageModel.additionalData else {
             return
         }
         var urlToWriteTo = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true)
-        urlToWriteTo = urlToWriteTo.appendingPathComponent(messageModel.messageString, isDirectory: true)
+        urlToWriteTo = urlToWriteTo.appendingPathComponent(messageModel.messageString, isDirectory: false)
         try? imageData.write(to: urlToWriteTo)
         let realm = try! Realm()
         realm.beginWrite()

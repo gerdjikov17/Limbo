@@ -46,9 +46,7 @@ class PhotoTableViewCell: UITableViewCell {
             
             
         }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        self.sentPhotoTimeStampLabel.text = formatter.string(from: messageModel.timeSent)
+        self.sentPhotoTimeStampLabel.text = SmartFormatter.formatDate(date: messageModel.timeSent)
     }
 
 }

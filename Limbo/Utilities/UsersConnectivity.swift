@@ -40,7 +40,6 @@ class UsersConnectivity: NSObject {
         else {
             self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat"))
         }
-        print(self.userModel?.state)
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": self.userModel!.username, "state": self.userModel!.state, "avatar": self.userModel!.avatarString] as Dictionary, serviceType:Constants.MCServiceType)
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
         

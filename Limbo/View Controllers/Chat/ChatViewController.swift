@@ -37,6 +37,8 @@ class ChatViewController: UIViewController {
     var notificationToken: NotificationToken!
     var rangeOfMessagesToShow = 50
     
+    var voiceRecorder: VoiceRecorder?
+    
     //    MARK: Life cycle
     
     override func viewDidLoad() {
@@ -161,6 +163,12 @@ class ChatViewController: UIViewController {
             self.messageTextField.text = ""
         }
     }
+    
+    @IBAction func voiceRecordButtonTap(_ sender: Any) {
+        self.voiceRecorder = VoiceRecorder()
+        self.voiceRecorder!.delegate = self
+    }
+    
     
     @IBAction func addPhotoButtonTap(_ sender: AnyObject) {
         let imgPicker = UIImagePickerController()

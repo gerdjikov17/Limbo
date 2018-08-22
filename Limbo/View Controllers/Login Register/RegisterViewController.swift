@@ -60,8 +60,8 @@ class RegisterViewController: UIViewController {
         super.viewDidAppear(animated)
         
         self.backgroundView.layer.addPulsingAnimation()
-        self.backgroundView.layer.addScaleXAnimation()
-        self.backgroundView.layer.addScaleYAnimation()
+        self.backgroundView.layer.addScaleXAnimation(scaleFactor: 1.05)
+        self.backgroundView.layer.addScaleYAnimation(scaleFactor: 1.05)
     }
     
     //    MARK: Button taps

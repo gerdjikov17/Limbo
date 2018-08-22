@@ -22,7 +22,7 @@ class ChatImageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor(white: 1, alpha: 0.3)
         self.imageView.image = image
         self.senderLabel.text = senderUsername
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGestureAction(_:)))
@@ -41,21 +41,18 @@ class ChatImageViewController: UIViewController {
         let translation = panGesture.translation(in: view)
         
         if panGesture.state == .began {
-            self.view.backgroundColor = .clear
+            self.view.backgroundColor = UIColor(white: 1, alpha: 0.3)
             originalPosition = view.center
             currentPositionTouched = panGesture.location(in: view)
         } else if panGesture.state == .changed {
-            view.frame.origin = CGPoint(
-                x: self.view.frame.origin.x,
-                y: translation.y
-            )
+            imageView.frame.origin = CGPoint(x: self.view.frame.origin.x, y: translation.y)
         } else if panGesture.state == .ended {
             let velocity = panGesture.velocity(in: view)
             
             if velocity.y >= 1500 {
                 UIView.animate(withDuration: 0.2
                     , animations: {
-                        self.view.frame.origin = CGPoint(
+                        self.imageView.frame.origin = CGPoint(
                             x: self.view.frame.origin.x,
                             y: self.view.frame.size.height
                         )
@@ -64,25 +61,42 @@ class ChatImageViewController: UIViewController {
                         self.dismiss(animated: false, completion: nil)
                     }
                 })
-            } else {
+            }
+            else if velocity.y <= -1500 {
+                UIView.animate(withDuration: 0.2
+                    , animations: {
+                        self.imageView.frame.origin = CGPoint(
+                            x: self.view.frame.origin.x,
+                            y: -self.view.frame.size.height
+                        )
+                }, completion: { (isCompleted) in
+                    if isCompleted {
+                        self.dismiss(animated: false, completion: nil)
+                    }
+                })
+            }
+            else {
                 UIView.animate(withDuration: 0.2, animations: {
-                    self.view.backgroundColor = .white
-                    self.view.center = self.originalPosition!
+                    self.imageView.center = self.originalPosition!
                 })
             }
         }
     }
     
     @objc func tapAction() {
-        if self.view.backgroundColor == .clear {
-            self.view.backgroundColor = .white
-            self.labelBackgroundView.isHidden = false
-            self.senderLabel.isHidden = false
+        if self.view.backgroundColor == .black {
+            UIView.animate(withDuration: 0.2, animations: {
+                self.view.backgroundColor = UIColor(white: 1, alpha: 0.3)
+                self.labelBackgroundView.isHidden = false
+                self.senderLabel.isHidden = false
+            })
         }
         else {
-            self.view.backgroundColor = .clear
-            self.labelBackgroundView.isHidden = true
-            self.senderLabel.isHidden = true
+            UIView.animate(withDuration: 0.2, animations: {
+                self.view.backgroundColor = .black
+                self.labelBackgroundView.isHidden = true
+                self.senderLabel.isHidden = true
+            })
         }
     }
 

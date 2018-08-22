@@ -67,7 +67,7 @@ class NearbyUsersViewController: UIViewController {
             self.initRequiredPropertiesForLoggedUser()
             
         }
-        NotificationCenter.default.addObserver(self, selector: Selector(("batteryLevelDidChange:")), name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(batteryLevelDidChange(notification:)), name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -149,7 +149,7 @@ class NearbyUsersViewController: UIViewController {
         }
     }
     
-    func batteryLevelDidChange(notification: NSNotification) {
+    @objc func batteryLevelDidChange(notification: NSNotification) {
         let batteryLevel = UIDevice.current.batteryLevel
         self.currentUser.setState(batteryLevel: batteryLevel)
         if self.userStateLabel.text != self.currentUser.state {

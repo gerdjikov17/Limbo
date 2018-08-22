@@ -31,6 +31,11 @@ protocol ChatDelegate: AnyObject {
     func didReceiveCurse(curse: Curse, remainingTime: Double)
 }
 
+protocol VoiceRecorderUIDelegate {
+    func isReadyToRecord()
+    func didFinishRecording()
+}
+
 protocol OptionsDelegate {
     func clearHistory()
     func showImages()

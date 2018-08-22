@@ -10,7 +10,7 @@ import UIKit
 import RealmSwift
 
 
-class ImagesCollectionViewController: UICollectionViewController {
+class ImagesCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 
     var messagesHistory: Results<MessageModel>!
     var images_Senders: [(image: UIImage, sender: String?)]!
@@ -19,6 +19,7 @@ class ImagesCollectionViewController: UICollectionViewController {
         super.viewDidLoad()
         images_Senders = Array()
         getImagesFromMessageHistory()
+        self.definesPresentationContext = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -71,6 +72,10 @@ class ImagesCollectionViewController: UICollectionViewController {
         imageVC.image = image
         imageVC.senderUsername = images_Senders[indexPath.row].sender!
         self.present(imageVC, animated: true, completion: nil)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: (UIScreen.main.bounds.width - 6)  / 3, height: (UIScreen.main.bounds.width - 6)  / 3)
     }
 
     // MARK: UICollectionViewDelegate

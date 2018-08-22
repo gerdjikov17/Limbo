@@ -10,4 +10,5 @@ target 'Limbo' do
   pod 'DZNEmptyDataSet'
   pod 'Toast-Swift', '~> 3.0.1'
   pod "Pastel"
+  pod 'NVActivityIndicatorView'
 end

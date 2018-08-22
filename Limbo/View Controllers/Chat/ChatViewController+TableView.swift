@@ -13,6 +13,8 @@ let sentMessageCellIdentifier = "sentMessageCell"
 let receivedMessageCellIdentifier = "receivedMessageCell"
 let sentPhotoCellIdentifier = "sentPhotoCell"
 let receivedPhotoCellIdentifier = "receivedPhotoCell"
+let sentVoiceMessageCellIdentifier = "sentVoiceMessage"
+let receivedVoiceMessageCellIdentifier = "receivedVoiceMessage"
 
 extension ChatViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -24,12 +26,10 @@ extension ChatViewController: UITableViewDataSource {
         var mainCell: UITableViewCell
         switch messageModel.messageType {
         case MessageType.Message.rawValue:
-            let formatter = DateFormatter()
-            formatter.dateFormat = "HH:mm"
             let identifier = messageModel.sender == self.currentUser ? sentMessageCellIdentifier : receivedMessageCellIdentifier
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! MessageCell
             cell.messageLabel.text = self.messages[indexPath.row].messageString
-            cell.messageTimestampLabel.text = formatter.string(from: messageModel.timeSent)
+            cell.messageTimestampLabel.text = SmartFormatter.formatDate(date: messageModel.timeSent)
             cell.messageLabel.layer.masksToBounds = true;
             cell.messageLabel.layer.cornerRadius = 5
             cell.messageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
@@ -41,6 +41,14 @@ extension ChatViewController: UITableViewDataSource {
             cell.setCellUI(forMessageModel: messageModel)
             cell.sentPhotoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnImage(recognizer:))))
             mainCell = cell
+            
+        case MessageType.Voice_Record.rawValue:
+            let identifier = messageModel.sender == self.currentUser ? sentVoiceMessageCellIdentifier : receivedVoiceMessageCellIdentifier
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! VoiceMessageTableViewCell
+            cell.initialConfiguration(message: messageModel)
+            cell.voiceProgressView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+            mainCell = cell
+            
         default:
             mainCell = tableView.dequeueReusableCell(withIdentifier: sentMessageCellIdentifier, for: indexPath) as! MessageCell
         }
@@ -109,8 +117,14 @@ extension ChatViewController: UITableViewDelegate {
             }
             return height + 6
         }
+        else if message.messageType == MessageType.Voice_Record.rawValue {
+            if self.selectedIndexPathForTimeStamp != nil && self.selectedIndexPathForTimeStamp == indexPath {
+                return 40
+            }
+            return 27
+        }
         else {
-            return 165
+            return 155
         }
         
     }

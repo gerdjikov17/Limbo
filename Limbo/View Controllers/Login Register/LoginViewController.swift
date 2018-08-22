@@ -45,6 +45,7 @@ class LoginViewController: UIViewController {
         let cgimg = context.createCGImage(output!, from: output!.extent)
         let processedImage = UIImage(cgImage: cgimg!)
         backgroundView.backgroundColor = UIColor(patternImage: processedImage)
+        backgroundView.contentMode = .scaleAspectFill
         
         self.usernameTextField.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
         self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
@@ -63,8 +64,8 @@ class LoginViewController: UIViewController {
         super.viewDidAppear(animated)
         
         self.backgroundView.layer.addPulsingAnimation()
-        self.backgroundView.layer.addScaleXAnimation()
-        self.backgroundView.layer.addScaleYAnimation()
+        self.backgroundView.layer.addScaleXAnimation(scaleFactor: 1.05)
+        self.backgroundView.layer.addScaleYAnimation(scaleFactor: 1.05)
     }
     
     //    MARK: Button taps

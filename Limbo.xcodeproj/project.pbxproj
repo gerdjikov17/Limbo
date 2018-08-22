@@ -20,6 +20,10 @@
 		061095C421104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C321104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift */; };
 		061095C6211054F600A23D27 /* CurseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C5211054F600A23D27 /* CurseManager.swift */; };
 		061095C821109BE100A23D27 /* ChatViewController+ChatDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */; };
+		0618F3EC212C01F20004FDE4 /* VoiceMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618F3EB212C01F20004FDE4 /* VoiceMessageTableViewCell.swift */; };
+		0618F3EE212C09DD0004FDE4 /* VoiceRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618F3ED212C09DD0004FDE4 /* VoiceRecorder.swift */; };
+		0618F3F0212C0F4A0004FDE4 /* ChatViewController+VoiceRecorderUIDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618F3EF212C0F4A0004FDE4 /* ChatViewController+VoiceRecorderUIDelegate.swift */; };
+		0618F3F2212C3F120004FDE4 /* SmartFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618F3F1212C3F120004FDE4 /* SmartFormatter.swift */; };
 		06262FCB21075E7A003C6A1E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FCA21075E79003C6A1E /* Constants.swift */; };
 		06262FCD21075E9E003C6A1E /* DZNEmptyDataSet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */; };
 		06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FCE210762B6003C6A1E /* LoginViewController.swift */; };
@@ -91,6 +95,10 @@
 		061095C321104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersConnectivity+UsersConnectivityDelegate.swift"; sourceTree = "<group>"; };
 		061095C5211054F600A23D27 /* CurseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurseManager.swift; sourceTree = "<group>"; };
 		061095C721109BE100A23D27 /* ChatViewController+ChatDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+ChatDelegate.swift"; sourceTree = "<group>"; };
+		0618F3EB212C01F20004FDE4 /* VoiceMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMessageTableViewCell.swift; sourceTree = "<group>"; };
+		0618F3ED212C09DD0004FDE4 /* VoiceRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRecorder.swift; sourceTree = "<group>"; };
+		0618F3EF212C0F4A0004FDE4 /* ChatViewController+VoiceRecorderUIDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+VoiceRecorderUIDelegate.swift"; sourceTree = "<group>"; };
+		0618F3F1212C3F120004FDE4 /* SmartFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartFormatter.swift; sourceTree = "<group>"; };
 		06262FCA21075E79003C6A1E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		06262FCC21075E9E003C6A1E /* DZNEmptyDataSet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = DZNEmptyDataSet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06262FCE210762B6003C6A1E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -234,6 +242,8 @@
 				0657906221198CEE005CF741 /* PastelViewManager.swift */,
 				0657906E211AEEAE005CF741 /* Extensions.swift */,
 				066C84B3212455B80022CA95 /* ImageCache.swift */,
+				0618F3ED212C09DD0004FDE4 /* VoiceRecorder.swift */,
+				0618F3F1212C3F120004FDE4 /* SmartFormatter.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -272,6 +282,8 @@
 				066C84AF212443130022CA95 /* ChatViewController+ImagePicker.swift */,
 				06262FD6210876A2003C6A1E /* MessageCell.swift */,
 				066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */,
+				0618F3EB212C01F20004FDE4 /* VoiceMessageTableViewCell.swift */,
+				0618F3EF212C0F4A0004FDE4 /* ChatViewController+VoiceRecorderUIDelegate.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -443,6 +455,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Limbo/Pods-Limbo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
+				"${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework",
 				"${BUILT_PRODUCTS_DIR}/Pastel/Pastel.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
@@ -451,6 +464,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NVActivityIndicatorView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Pastel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
@@ -490,6 +504,7 @@
 				06262FD7210876A2003C6A1E /* MessageCell.swift in Sources */,
 				0680D5892111AF0900B1C926 /* ChatViewController+Spectre.swift in Sources */,
 				061095C421104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift in Sources */,
+				0618F3F0212C0F4A0004FDE4 /* ChatViewController+VoiceRecorderUIDelegate.swift in Sources */,
 				06262FCF210762B6003C6A1E /* LoginViewController.swift in Sources */,
 				066C84B0212443130022CA95 /* ChatViewController+ImagePicker.swift in Sources */,
 				06262FD121076B08003C6A1E /* RegisterViewController.swift in Sources */,
@@ -502,7 +517,9 @@
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,
 				069361FD210745DC00D02D22 /* Protocols.swift in Sources */,
 				06CADEDB212AFA50005A59A2 /* ImageCollectionViewCell.swift in Sources */,
+				0618F3EC212C01F20004FDE4 /* VoiceMessageTableViewCell.swift in Sources */,
 				061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */,
+				0618F3F2212C3F120004FDE4 /* SmartFormatter.swift in Sources */,
 				0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */,
 				0680D58521119BD500B1C926 /* Spectre.swift in Sources */,
 				060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */,
@@ -519,6 +536,7 @@
 				0657906D211AD3BE005CF741 /* ChatViewController+Game.swift in Sources */,
 				06CADED9212AF833005A59A2 /* ImagesCollectionViewController.swift in Sources */,
 				06CADED0212ADA04005A59A2 /* ChatImageViewController.swift in Sources */,
+				0618F3EE212C09DD0004FDE4 /* VoiceRecorder.swift in Sources */,
 				06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */,
 				0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */,
 				06CADED7212AF3D3005A59A2 /* OptionsViewController.swift in Sources */,
@@ -672,10 +690,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XFNQF25BM4;
 				INFOPLIST_FILE = Limbo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.nemetschek.Limbo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -691,10 +706,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XFNQF25BM4;
 				INFOPLIST_FILE = Limbo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = net.nemetschek.Limbo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
