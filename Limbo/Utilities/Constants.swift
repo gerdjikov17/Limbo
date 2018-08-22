@@ -10,6 +10,8 @@ import Foundation
 struct Constants {
     static let MCServiceType = "tic-tac-toe"
     
+    static let groupChatAddID = -10
+    
     struct UserDefaults {
         static let isLoged = "UserDefaultsIsLogged"
         static let loggedUserID = "UserDefaultsLoggedUserID"

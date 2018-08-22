@@ -47,6 +47,12 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedUser = getUserModelAndUnreadMessages(forIndexPath: indexPath)
+        
+        guard selectedUser.userModel.userID != Constants.groupChatAddID else {
+            self.groupChatCellTap()
+            return
+        }
+        
         let selectedPeerID = Array(self.users.keys)[indexPath.row]
         self.lastSelectedPeerID = selectedPeerID
         self.usersConnectivity.inviteUser(peerID: selectedPeerID)

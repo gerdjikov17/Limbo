@@ -77,8 +77,10 @@ class NearbyUsersViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.lastSelectedPeerID = nil
+        self.addGroupChatCell()
         self.nearbyUsersCollectionView.reloadData()
         self.checkForGifts()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {

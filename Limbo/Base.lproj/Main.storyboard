@@ -177,7 +177,7 @@
                                 </variation>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="0.019607843140000001" green="0.10980392160000001" blue="0.16078431369999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.023529411764705882" green="0.10196078431372549" blue="0.14509803921568629" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="DGX-wd-rYd" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="3Zf-9w-LmG"/>
                             <constraint firstItem="DGX-wd-rYd" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="61O-Y8-wV2"/>
@@ -1130,7 +1130,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DbU-g6-4RD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-190" y="1094"/>
+            <point key="canvasLocation" x="-394" y="987"/>
         </scene>
         <!--Options View Controller-->
         <scene sceneID="tGj-n2-8Yb">
@@ -1208,6 +1208,37 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nRl-8H-6ZA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="619" y="518"/>
+        </scene>
+        <!--All Users Table View Controller-->
+        <scene sceneID="lcn-xO-riF">
+            <objects>
+                <tableViewController storyboardIdentifier="allUsersTVC" id="RwN-lB-gSb" customClass="AllUsersTableViewController" customModule="Limbo" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="gD8-hh-RuP">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.023529411760000001" green="0.1019607843" blue="0.1450980392" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="separatorColor" red="0.996257483959198" green="0.99363070726394653" blue="0.99299103021621704" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="sectionIndexBackgroundColor" red="0.023529411764705882" green="0.10196078431372549" blue="0.14509803921568629" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="allUsersCell" id="qvz-Z2-ijM">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qvz-Z2-ijM" id="ujB-Ry-bcO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.023529411764705882" green="0.10196078431372549" blue="0.14509803921568629" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="RwN-lB-gSb" id="59d-GI-2Eh"/>
+                            <outlet property="delegate" destination="RwN-lB-gSb" id="HNO-90-ukC"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="b3f-ag-dIg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="281" y="1538"/>
         </scene>
         <!--Chat Image View Controller-->
         <scene sceneID="WVa-hc-Lo5">
