@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import RealmSwift
+import NVActivityIndicatorView
 
 extension ChatViewController: VoiceRecorderUIDelegate {
     func isReadyToRecord() {
@@ -72,50 +73,56 @@ extension ChatViewController: VoiceRecorderUIDelegate {
     }
     
     private func addVoiceRecordingView() {
-        let voiceRecordingView = UIView(frame: CGRect(x: view.center.x - 30, y: view.frame.height - 100, width: 60, height: 80))
+        let emptyFrame = CGRect(x: 0, y: 0, width: 0, height: 0)
+        let voiceRecordingView = UIView(frame: emptyFrame)
         
-        let finishButton = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 25))
+        let finishButton = UIButton(frame: emptyFrame)
         finishButton.setTitle("Finish", for: UIControlState.normal)
         finishButton.backgroundColor = .blue
         finishButton.addTarget(self, action: #selector(self.finishRecording), for: UIControlEvents.allTouchEvents)
-        finishButton.tag = 10
-        let cancelButton = UIButton(frame: CGRect(x: 0, y: 35, width: 60, height: 25))
+        
+        let cancelButton = UIButton(frame: emptyFrame)
         cancelButton.setTitle("Cancel", for: UIControlState.normal)
         cancelButton.backgroundColor = .blue
         cancelButton.addTarget(self, action: #selector(self.cancelRecording), for: UIControlEvents.allTouchEvents)
-        cancelButton.tag = 11
+        
+        let recordingAnimation = NVActivityIndicatorView(frame: emptyFrame, type: NVActivityIndicatorType.lineScalePulseOutRapid, color: .white, padding: 0)
         
         voiceRecordingView.addSubview(finishButton)
         voiceRecordingView.addSubview(cancelButton)
-//        finishButton.center.x = 0
-//        cancelButton.center.x = 0
+        voiceRecordingView.addSubview(recordingAnimation)
+        
+        recordingAnimation.startAnimating()
         voiceRecordingView.tag = 10
         self.view.addSubview(voiceRecordingView)
 
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         finishButton.translatesAutoresizingMaskIntoConstraints = false
+        recordingAnimation.translatesAutoresizingMaskIntoConstraints = false
         voiceRecordingView.translatesAutoresizingMaskIntoConstraints = false
         
-        let constraint1 = NSLayoutConstraint(item: voiceRecordingView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0)
-        let constraint2 = NSLayoutConstraint(item: voiceRecordingView, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1.0, constant: 0)
-        let constraint3 = NSLayoutConstraint(item: finishButton, attribute: .centerX, relatedBy: .equal, toItem: voiceRecordingView, attribute: .centerX, multiplier: 1.0, constant: 0)
-        let constraint4 = NSLayoutConstraint(item: cancelButton, attribute: .centerX, relatedBy: .equal, toItem: voiceRecordingView, attribute: .centerX, multiplier: 1.0, constant: 0)
-        let constraint5 = NSLayoutConstraint(item: cancelButton, attribute: .bottom, relatedBy: .equal, toItem: voiceRecordingView, attribute: .bottom, multiplier: 1.0, constant: 0)
-        let constraint6 = NSLayoutConstraint(item: finishButton, attribute: .top, relatedBy: .equal, toItem: voiceRecordingView, attribute: .top, multiplier: 1.0, constant: 0)
-        let constraint7 = NSLayoutConstraint(item: finishButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 60)
-        let constraint8 = NSLayoutConstraint(item: cancelButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 60)
-        let constraint9 = NSLayoutConstraint(item: cancelButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 25)
-        let constraint10 = NSLayoutConstraint(item: finishButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 25)
-        let constraint11 = NSLayoutConstraint(item: voiceRecordingView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100)
-        let constraint12 = NSLayoutConstraint(item: voiceRecordingView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100)
-        view.addConstraints([constraint11, constraint12, constraint1, constraint2])
-        voiceRecordingView.addConstraints([constraint3, constraint4, constraint5, constraint6, constraint7, constraint8, constraint9, constraint10])
+        NSLayoutConstraint(item: voiceRecordingView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: voiceRecordingView, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: voiceRecordingView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100).isActive = true
+        NSLayoutConstraint(item: voiceRecordingView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100).isActive = true
+        
+        NSLayoutConstraint(item: finishButton, attribute: .centerX, relatedBy: .equal, toItem: voiceRecordingView, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: finishButton, attribute: .top, relatedBy: .equal, toItem: voiceRecordingView, attribute: .top, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: finishButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 60).isActive = true
+        NSLayoutConstraint(item: finishButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 25).isActive = true
+        
+        NSLayoutConstraint(item: cancelButton, attribute: .centerX, relatedBy: .equal, toItem: voiceRecordingView, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: cancelButton, attribute: .bottom, relatedBy: .equal, toItem: voiceRecordingView, attribute: .bottom, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: cancelButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 60).isActive = true
+        NSLayoutConstraint(item: cancelButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 25).isActive = true
+        
+        NSLayoutConstraint(item: recordingAnimation, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 50).isActive = true
+        NSLayoutConstraint(item: recordingAnimation, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 40).isActive = true
+        NSLayoutConstraint(item: recordingAnimation, attribute: .centerX, relatedBy: .equal, toItem: voiceRecordingView, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
+        NSLayoutConstraint(item: recordingAnimation, attribute: .centerY, relatedBy: .equal, toItem: voiceRecordingView, attribute: .centerY, multiplier: 1.0, constant: 0).isActive = true
         
         self.view.bringSubview(toFront: voiceRecordingView)
         self.view.layoutIfNeeded()
-        
-        voiceRecordingView.layer.addScaleXAnimation(scaleFactor: 1.3)
-        voiceRecordingView.layer.addScaleYAnimation(scaleFactor: 1.3)
     }
     
 }

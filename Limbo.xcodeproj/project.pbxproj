@@ -280,10 +280,10 @@
 				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 				0657906C211AD3BE005CF741 /* ChatViewController+Game.swift */,
 				066C84AF212443130022CA95 /* ChatViewController+ImagePicker.swift */,
+				0618F3EF212C0F4A0004FDE4 /* ChatViewController+VoiceRecorderUIDelegate.swift */,
 				06262FD6210876A2003C6A1E /* MessageCell.swift */,
 				066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */,
 				0618F3EB212C01F20004FDE4 /* VoiceMessageTableViewCell.swift */,
-				0618F3EF212C0F4A0004FDE4 /* ChatViewController+VoiceRecorderUIDelegate.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -690,7 +690,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XFNQF25BM4;
 				INFOPLIST_FILE = Limbo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.nemetschek.Limbo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -706,7 +709,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XFNQF25BM4;
 				INFOPLIST_FILE = Limbo/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.nemetschek.Limbo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

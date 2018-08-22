@@ -23,6 +23,7 @@ class UserModel: Object {
     @objc dynamic var specialItem = "None"
     @objc dynamic var specialItemUsedDate: Date? = nil
     @objc dynamic var itemsData: Data?
+    @objc dynamic var compoundKey = ""
     var items: [String: Int] {
         get {
             guard let itemsData = itemsData else {
@@ -51,6 +52,7 @@ class UserModel: Object {
         self.username = username
         self.state = state
         self.uniqueDeviceID = uniqueDeviceID
+        self.compoundKey = uniqueDeviceID + username
     }
     
     convenience init(username: String, password: String) {
@@ -61,7 +63,7 @@ class UserModel: Object {
     }
     
     override class func primaryKey() -> String? {
-        return "username"
+        return "compoundKey"
     }
     
     func setState(batteryLevel: Float) {

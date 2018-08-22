@@ -199,7 +199,7 @@ class ChatViewController: UIViewController {
         messageModel.messageString = message
         messageModel.messageType = MessageType.Message.rawValue
         messageModel.sender = self.currentUser
-        if let _ = self.chatDelegate?.sendMessage(messageModel: messageModel, toPeerID: peerID) {
+        if self.chatDelegate!.sendMessage(messageModel: messageModel, toPeerID: peerID) {
             let realm = try! Realm()
             if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!, andUsername: (self.userChattingWith?.username)!) {
                 try? realm.write {
