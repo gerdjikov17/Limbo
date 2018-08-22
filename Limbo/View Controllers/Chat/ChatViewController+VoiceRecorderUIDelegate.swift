@@ -75,15 +75,14 @@ extension ChatViewController: VoiceRecorderUIDelegate {
     private func addVoiceRecordingView() {
         let emptyFrame = CGRect(x: 0, y: 0, width: 0, height: 0)
         let voiceRecordingView = UIView(frame: emptyFrame)
+        voiceRecordingView.backgroundColor = UIColor(white: 0.5, alpha: 0.5)
         
         let finishButton = UIButton(frame: emptyFrame)
         finishButton.setTitle("Finish", for: UIControlState.normal)
-        finishButton.backgroundColor = .blue
         finishButton.addTarget(self, action: #selector(self.finishRecording), for: UIControlEvents.allTouchEvents)
         
         let cancelButton = UIButton(frame: emptyFrame)
         cancelButton.setTitle("Cancel", for: UIControlState.normal)
-        cancelButton.backgroundColor = .blue
         cancelButton.addTarget(self, action: #selector(self.cancelRecording), for: UIControlEvents.allTouchEvents)
         
         let recordingAnimation = NVActivityIndicatorView(frame: emptyFrame, type: NVActivityIndicatorType.lineScalePulseOutRapid, color: .white, padding: 0)
@@ -103,8 +102,8 @@ extension ChatViewController: VoiceRecorderUIDelegate {
         
         NSLayoutConstraint(item: voiceRecordingView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
         NSLayoutConstraint(item: voiceRecordingView, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1.0, constant: 0).isActive = true
-        NSLayoutConstraint(item: voiceRecordingView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100).isActive = true
-        NSLayoutConstraint(item: voiceRecordingView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100).isActive = true
+        NSLayoutConstraint(item: voiceRecordingView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 150).isActive = true
+        NSLayoutConstraint(item: voiceRecordingView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 150).isActive = true
         
         NSLayoutConstraint(item: finishButton, attribute: .centerX, relatedBy: .equal, toItem: voiceRecordingView, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
         NSLayoutConstraint(item: finishButton, attribute: .top, relatedBy: .equal, toItem: voiceRecordingView, attribute: .top, multiplier: 1.0, constant: 0).isActive = true
@@ -122,7 +121,7 @@ extension ChatViewController: VoiceRecorderUIDelegate {
         NSLayoutConstraint(item: recordingAnimation, attribute: .centerY, relatedBy: .equal, toItem: voiceRecordingView, attribute: .centerY, multiplier: 1.0, constant: 0).isActive = true
         
         self.view.bringSubview(toFront: voiceRecordingView)
-        self.view.layoutIfNeeded()
+        voiceRecordingView.layer.cornerRadius = 50
     }
     
 }
