@@ -26,7 +26,7 @@ class NotificationManager: NSObject {
                 let content = UNMutableNotificationContent()
                 if let user = message.sender {
                     content.title = user.username
-                    content.userInfo = ["uniqueDeviceID": user.uniqueDeviceID, "username": user.username]
+                    content.userInfo = ["chatRoomUUID": message.chatRoomUUID, "username": user.username]
                 }
                 
                 switch message.messageType {

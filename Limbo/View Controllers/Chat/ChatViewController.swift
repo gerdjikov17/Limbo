@@ -19,8 +19,7 @@ class ChatViewController: UIViewController {
     @IBOutlet weak var messageTextFieldBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var addPhotoButton: UIButton!
     var chatDelegate: UsersConnectivityDelegate?
-    var userChattingWith: UserModel?
-    var peerIDChattingWith: MCPeerID?
+    var chatRoom: ChatRoomModel?
     var currentUser: UserModel?
     var messagesResults: Results<MessageModel>!
     var messages: [MessageModel]!
@@ -43,21 +42,13 @@ class ChatViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.messagesResults = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!)!
-        self.messages = Array(self.messagesResults[startIndex...])
         self.chatTableView.dataSource = self
         self.chatTableView.delegate = self
         self.messageTextField.delegate = self;
-        self.navigationItem.title = self.userChattingWith?.username
-        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-        if indexPath.row >= 0 {
-            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
-        }
-        
+        self.navigationItem.title = self.chatRoom!.name
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(self.optionsButtonTap))
         
-        self.initNotificationToken()
         
     }
     
@@ -65,6 +56,13 @@ class ChatViewController: UIViewController {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        self.messagesResults = RealmManager.getMessagesForChatRoom(firstUser: self.currentUser!, chatRoom: chatRoom!)
+        self.messages = Array(self.messagesResults[startIndex...])
+        self.initNotificationToken()
+        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+        if indexPath.row >= 0 {
+            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -73,13 +71,19 @@ class ChatViewController: UIViewController {
         if indexPath.row >= 0 {
             self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
         }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-//        self.notificationToken.invalidate()
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.notificationToken.invalidate()
     }
     
     //    MARK: Keyboard Notifications
@@ -140,21 +144,21 @@ class ChatViewController: UIViewController {
         if (self.messageTextField.text?.count)! > 0 {
             guard var message = self.messageTextField.text else { return }
             
-            if self.userChattingWith?.state == "Spectre" {
+            if self.chatRoom!.usersChattingWith.first!.state == "Spectre" {
                 self.sendMessageToSpectre(message: message)
             }
-            else if message == UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) && userChattingWith?.uniqueDeviceID == UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID){
+            else if message == UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) && self.chatRoom!.usersChattingWith.first!.uniqueDeviceID == UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID){
                 CurseManager.removeCurse()
                 NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
             }
-            else if (self.peerIDChattingWith?.displayName.hasSuffix(".game"))! {
+            else if self.chatRoom!.roomType == RoomType.Game.rawValue {
                 self.sendMessageToGame(message: message)
             }
             else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
                 if self.currentUser?.curse == Curse.Posession.rawValue {
                     message = message.shuffle()
                 }
-                self.sendMessageToUser(message: message, peerID: self.peerIDChattingWith!)
+                self.sendMessageToUser(message: message)
             }
             else if self.currentUser!.curse == Curse.Silence.rawValue{
                 self.sendingMessageWhileSilenced()
@@ -194,19 +198,27 @@ class ChatViewController: UIViewController {
         self.navigationController?.present(itemsVC, animated: true, completion: nil)
     }
     
-    func sendMessageToUser(message: String, peerID: MCPeerID) {
+    func sendMessageToUser(message: String) {
         let messageModel = MessageModel()
         messageModel.messageString = message
         messageModel.messageType = MessageType.Message.rawValue
         messageModel.sender = self.currentUser
-        if self.chatDelegate!.sendMessage(messageModel: messageModel, toPeerID: peerID) {
-            let realm = try! Realm()
-            if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!, andUsername: (self.userChattingWith?.username)!) {
-                try? realm.write {
-                    realm.add(messageModel)
-                    messageModel.receivers.append(userChattingWith)
-                }
+        if (self.chatRoom?.usersChattingWith.count)! > 1 {
+            messageModel.chatRoomUUID = self.chatRoom!.uuid
+        }
+        else {
+            messageModel.chatRoomUUID = self.currentUser!.uniqueDeviceID.appending(self.currentUser!.username)
+        }
+        
+        for user in chatRoom!.usersChattingWith {
+            if let peerID = self.chatDelegate?.getPeerIDForUID(uniqueID: user.uniqueDeviceID) {
+                _ = self.chatDelegate!.sendMessage(messageModel: messageModel, toPeerID: peerID)
             }
+        }
+        let realm = try! Realm()
+        try? realm.write {
+            messageModel.chatRoomUUID = self.chatRoom!.uuid
+            realm.add(messageModel)
         }
     }
     
@@ -256,9 +268,7 @@ extension ChatViewController: OptionsDelegate {
         alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
             let realm = try! Realm()
             realm.beginWrite()
-            if let results = RealmManager.getMessagesForUsers(firstUser: self.currentUser!, secondUser: self.userChattingWith!) {
-                realm.delete(results)
-            }
+            realm.delete(self.messagesResults)
             try! realm.commitWrite()
             self.messages = Array(self.messagesResults)
             self.chatTableView.reloadData()

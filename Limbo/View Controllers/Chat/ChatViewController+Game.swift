@@ -33,13 +33,16 @@ extension ChatViewController {
             key = KEY_ANSWER
         }
         let dataDict = [key: message]
-        let success = self.chatDelegate?.sendJSONtoGame(dataDict: dataDict, toPeerID: self.peerIDChattingWith!)
+        
+        let success = self.chatDelegate?.sendJSONtoGame(dataDict: dataDict, toPeerID: (self.chatDelegate?.getPeerIDForUID(uniqueID: self.chatRoom!.usersPeerIDs.first!)!)!)
         if success! {
             let realm = try! Realm()
-            if let userChattingWith = RealmManager.userWith(uniqueID: (self.userChattingWith?.uniqueDeviceID)!, andUsername: (self.userChattingWith?.username)!) {
+            if let userChattingWith = RealmManager.userWith(uniqueID: self.chatRoom!.usersChattingWith.first!.uniqueDeviceID, andUsername: self.chatRoom!.usersChattingWith.first!.username) {
                 try? realm.write {
                     realm.add(messageModel)
-                    messageModel.receivers.append(userChattingWith)
+//                    messageModel.receivers.append(userChattingWith)
+//                    messageModel.chatRoom = self.chatRoom
+                    messageModel.chatRoomUUID = self.chatRoom!.uuid
                 }
             }
         }

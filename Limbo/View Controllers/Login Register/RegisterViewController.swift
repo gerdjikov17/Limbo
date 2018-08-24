@@ -110,6 +110,9 @@ class RegisterViewController: UIViewController {
         else if confirmedPassword != password {
             message = "Confirm password doesn't match"
         }
+        else if username.contains("§") {
+            message = "Username cannot contain §"
+        }
         else {
             message = ""
         }

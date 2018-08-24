@@ -26,14 +26,24 @@ extension ChatViewController: VoiceRecorderUIDelegate {
         message.sender = self.currentUser
         message.messageType = MessageType.Voice_Record.rawValue
         message.additionalData = try? Data(contentsOf: tempFileURL)
-        message.receivers.append(self.userChattingWith!)
+        
         let newFileName = message.additionalData!.base64EncodedString().suffix(10).replacingOccurrences(of: "/", with: "_").replacingOccurrences(of: "=", with: "a").appending(".mp4")
         message.messageString = newFileName
-        if let _ = self.chatDelegate?.sendMessage(messageModel: message, toPeerID: self.peerIDChattingWith!) {
-            let realm = try! Realm()
-            try? realm.write {
-                realm.add(message)
+        if (self.chatRoom?.usersChattingWith.count)! > 1 {
+            message.chatRoomUUID = self.chatRoom!.uuid
+        }
+        else {
+            message.chatRoomUUID = self.currentUser!.uniqueDeviceID.appending(self.currentUser!.username)
+        }
+        for user in chatRoom!.usersChattingWith {
+            if let peerID = self.chatDelegate?.getPeerIDForUID(uniqueID: user.uniqueDeviceID) {
+                _ = self.chatDelegate!.sendMessage(messageModel: message, toPeerID: peerID)
             }
+        }
+        message.chatRoomUUID = self.chatRoom!.uuid
+        let realm = try! Realm()
+        try? realm.write {
+            realm.add(message)
         }
         self.renameTempFile(newName: newFileName)
         print("finish recording")

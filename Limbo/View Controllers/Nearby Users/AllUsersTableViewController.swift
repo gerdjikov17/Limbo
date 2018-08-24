@@ -9,8 +9,9 @@
 import UIKit
 
 class AllUsersTableViewController: UITableViewController {
-    var users: [UserModel]?
+    var usersChatRooms: [ChatRoomModel]?
     var selectedIndexes: [Int]!
+    var groupChatDelegate: GroupChatDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,25 +27,25 @@ class AllUsersTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard users != nil else {
+        guard usersChatRooms != nil else {
             return 0
         }
-        return users!.count
+        return usersChatRooms!.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "allUsersCell", for: indexPath)
         cell.textLabel?.textColor = .white
-        cell.textLabel?.text = users![indexPath.row].username
+        cell.textLabel?.text = usersChatRooms![indexPath.row].name
         cell.tintColor = .white
         let backgroundView = UIView()
         backgroundView.backgroundColor = .clear
         cell.selectedBackgroundView? = backgroundView
-        if let defaultImage = UIImage(named: users![indexPath.row].avatarString) {
+        if let defaultImage = UIImage(named: usersChatRooms![indexPath.row].avatar) {
             cell.imageView?.image = defaultImage
         }
         else {
-            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: users![indexPath.row].avatarString)!)) {
+            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: usersChatRooms![indexPath.row].avatar)!)) {
                 cell.imageView?.image = imgurImage
             }
             else {
@@ -73,11 +74,16 @@ class AllUsersTableViewController: UITableViewController {
     }
     
     @objc func commitSelectedUsers() {
-        guard self.selectedIndexes.count >= 2 else {
+        guard self.selectedIndexes.count >= 1 else {
             self.view.window?.makeToast("Selected users must be at least 2")
             return
         }
-        
+        var selectedChatRoomUsers: [ChatRoomModel] = Array()
+        for index in self.selectedIndexes {
+            selectedChatRoomUsers.append(self.usersChatRooms![index])
+        }
+        self.groupChatDelegate?.createGroupChat(withChatRooms: selectedChatRoomUsers)
+        self.navigationController?.popViewController(animated: true)
         
     }
 

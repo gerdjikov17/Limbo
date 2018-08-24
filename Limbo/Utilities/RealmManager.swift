@@ -51,7 +51,6 @@ class RealmManager: NSObject {
         }
         realm.beginWrite()
         let user: UserModel! = UserModel(username: username, password: password)
-        user.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat")
         user.userID = realm.objects(UserModel.self).count
         realm.add(user)
         try! realm.commitWrite()
@@ -66,6 +65,20 @@ class RealmManager: NSObject {
         let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers = %@) OR (sender = %@ AND ANY receivers = %@)", firstUser, secondUser, secondUser, firstUser)
         return results
         
+    }
+    
+    static func getMessagesForChatRoom(firstUser: UserModel, chatRoom: ChatRoomModel) -> Results<MessageModel>? {
+        let realm = try! Realm()
+        let resultsUsers = chatRoom.usersChattingWith.filter("userID != %d", 5)
+        let results = realm.objects(MessageModel.self).filter("(sender = %@ AND chatRoomUUID = %@) OR (sender IN %@ AND chatRoomUUID = %@)", firstUser, chatRoom.uuid, resultsUsers, chatRoom.uuid)
+        return results
+        
+    }
+    
+    static func chatRoom(forUUID uuid: String) -> ChatRoomModel? {
+        let realm = try! Realm()
+        let result = realm.objects(ChatRoomModel.self).filter("uuid = %@", uuid).first
+        return result
     }
     
     static func itemsCountForCurrentUser() -> (candles :Int, medallions: Int) {

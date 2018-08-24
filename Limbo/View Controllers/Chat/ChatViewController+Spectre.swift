@@ -21,12 +21,15 @@ extension ChatViewController {
     func sendMessageToSpectre(message: String) {
         let messageModel = MessageModel()
         messageModel.messageString = message
+        messageModel.messageType = MessageType.Message.rawValue
         let realm = try! Realm()
         let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first
         try? realm.write {
             realm.add(messageModel)
             messageModel.sender = self.currentUser
-            messageModel.receivers.append(spectre!)
+//            messageModel.receivers.append(spectre!)
+//            messageModel.chatRoom = RealmManager.chatRoom(forUUID: spectre!.compoundKey)
+            messageModel.chatRoomUUID = spectre!.compoundKey
         }
         self.receiveMessageFromSpectre(forMessage: message)
     }
@@ -35,13 +38,16 @@ extension ChatViewController {
         let messageModel = MessageModel()
         
         messageModel.messageString = Spectre.properAnswer(forMessage: forMessage)
-
+        messageModel.messageType = MessageType.Message.rawValue
         let realm = try! Realm()
         let spectreUser = realm.objects(UserModel.self).filter("state = %@", "Spectre").first
+        messageModel.chatRoomUUID = spectreUser!.compoundKey
+        messageModel.sender = spectreUser
         try? realm.write {
             realm.add(messageModel)
-            messageModel.sender = spectreUser
-            messageModel.receivers.append(self.currentUser!)
+//            messageModel.receivers.append(self.currentUser!)
+//            messageModel.chatRoom = RealmManager.chatRoom(forUUID: spectreUser!.compoundKey)
+            
         }
 
     }

@@ -25,8 +25,9 @@ extension ChatViewController: UNUserNotificationCenterDelegate {
         let peerIDChattingWith = self.chatDelegate?.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID)
         let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
         chatVC.currentUser = self.currentUser
-        chatVC.userChattingWith = userChattingWith
-        chatVC.peerIDChattingWith = peerIDChattingWith
+//        chatVC.userChattingWith = userChattingWith
+//        chatVC.peerIDChattingWith = peerIDChattingWith
+//        to do here
         chatVC.chatDelegate = self.chatDelegate
         var viewControllers = self.navigationController?.viewControllers
         viewControllers?.removeLast()

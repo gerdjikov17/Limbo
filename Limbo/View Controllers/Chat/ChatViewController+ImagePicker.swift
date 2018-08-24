@@ -29,19 +29,25 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
             catch {
                 print(error)
             }
-            
-            
-            if let _ = self.chatDelegate?.sendMessage(messageModel: message, toPeerID: self.peerIDChattingWith!) {
-                let realm = try! Realm()
-                if let userChattingWith = self.userChattingWith {
-                    realm.beginWrite()
-                    message.additionalData = nil
-                    message.receivers.append(userChattingWith)
-                    realm.add(message)
-                    try! realm.commitWrite()
-                    realm.refresh()
+            if (self.chatRoom?.usersChattingWith.count)! > 1 {
+                message.chatRoomUUID = self.chatRoom!.uuid
+            }
+            else {
+                message.chatRoomUUID = self.currentUser!.uniqueDeviceID.appending(self.currentUser!.username)
+            }
+            for user in chatRoom!.usersChattingWith {
+                if let peerID = self.chatDelegate?.getPeerIDForUID(uniqueID: user.uniqueDeviceID) {
+                    _ = self.chatDelegate!.sendMessage(messageModel: message, toPeerID: peerID)
                 }
             }
+            
+            let realm = try! Realm()
+            realm.beginWrite()
+            message.additionalData = nil            
+            message.chatRoomUUID = self.chatRoom!.uuid
+            realm.add(message)
+            try! realm.commitWrite()
+            realm.refresh()
         }
         picker.dismiss(animated: true, completion: nil)
     }

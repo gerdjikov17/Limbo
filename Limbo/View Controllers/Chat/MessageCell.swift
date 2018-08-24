@@ -12,4 +12,5 @@ import UIKit
 class MessageCell: UITableViewCell {
     @IBOutlet weak var messageLabel: UITextView!
     @IBOutlet weak var messageTimestampLabel: UILabel!
+    @IBOutlet weak var senderImageView: UIImageView!
 }

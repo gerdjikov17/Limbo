@@ -26,6 +26,7 @@ extension ChatViewController: UITableViewDataSource {
         var mainCell: UITableViewCell
         switch messageModel.messageType {
         case MessageType.Message.rawValue:
+            
             let identifier = messageModel.sender == self.currentUser ? sentMessageCellIdentifier : receivedMessageCellIdentifier
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! MessageCell
             cell.messageLabel.text = self.messages[indexPath.row].messageString
@@ -33,6 +34,18 @@ extension ChatViewController: UITableViewDataSource {
             cell.messageLabel.layer.masksToBounds = true;
             cell.messageLabel.layer.cornerRadius = 5
             cell.messageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+            if messageModel.sender != self.currentUser {
+                if indexPath.row - 1 >= 0 {
+                    if self.messages[indexPath.row - 1].sender != messageModel.sender {
+                        if let avatarString = messageModel.sender?.avatarString {
+                            cell.senderImageView.image = properImage(imageName: avatarString)
+                        }
+                    }
+                    else {
+                        cell.senderImageView.image = nil
+                    }
+                }
+            }
             mainCell = cell
             
         case MessageType.Photo.rawValue:
@@ -40,6 +53,15 @@ extension ChatViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! PhotoTableViewCell
             cell.setCellUI(forMessageModel: messageModel)
             cell.sentPhotoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnImage(recognizer:))))
+            if messageModel.sender != self.currentUser {
+                if indexPath.row - 1 >= 0 {
+                    if self.messages[indexPath.row - 1].sender != messageModel.sender {
+                        if let avatarString = messageModel.sender?.avatarString {
+                            cell.senderImageView.image = properImage(imageName: avatarString)
+                        }
+                    }
+                }
+            }
             mainCell = cell
             
         case MessageType.Voice_Record.rawValue:
@@ -47,6 +69,15 @@ extension ChatViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! VoiceMessageTableViewCell
             cell.initialConfiguration(message: messageModel)
             cell.voiceProgressView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
+            if messageModel.sender != self.currentUser {
+                if indexPath.row - 1 >= 0 {
+                    if self.messages[indexPath.row - 1].sender != messageModel.sender {
+                        if let avatarString = messageModel.sender?.avatarString {
+                            cell.senderImageView.image = properImage(imageName: avatarString)
+                        }
+                    }
+                }
+            }
             mainCell = cell
             
         default:
@@ -127,6 +158,18 @@ extension ChatViewController: UITableViewDelegate {
             return 155
         }
         
+    }
+    
+    func properImage(imageName: String) -> UIImage {
+        if let defaultImage = UIImage(named: imageName) {
+            return defaultImage
+        }
+        else {
+            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: imageName)!)) {
+                return imgurImage
+            }
+            return #imageLiteral(resourceName: "ghost_avatar.png")
+        }
     }
 
 }

@@ -59,6 +59,8 @@ class UserModel: Object {
         self.init()
         self.username = username
         self.password = password
+        self.uniqueDeviceID = (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat")
+        self.compoundKey = self.uniqueDeviceID + username
         self.items = [SpecialItem.HolyCandle.rawValue: 5, SpecialItem.SaintsMedallion.rawValue: 5]
     }
     

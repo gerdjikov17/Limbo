@@ -17,7 +17,9 @@ extension UsersConnectivity {
         let messageModel = MessageModel()
         messageModel.messageString = dictWithData.first?.value as! String
         messageModel.sender = RealmManager.userWith(uniqueID: peerID.displayName)
-        messageModel.receivers.append(RealmManager.currentLoggedUser()!)
+//        messageModel.receivers.append(RealmManager.currentLoggedUser()!)
+//        messageModel.chatRoom = RealmManager.chatRoom(forUUID: messageModel.sender!.compoundKey)
+        messageModel.chatRoomUUID = messageModel.sender!.compoundKey
         let realm = try! Realm()
         realm.beginWrite()
         realm.add(messageModel)

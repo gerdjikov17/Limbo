@@ -12,6 +12,7 @@ import RealmSwift
 
 protocol NearbyUsersDelegate {
     func didFindNewUser(user: UserModel, peerID: MCPeerID)
+    func didFindNewChatRoom(chatRoomThreadSafeReference: ThreadSafeReference<ChatRoomModel>)
     func didLostUser(peerID: MCPeerID)
 }
 
@@ -39,4 +40,9 @@ protocol VoiceRecorderUIDelegate {
 protocol OptionsDelegate {
     func clearHistory()
     func showImages()
+}
+
+protocol GroupChatDelegate {
+    func createGroupChat(withChatRooms chatRooms: [ChatRoomModel])
+    
 }

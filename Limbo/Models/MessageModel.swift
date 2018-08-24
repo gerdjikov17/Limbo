@@ -15,7 +15,7 @@ class MessageModel: Object {
     @objc dynamic var additionalData: Data?
     @objc dynamic var timeSent = Date()
     @objc dynamic var sender: UserModel?
-    let receivers = List<UserModel>()
+    @objc dynamic var chatRoomUUID = ""
     
     func toDictionary() -> Dictionary<String, Any> {
         let jsonDict = [
@@ -23,7 +23,8 @@ class MessageModel: Object {
             "messageType": self.messageType,
             "additionalData": self.additionalData as Any,
             "timeSent": self.timeSent,
-            "sender": self.sender?.toJSONDict() as Any
+            "sender": self.sender?.toJSONDict() as Any,
+            "chatRoomUUID": self.chatRoomUUID
             ] as [String : Any]
         return jsonDict
     }
@@ -39,8 +40,10 @@ class MessageModel: Object {
         let senderDict: Dictionary = dictionary["sender"] as! Dictionary<String, Any>
         if let uniqueDeviceID = senderDict["uniqueDeviceID"] {
             self.sender = RealmManager.userWith(uniqueID: uniqueDeviceID as! String, andUsername: senderDict["username"] as! String)
-            self.receivers.append(RealmManager.currentLoggedUser()!)
+            
         }
+        let uuid = dictionary["chatRoomUUID"] as! String
+        self.chatRoomUUID = uuid
     }
     
     convenience init(withType messageType: MessageType) {

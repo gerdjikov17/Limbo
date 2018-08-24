@@ -13,6 +13,7 @@ class VoiceMessageTableViewCell: UITableViewCell {
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var voiceProgressView: UIProgressView!
     @IBOutlet weak var timeStampLabel: UILabel!
+    @IBOutlet weak var senderImageView: UIImageView!
     private var avPlayer: AVAudioPlayer?
     private var timer: Timer?
     

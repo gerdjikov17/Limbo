@@ -21,8 +21,8 @@ class NearbyUsersViewController: UIViewController {
         return RealmManager.currentLoggedUser()
     }
     var notificationToken: NotificationToken?
-    var users: [MCPeerID: (user: UserModel, unreadMessages: Int)]!
-    var lastSelectedPeerID: MCPeerID?
+    var chatRooms: [MCPeerID: (chatRoom: ChatRoomModel, unreadMessages: Int)]!
+    var lastSelectedChatRoomUUID: String?
     var usersConnectivity: UsersConnectivity!
     var itemsCountIfBlind = 0
     @IBOutlet weak var nearbyUsersCollectionView: UICollectionView!
@@ -39,7 +39,7 @@ class NearbyUsersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.users = Dictionary()
+        self.chatRooms = Dictionary()
         let spectreManager = SpectreManager(nearbyUsersDelegate: self)
         spectreManager.startLoopingForSpectres()
 
@@ -68,6 +68,7 @@ class NearbyUsersViewController: UIViewController {
             
         }
         NotificationCenter.default.addObserver(self, selector: #selector(batteryLevelDidChange(notification:)), name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -76,11 +77,11 @@ class NearbyUsersViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.lastSelectedPeerID = nil
+        self.lastSelectedChatRoomUUID = nil
         self.addGroupChatCell()
         self.nearbyUsersCollectionView.reloadData()
         self.checkForGifts()
-
+        self.showGroupChats()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -167,33 +168,53 @@ class NearbyUsersViewController: UIViewController {
     }
     
     @objc func becomeGhost() {
-        var batteryLevel: Float
-        if self.currentUser.state == "Human" {
-            batteryLevel = 0.047
+        let realm = try! Realm()
+        let results = realm.objects(ChatRoomModel.self).filter("name = %@", "Unnamed group")
+        self.chatRooms.remove(at: self.chatRooms.index(where: { (key, value) -> Bool in
+            value.chatRoom.name == "Unnamed group"
+        })!)
+        try! realm.write {
+            realm.delete(results)
         }
-        else if self.currentUser.state == "Ghost" {
-            batteryLevel = 0.26
-        }
-        else if self.currentUser.state == "Dying" {
-            batteryLevel = 0.51
-        }
-        else {
-            batteryLevel = 0.11
-        }
-        self.currentUser.setState(batteryLevel: batteryLevel)
-        if self.userStateLabel.text != self.currentUser.state {
-            self.userStateLabel.text = self.currentUser.state
-        }
+        self.nearbyUsersCollectionView.reloadData()
+//        var batteryLevel: Float
+//        if self.currentUser.state == "Human" {
+//            batteryLevel = 0.047
+//        }
+//        else if self.currentUser.state == "Ghost" {
+//            batteryLevel = 0.26
+//        }
+//        else if self.currentUser.state == "Dying" {
+//            batteryLevel = 0.51
+//        }
+//        else {
+//            batteryLevel = 0.11
+//        }
+//        self.currentUser.setState(batteryLevel: batteryLevel)
+//        if self.userStateLabel.text != self.currentUser.state {
+//            self.userStateLabel.text = self.currentUser.state
+//        }
     }
     
     private func filterUsersToShow() {
-        var newUsers: [MCPeerID: (user: UserModel, unreadMessages: Int)] = Dictionary()
-        for key in self.users.keys {
-            if self.usersConnectivity.shouldShowUserDependingOnState(currentUserState: self.currentUser.state, foundUserState: (self.users[key]?.user.state)!) {
-                newUsers[key] = self.users[key]
+        var newUsers: [MCPeerID: (chatRoom: ChatRoomModel, unreadMessages: Int)] = Dictionary()
+//        error here
+        guard let chatRooms = self.chatRooms else {
+            self.chatRooms = newUsers
+            return
+        }
+        for key in chatRooms.keys {
+            let value = chatRooms[key]
+            if (value?.chatRoom.usersChattingWith.count)! > 1 {
+                newUsers[key] = self.chatRooms[key]
+            }
+            else {
+                if key.displayName == "C" || self.usersConnectivity.shouldShowUserDependingOnState(currentUserState: self.currentUser.state, foundUserState: (chatRooms[key]?.chatRoom.usersChattingWith.first!.state)!) {
+                    newUsers[key] = chatRooms[key]
+                }
             }
         }
-        self.users = newUsers
+        self.chatRooms = newUsers
         self.reloadDataFromSelector()
     }
     
@@ -230,7 +251,7 @@ class NearbyUsersViewController: UIViewController {
 extension NearbyUsersViewController: NearbyUsersDelegate {
    
     func didLostUser(peerID: MCPeerID) {
-        self.users.removeValue(forKey: peerID)
+        self.chatRooms.removeValue(forKey: peerID)
         
         if peerID.displayName == "Spectre" {
             itemsCountIfBlind = 0
@@ -240,7 +261,11 @@ extension NearbyUsersViewController: NearbyUsersDelegate {
     }
     
     func didFindNewUser(user: UserModel, peerID: MCPeerID) {
-        self.users[peerID] = (user, 0)
+        
+        let realm = try! Realm()
+        if let realmChatRoom = realm.objects(ChatRoomModel.self).filter("uuid = %@", user.compoundKey).first {
+            self.chatRooms[peerID] = (realmChatRoom, 0)
+        }
         
         if user.state == "Spectre" {
             itemsCountIfBlind = 1

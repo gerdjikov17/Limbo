@@ -30,25 +30,17 @@ extension NearbyUsersViewController: ChatDelegate {
             let realm = try! Realm()
             let messageModel = realm.resolve(threadSafeMessageRef)
             
-            if let lastSelectedPeer = self.lastSelectedPeerID {
-                if lastSelectedPeer != fromPeerID {
-                    let unreadMessages = self.users[lastSelectedPeer]?.unreadMessages
-                    self.users[lastSelectedPeer]?.unreadMessages = unreadMessages! + 1
-                    NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
-                }
-            }
-            else {
-                if self.users.keys.contains(fromPeerID) {
-                    let unreadMessages = self.users[fromPeerID]?.unreadMessages
-                    self.users[fromPeerID]?.unreadMessages = unreadMessages! + 1
+            if messageModel?.chatRoomUUID != self.lastSelectedChatRoomUUID {
+                if let tuple = self.chatRooms.first(where: { (key, value) -> Bool in
+                    value.chatRoom.uuid == messageModel?.chatRoomUUID
+                }) {
+                    self.chatRooms[tuple.key]?.unreadMessages += 1
                 }
                 
                 NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
                 
             }
-            if let index = Array(self.users.keys).index(of: fromPeerID) {
-                self.nearbyUsersCollectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
-            }
+            self.nearbyUsersCollectionView.reloadData()
         }
     }
     
@@ -87,48 +79,67 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
             self.view.makeToast("You are cursed with Silence", point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
             return
         }
-        let userSendingMessageToUniqueDeviceID = userInfo["uniqueDeviceID"] as! String
-        let peerIDSendingMessageTo = self.usersConnectivity.getPeerIDForUID(uniqueID: userSendingMessageToUniqueDeviceID)
-        guard let userSendingMessageTo = RealmManager.userWith(uniqueID: userSendingMessageToUniqueDeviceID, andUsername: userInfo["username"] as! String) else {
+        let chatRoomUUID = userInfo["chatRoomUUID"] as! String
+        guard let chatRoom = RealmManager.chatRoom(forUUID: chatRoomUUID) else {
+            self.view.makeToast("Error sending message")
             return
         }
         let messageModel = MessageModel()
         messageModel.messageString = text
+        messageModel.messageType = MessageType.Message.rawValue
         messageModel.sender = self.currentUser
+        if chatRoom.usersChattingWith.count > 1 {
+            messageModel.chatRoomUUID = chatRoomUUID
+        }
+        else {
+            messageModel.chatRoomUUID = self.currentUser.uniqueDeviceID+self.currentUser.username
+        }
         
-        guard let success = self.usersConnectivity?.sendMessage(messageModel: messageModel, toPeerID: peerIDSendingMessageTo!) else {
-            return
+        
+        for user in chatRoom.usersChattingWith {
+            let peerIDString = user.uniqueDeviceID
+            if let peerIDSendingMessageTo = self.usersConnectivity.getPeerIDForUID(uniqueID: peerIDString) {
+                self.usersConnectivity!.sendMessage(messageModel: messageModel, toPeerID: peerIDSendingMessageTo)
+            }
         }
-        if success {
-            let realm = try! Realm()
-            realm.beginWrite()
-            realm.add(messageModel)
-            messageModel.receivers.append(userSendingMessageTo)
-            try! realm.commitWrite()
-        }
+        
+        
+        let realm = try! Realm()
+        realm.beginWrite()
+        realm.add(messageModel)
+        try! realm.commitWrite()
     }
     
     private func notificationTapAction(withUserInfo userInfo: [AnyHashable: Any]) {
-        let userChattingWithUniqueDeviceID = userInfo["uniqueDeviceID"] as! String
-        let username = userInfo["username"] as! String
-        let userChattingWith = RealmManager.userWith(uniqueID: userChattingWithUniqueDeviceID, andUsername: username)
-        guard let peerIDChattingWith = self.usersConnectivity.getPeerIDForUID(uniqueID: userChattingWithUniqueDeviceID) else {
+        let chatRoomUUID = userInfo["chatRoomUUID"] as! String
+        let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
+        guard let chatRoom = RealmManager.chatRoom(forUUID: chatRoomUUID) else {
+            
+            self.lastSelectedChatRoomUUID = chatRoomUUID
+            self.properlyPushChatVC(chatVC: chatVC)
             return
         }
-        let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
-        self.usersConnectivity.inviteUser(peerID: peerIDChattingWith)
-        chatVC.currentUser = self.currentUser
-        chatVC.userChattingWith = userChattingWith
-        chatVC.peerIDChattingWith = peerIDChattingWith
-        chatVC.chatDelegate = self.usersConnectivity
         
-        if (self.users.contains(where: { (key, value) -> Bool in
-            key == peerIDChattingWith
-        })) {
-            self.users[peerIDChattingWith] = (userChattingWith!, 0)
+        for peerIDString in chatRoom.usersPeerIDs {
+            if let peerID = self.usersConnectivity.getPeerIDForUID(uniqueID: peerIDString) {
+                if !self.usersConnectivity.session.connectedPeers.contains(peerID) {
+                    self.usersConnectivity.inviteUser(peerID: peerID)
+                }
+            }
         }
         
-        self.lastSelectedPeerID = peerIDChattingWith
+        chatVC.currentUser = self.currentUser
+        chatVC.chatRoom = chatRoom
+//        TO DO notificaiton tap action is not working now
+        chatVC.chatDelegate = self.usersConnectivity
+        
+        if let tuple = self.chatRooms.first(where: { (key, value) -> Bool in
+            value.chatRoom.uuid == chatRoomUUID
+        }) {
+            self.chatRooms[tuple.key] = (tuple.value.chatRoom, 0)
+        }
+        
+        self.lastSelectedChatRoomUUID = chatRoomUUID
         
         self.properlyPushChatVC(chatVC: chatVC)
     }

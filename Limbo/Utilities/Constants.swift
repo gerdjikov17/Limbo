@@ -64,4 +64,20 @@ enum MessageType: Int {
     case Message_Photo = 2
     case Voice_Record = 3
     case System = 4
+    case GroupMessage = 5
+    case GroupPhoto = 6
+    case GroupMessage_Photo = 7
+    case GroupVoice_Record = 8
+}
+
+enum SystemMessage: String {
+    case NewGroupCreated = "0"
+//    case NewGroupCreated = "0"
+}
+
+enum RoomType: Int {
+    case SingleUserChat = 0
+    case GroupChat = 1
+    case Game = 2
+    case CreateGroupChat = 3
 }

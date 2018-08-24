@@ -11,6 +11,7 @@ import UIKit
 class PhotoTableViewCell: UITableViewCell {
     @IBOutlet weak var sentPhotoImageView: UIImageView!
     @IBOutlet weak var sentPhotoTimeStampLabel: UILabel!
+    @IBOutlet weak var senderImageView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

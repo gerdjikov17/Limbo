@@ -19,18 +19,18 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
                 return itemsCountIfBlind
             }
         }
-        return users.count
+        return chatRooms.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyUserCell", for: indexPath) as! NearbyDevicesCollectionViewCell
         let userModelAndUnreadMessages = getUserModelAndUnreadMessages(forIndexPath: indexPath)
-        let userModel = userModelAndUnreadMessages.userModel
+        let chatRoom = userModelAndUnreadMessages.chatRoom
         let unreadMessages = userModelAndUnreadMessages.unreadMessages
-        cell.avatarImageView.image = self.getImageForUser(userModel: userModel)
+        cell.avatarImageView.image = self.getImage(forChatRoom: chatRoom)
 
-        cell.usernameLabel.text = userModel.username
-        cell.state.text = userModel.state
+        cell.usernameLabel.text = chatRoom.name
+        cell.state.text = chatRoom.usersChattingWith.first?.state
         if unreadMessages > 0 {
             cell.notSeenMessagesLabel.layer.cornerRadius = cell.notSeenMessagesLabel.frame.size.height / 2
             cell.notSeenMessagesLabel.clipsToBounds = true
@@ -41,28 +41,26 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
             cell.notSeenMessagesLabel.attributedText = NSAttributedString(string: "")
         }
         
-        
-        return cell
+                return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedUser = getUserModelAndUnreadMessages(forIndexPath: indexPath)
+        let selectedRoom = getUserModelAndUnreadMessages(forIndexPath: indexPath)
         
-        guard selectedUser.userModel.userID != Constants.groupChatAddID else {
+        guard selectedRoom.chatRoom.roomType != RoomType.CreateGroupChat.rawValue else {
             self.groupChatCellTap()
             return
         }
         
-        let selectedPeerID = Array(self.users.keys)[indexPath.row]
-        self.lastSelectedPeerID = selectedPeerID
+        let selectedPeerID = Array(self.chatRooms.keys)[indexPath.row]
+        self.lastSelectedChatRoomUUID = selectedRoom.chatRoom.uuid
         self.usersConnectivity.inviteUser(peerID: selectedPeerID)
         let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
         chatVC.currentUser = self.currentUser
-        chatVC.userChattingWith = selectedUser.userModel
-        chatVC.peerIDChattingWith = selectedPeerID
+        chatVC.chatRoom = selectedRoom.chatRoom
         chatVC.chatDelegate = self.usersConnectivity
         
-        self.users[selectedPeerID]? = (selectedUser.userModel, 0)
+        self.chatRooms[selectedPeerID]?.unreadMessages = 0
         
         self.navigationController?.pushViewController(chatVC, animated: true)
         
@@ -70,31 +68,29 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
     
     //    MARK: Cell content help functions
     
-    private func getUserModelAndUnreadMessages(forIndexPath indexPath: IndexPath) -> (userModel: UserModel, unreadMessages: Int) {
+    private func getUserModelAndUnreadMessages(forIndexPath indexPath: IndexPath) -> (chatRoom: ChatRoomModel, unreadMessages: Int) {
         if self.currentUser != nil && itemsCountIfBlind == 1 && self.currentUser.curse == "Blind" {
-            let userKV = self.users.first(where: { (key, value) -> Bool in
+            let userKV = self.chatRooms.first(where: { (key, value) -> Bool in
                 key.displayName == "Spectre"
             })
-            return ((userKV?.value)!.user, (userKV?.value)!.unreadMessages)
+            return ((userKV?.value)!.chatRoom, (userKV?.value)!.unreadMessages)
         }
         else {
-            let allUsers = Array(self.users.values)
-            return (allUsers[indexPath.row].user, allUsers[indexPath.row].unreadMessages)
+            let allUsers = Array(self.chatRooms.values)
+            return (allUsers[indexPath.row].chatRoom, allUsers[indexPath.row].unreadMessages)
         }
     }
     
-    private func getImageForUser(userModel: UserModel) -> UIImage {
-        if userModel.state == "Tunak-Tunak-Tun" {
-            return #imageLiteral(resourceName: "tunak-tunak.jpg")
-        }
-        else if userModel.state == "Tic-Tac-Toe" {
+    private func getImage(forChatRoom chatRoom: ChatRoomModel) -> UIImage {
+        if chatRoom.roomType == RoomType.Game.rawValue {
             return #imageLiteral(resourceName: "tic-tac-toe.png")
         }
-        else if let defaultImage = UIImage(named: userModel.avatarString) {
+//            to do appropriate game avatar
+        else if let defaultImage = UIImage(named: chatRoom.avatar) {
             return defaultImage
         }
         else {
-            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: userModel.avatarString)!)) {
+            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: chatRoom.avatar)!)) {
                 return imgurImage
             }
             return #imageLiteral(resourceName: "ghost_avatar.png")

@@ -40,6 +40,7 @@
 		06262FE32109DCD9003C6A1E /* Toast_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FE22109DCD9003C6A1E /* Toast_Swift.framework */; };
 		06262FE5210B471C003C6A1E /* AvatarCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06262FE4210B471C003C6A1E /* AvatarCollectionViewController.swift */; };
 		06262FED210B63EB003C6A1E /* Pastel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FEC210B63EB003C6A1E /* Pastel.framework */; };
+		065281622130050F008070C8 /* ChatRepositoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065281612130050F008070C8 /* ChatRepositoryModel.swift */; };
 		0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906221198CEE005CF741 /* PastelViewManager.swift */; };
 		06579069211ACDDE005CF741 /* UsersConnectivity+Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06579068211ACDDE005CF741 /* UsersConnectivity+Game.swift */; };
 		0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906A211ACDF1005CF741 /* UsersConnectivity+Chat.swift */; };
@@ -119,6 +120,7 @@
 		06262FE22109DCD9003C6A1E /* Toast_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Toast_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		06262FE4210B471C003C6A1E /* AvatarCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionViewController.swift; sourceTree = "<group>"; };
 		06262FEC210B63EB003C6A1E /* Pastel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pastel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		065281612130050F008070C8 /* ChatRepositoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRepositoryModel.swift; sourceTree = "<group>"; };
 		0657906221198CEE005CF741 /* PastelViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastelViewManager.swift; sourceTree = "<group>"; };
 		06579068211ACDDE005CF741 /* UsersConnectivity+Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersConnectivity+Game.swift"; sourceTree = "<group>"; };
 		0657906A211ACDF1005CF741 /* UsersConnectivity+Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersConnectivity+Chat.swift"; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				060FC5422107336E00E5D6BB /* UserModel.swift */,
 				06262FDC2108A88A003C6A1E /* MessageModel.swift */,
 				0618F3F3212D5A310004FDE4 /* ChatRoomModel.swift */,
+				065281612130050F008070C8 /* ChatRepositoryModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -536,6 +539,7 @@
 				0618F3EC212C01F20004FDE4 /* VoiceMessageTableViewCell.swift in Sources */,
 				061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */,
 				0618F3F2212C3F120004FDE4 /* SmartFormatter.swift in Sources */,
+				065281622130050F008070C8 /* ChatRepositoryModel.swift in Sources */,
 				0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */,
 				0680D58521119BD500B1C926 /* Spectre.swift in Sources */,
 				060FC540210732DF00E5D6BB /* NearbyUsersViewController.swift in Sources */,

@@ -22,6 +22,8 @@ extension UsersConnectivity {
             self.handleMessageTypePhoto(messageModel: messageModel, peerID: peerID)
         case MessageType.Voice_Record.rawValue:
             self.handleMessageTypeVoiceRecord(messageModel: messageModel, peerID: peerID)
+        case MessageType.System.rawValue:
+            self.handleMessageTypeSystem(messageModel: messageModel, peerID: peerID)
         default:
             break;
         }
@@ -48,6 +50,16 @@ extension UsersConnectivity {
         }
         realm.refresh()
         print(user)
+        let chatRoom = ChatRoomModel()
+        chatRoom.name = user.username
+        chatRoom.uuid = user.compoundKey
+        chatRoom.avatar = user.avatarString
+        chatRoom.usersChattingWith.append(user)
+        chatRoom.roomType = RoomType.SingleUserChat.rawValue
+        chatRoom.usersPeerIDs.append(peerID.displayName)
+        try! realm.write {
+            realm.add(chatRoom)
+        }
         if shouldShowUserDependingOnState(currentUserState: RealmManager.currentLoggedUser()!.state, foundUserState: userState) {
             self.delegate?.didFindNewUser(user: user, peerID: peerID)
         }
@@ -99,11 +111,14 @@ extension UsersConnectivity {
                 let answerMessage = MessageModel()
                 answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"
                 answerMessage.sender = user
-                answerMessage.receivers.append(messageModel.sender!)
+//                answerMessage.receivers.append(messageModel.sender!)
+//                answerMessage.chatRoom = RealmManager.chatRoom(forUUID: messageModel.sender!.compoundKey)
+                answerMessage.chatRoomUUID = messageModel.sender!.compoundKey
                 _ = self.sendMessage(messageModel: answerMessage, toPeerID: peerID)
             }
         }
         else {
+            print(messageModel)
             let realm = try! Realm()
             realm.beginWrite()
             realm.add(messageModel)
@@ -112,6 +127,35 @@ extension UsersConnectivity {
                 let threadSafeMessage = ThreadSafeReference(to: messageModel)
                 chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
             }
+        }
+    }
+    
+    private func handleMessageTypeSystem(messageModel: MessageModel, peerID: MCPeerID) {
+        switch messageModel.messageString.first {
+        case SystemMessage.NewGroupCreated.rawValue.first:
+            let usersDict = NSKeyedUnarchiver.unarchiveObject(with: messageModel.additionalData!) as! [String: String]
+            
+            let chatRoom = ChatRoomModel()
+            chatRoom.name = "Unnamed group"
+            for key in usersDict.keys {
+                chatRoom.uuid.append(key+usersDict[key]! + "-")
+                if key != RealmManager.currentLoggedUser()?.uniqueDeviceID {
+                    chatRoom.usersChattingWith.append(RealmManager.userWith(uniqueID: key, andUsername: usersDict[key]!)!)
+                }
+                
+            }
+            chatRoom.uuid.removeLast()
+            chatRoom.roomType = RoomType.GroupChat.rawValue
+            let realm = try! Realm()
+            if realm.objects(ChatRoomModel.self).filter("uuid = %@", chatRoom.uuid).first == nil {
+                try! realm.write {
+                    realm.add(chatRoom)
+                }
+                self.delegate?.didFindNewChatRoom(chatRoomThreadSafeReference: ThreadSafeReference(to: chatRoom))
+            }          
+            
+        default:
+            return
         }
     }
 }
