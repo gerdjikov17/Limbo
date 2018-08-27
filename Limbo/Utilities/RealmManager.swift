@@ -75,6 +75,13 @@ class RealmManager: NSObject {
         
     }
     
+    static func addNewMessage(message: MessageModel) {
+        let realm = try! Realm()
+        try? realm.write {
+            realm.add(message)
+        }
+    }
+    
     static func chatRoom(forUUID uuid: String) -> ChatRoomModel? {
         let realm = try! Realm()
         let result = realm.objects(ChatRoomModel.self).filter("uuid = %@", uuid).first

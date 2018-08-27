@@ -10,15 +10,9 @@ import Foundation
 import RealmSwift
 import UIKit
 
-extension ChatViewController {
-    func sendingMessageWhileSilenced() {
-        let pointForToast = CGPoint(x: self.view.center.x, y: (self.navigationController?.navigationBar.frame.size.height)! + CGFloat(100))
-        let remainingTime = Constants.Curses.curseTime + (self.currentUser?.curseCastDate?.timeIntervalSinceNow)!
-        let curseRemainingTime = Int(remainingTime)
-        self.view.makeToast("You are cursed with Silence", point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
-    }
+class SpectreInteractor {
     
-    func sendMessageToSpectre(message: String) {
+    static func sendMessageToSpectre(message: String) {
         let messageModel = MessageModel()
         messageModel.messageString = message
         messageModel.messageType = MessageType.Message.rawValue
@@ -26,15 +20,13 @@ extension ChatViewController {
         let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first
         try? realm.write {
             realm.add(messageModel)
-            messageModel.sender = self.currentUser
-//            messageModel.receivers.append(spectre!)
-//            messageModel.chatRoom = RealmManager.chatRoom(forUUID: spectre!.compoundKey)
+            messageModel.sender = RealmManager.currentLoggedUser()
             messageModel.chatRoomUUID = spectre!.compoundKey
         }
         self.receiveMessageFromSpectre(forMessage: message)
     }
     
-    func receiveMessageFromSpectre(forMessage: String) {
+    static func receiveMessageFromSpectre(forMessage: String) {
         let messageModel = MessageModel()
         
         messageModel.messageString = Spectre.properAnswer(forMessage: forMessage)
@@ -45,10 +37,6 @@ extension ChatViewController {
         messageModel.sender = spectreUser
         try? realm.write {
             realm.add(messageModel)
-//            messageModel.receivers.append(self.currentUser!)
-//            messageModel.chatRoom = RealmManager.chatRoom(forUUID: spectreUser!.compoundKey)
-            
         }
-
     }
 }

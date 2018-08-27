@@ -32,8 +32,7 @@ protocol ChatDelegate: AnyObject {
     func didReceiveCurse(curse: Curse, remainingTime: Double)
 }
 
-protocol VoiceRecorderUIDelegate {
-    func isReadyToRecord()
+protocol VoiceRecorderInteractorDelegate {
     func didFinishRecording()
 }
 
@@ -44,5 +43,55 @@ protocol OptionsDelegate {
 
 protocol GroupChatDelegate {
     func createGroupChat(withChatRooms chatRooms: [ChatRoomModel])
+}
+
+// MARK: Chat Module
+
+protocol ChatPresenterInterface {
+    func getMessages() -> [MessageModel]
+    func requestMoreMessages()
     
+    func didTapOnImage(image: UIImage, fromUser sender: String)
+    func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage?
+    func properImage(imageName: String) -> UIImage
+    
+    func didTapOnOptionsButton(navigatoinButton: UIBarButtonItem)
+    func didTapOnItemsButton(sourceView: UIView)
+    func didTapOnAddPhotoButton()
+    
+    func voiceRecordButtonTap()
+    
+    func sendButtonTap(message: String)
+    func silencedCallBack()
+    func didFetchMessages()
+    func requestMessages()
+    func newMessage(message: MessageModel)
+}
+
+protocol ChatViewInterface {
+    func reloadAllData()
+    func reload(indexPaths: [IndexPath])
+    func scrollTo(indexPath: IndexPath, at: UITableViewScrollPosition, animated: Bool)
+    func setNavigationItemName(name: String)
+    func showSilencedMessage()
+}
+
+protocol ChatInteractorInterface {
+    func sendMessageToUser(message: String)
+    func getMessageResults() -> Results<MessageModel>?
+    func handleMessage(message: String)
+    func finishedPickingImage(pickedImage: UIImage)
+    func currentRoomName() -> String
+    
+    func clearHistory(completionHandler: ())
+}
+
+protocol ChatRouterInterface {
+    func presentImage(image: UIImage, sender: String)
+    func presentOptions(barButtonItem: UIBarButtonItem)
+    func presentItems(forUser: UserModel, sourceView: UIView)
+    func presentAlertController(alertController: UIAlertController)
+    func presentAllImagesCVC(messagesHistory: Results<MessageModel>)
+    func presentUIImagePicker()
+    func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate)
 }

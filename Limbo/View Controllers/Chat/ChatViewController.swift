@@ -12,31 +12,16 @@ import MultipeerConnectivity
 import RealmSwift
 
 class ChatViewController: UIViewController {
+
+    
     //    MARK: Properties
     @IBOutlet weak var chatTableView: UITableView!
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var messageTextFieldBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var addPhotoButton: UIButton!
-    var chatDelegate: UsersConnectivityDelegate?
-    var chatRoom: ChatRoomModel?
-    var currentUser: UserModel?
-    var messagesResults: Results<MessageModel>!
-    var messages: [MessageModel]!
-    var startIndex: Int! {
-        get {
-            var returnIndex = self.messagesResults.count - self.rangeOfMessagesToShow
-            if returnIndex < 0 {
-                returnIndex = 0
-            }
-            return returnIndex
-        }
-    }
     var selectedIndexPathForTimeStamp: IndexPath?
-    var notificationToken: NotificationToken!
-    var rangeOfMessagesToShow = 50
-    
-    var voiceRecorder: VoiceRecorder?
+    var chatPresenter: ChatPresenterInterface!
     
     //    MARK: Life cycle
     
@@ -45,21 +30,17 @@ class ChatViewController: UIViewController {
         self.chatTableView.dataSource = self
         self.chatTableView.delegate = self
         self.messageTextField.delegate = self;
-        self.navigationItem.title = self.chatRoom!.name
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(self.optionsButtonTap))
         
-        
+        self.chatPresenter.requestMessages()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        self.messagesResults = RealmManager.getMessagesForChatRoom(firstUser: self.currentUser!, chatRoom: chatRoom!)
-        self.messages = Array(self.messagesResults[startIndex...])
-        self.initNotificationToken()
-        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+        let indexPath = IndexPath(row: self.chatPresenter.getMessages().count - 1, section: 0)
         if indexPath.row >= 0 {
             self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
         }
@@ -67,7 +48,7 @@ class ChatViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+        let indexPath = IndexPath(row: self.chatPresenter.getMessages().count - 1, section: 0)
         if indexPath.row >= 0 {
             self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
         }
@@ -83,7 +64,6 @@ class ChatViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.notificationToken.invalidate()
     }
     
     //    MARK: Keyboard Notifications
@@ -100,7 +80,7 @@ class ChatViewController: UIViewController {
             }
         }, completion: { (finished: Bool) in
             if self.messageTextFieldBottomConstraint.constant > 50 {
-                let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                let indexPath = IndexPath(row: self.chatPresenter.getMessages().count - 1, section: 0)
                 if indexPath.row >= 0 {
                     self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
                 }
@@ -129,131 +109,87 @@ class ChatViewController: UIViewController {
     //    MARK: Button taps
     
     @objc func optionsButtonTap() {
-        let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "optionsVC") as! OptionsViewController
-        optionsVC.optionsDelegate = self
-        optionsVC.modalPresentationStyle = .popover
-        let popOver = optionsVC.popoverPresentationController
-        popOver?.delegate = self
-        popOver?.barButtonItem = self.navigationItem.rightBarButtonItem
-        
-        present(optionsVC, animated: true, completion: nil)
+        self.chatPresenter.didTapOnOptionsButton(navigatoinButton: self.navigationItem.rightBarButtonItem!)
         
     }
     
     @IBAction func sendButtonTap() {
-        if (self.messageTextField.text?.count)! > 0 {
-            guard var message = self.messageTextField.text else { return }
-            
-            if self.chatRoom!.usersChattingWith.first!.state == "Spectre" {
-                self.sendMessageToSpectre(message: message)
-            }
-            else if message == UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) && self.chatRoom!.usersChattingWith.first!.uniqueDeviceID == UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID){
-                CurseManager.removeCurse()
-                NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
-            }
-            else if self.chatRoom!.roomType == RoomType.Game.rawValue {
-                self.sendMessageToGame(message: message)
-            }
-            else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
-                if self.currentUser?.curse == Curse.Posession.rawValue {
-                    message = message.shuffle()
-                }
-                self.sendMessageToUser(message: message)
-            }
-            else if self.currentUser!.curse == Curse.Silence.rawValue{
-                self.sendingMessageWhileSilenced()
-            }
-            
-            self.messageTextField.text = ""
-        }
+        self.chatPresenter.sendButtonTap(message: self.messageTextField.text!)
+        self.messageTextField.text = ""
     }
     
     @IBAction func voiceRecordButtonTap(_ sender: Any) {
-        self.voiceRecorder = VoiceRecorder()
-        self.voiceRecorder!.delegate = self
+        self.chatPresenter.voiceRecordButtonTap()
     }
     
     
     @IBAction func addPhotoButtonTap(_ sender: AnyObject) {
-        let imgPicker = UIImagePickerController()
-        imgPicker.delegate = self
-        imgPicker.allowsEditing = false
-        imgPicker.sourceType = .photoLibrary
-        self.present(imgPicker, animated: true, completion: nil)
+        self.chatPresenter.didTapOnAddPhotoButton()
     }
     
     @IBAction func itemsButtonTap(_ sender: AnyObject) {
         let button: UIButton = sender as! UIButton
-//        using this hack because otherwise button.frame.origin.y is < 0 and popover is not visible
+        //        using this hack because otherwise button.frame.origin.y is < 0 and popover is not visible
         button.frame = CGRect(x: button.frame.origin.x, y: self.sendButton.frame.origin.y, width: self.sendButton.frame.size.width, height: self.sendButton.frame.size.height)
-        let itemsVC = storyboard?.instantiateViewController(withIdentifier: "itemsVC") as! ItemsViewController
-        itemsVC.user = self.currentUser!
-        itemsVC.modalPresentationStyle = .popover
-        itemsVC.preferredContentSize = CGSize(width: 120, height: 70)
-        let popoverPresentationController = itemsVC.popoverPresentationController
-        popoverPresentationController?.permittedArrowDirections = .down
-        popoverPresentationController!.sourceView = button
-        popoverPresentationController!.sourceRect = button.bounds
-        popoverPresentationController!.delegate = self
-        self.navigationController?.present(itemsVC, animated: true, completion: nil)
+        self.chatPresenter.didTapOnItemsButton(sourceView: button)
     }
     
-    func sendMessageToUser(message: String) {
-        let messageModel = MessageModel()
-        messageModel.messageString = message
-        messageModel.messageType = MessageType.Message.rawValue
-        messageModel.sender = self.currentUser
-        if (self.chatRoom?.usersChattingWith.count)! > 1 {
-            messageModel.chatRoomUUID = self.chatRoom!.uuid
+    @objc func didTapOnImage(recognizer: UITapGestureRecognizer) {
+        let touchPoint = recognizer.location(in: self.chatTableView)
+        let indexPath: IndexPath = self.chatTableView.indexPathForRow(at: touchPoint)!
+        guard let cell = self.chatTableView.cellForRow(at: indexPath) as? PhotoTableViewCell else {
+            return
         }
-        else {
-            messageModel.chatRoomUUID = self.currentUser!.uniqueDeviceID.appending(self.currentUser!.username)
+        guard let image = cell.sentPhotoImageView.image else {
+            return
+        }
+        let message = self.chatPresenter.getMessages()[indexPath.row]
+        guard let sender = message.sender else {
+            return
         }
         
-        for user in chatRoom!.usersChattingWith {
-            if let peerID = self.chatDelegate?.getPeerIDForUID(uniqueID: user.uniqueDeviceID) {
-                _ = self.chatDelegate!.sendMessage(messageModel: messageModel, toPeerID: peerID)
-            }
-        }
-        let realm = try! Realm()
-        try? realm.write {
-            messageModel.chatRoomUUID = self.chatRoom!.uuid
-            realm.add(messageModel)
-        }
-    }
-    
-    //    MARK: Other functions
-    func initNotificationToken() {
-        self.notificationToken = self.messagesResults.observe({ changes in
-            switch changes {
-            case .initial:
-                self.chatTableView.reloadData()
-            case .update(_, _, let insertions, _):
-                
-                self.chatTableView.beginUpdates()
-                
-                if insertions.count > 0 {
-                    print("new insertion\n\n")
-                    self.messages.append(self.messagesResults.last!)
-                    self.chatTableView.insertRows(at: [IndexPath(row: self.messages.count - 1, section: 0)],
-                                                  with: .automatic)
-                }
-                
-                self.chatTableView.endUpdates()
-                
-                if insertions.count > 0 {
-                    
-                    self.chatTableView.scrollToRow(at: IndexPath(row: self.messages.count - 1, section: 0), at: .middle, animated: true)
-                }
-            case .error(let error):
-                print(error)
-            }
-        })
+        self.chatPresenter.didTapOnImage(image: image, fromUser: sender.username)
+        
     }
     
 }
+//    MARK: Protocol Conforms
 
-// MARK: Protocol Conforms
+//    MARK: ChatView Interface
+
+extension ChatViewController: ChatViewInterface {
+    func showSilencedMessage() {
+        let pointForToast = CGPoint(x: self.view.center.x, y: (self.navigationController?.navigationBar.frame.size.height)! + CGFloat(100))
+        let remainingTime = Constants.Curses.curseTime + (RealmManager.currentLoggedUser()?.curseCastDate?.timeIntervalSinceNow)!
+        let curseRemainingTime = Int(remainingTime)
+        self.view.makeToast("You are cursed with Silence", point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+    }
+    
+    func setNavigationItemName(name: String) {
+        self.navigationItem.title = name
+    }
+    
+    func reloadAllData() {
+        DispatchQueue.main.async {
+            self.chatTableView.reloadData()
+        }
+    }
+    
+    func reload(indexPaths: [IndexPath]) {
+        DispatchQueue.main.async {
+            self.chatTableView.reloadRows(at: indexPaths, with: .automatic)
+        }
+    }
+    
+    func scrollTo(indexPath: IndexPath, at: UITableViewScrollPosition, animated: Bool) {
+        DispatchQueue.main.async {
+            self.chatTableView.scrollToRow(at: indexPath, at: at, animated: animated)
+        }
+    }
+}
+
+
+//    MARK: UITextFieldDelegate
 
 extension ChatViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -262,37 +198,5 @@ extension ChatViewController: UITextFieldDelegate {
     }
 }
 
-extension ChatViewController: OptionsDelegate {
-    func clearHistory() {
-        let alertController = UIAlertController(title: "Clear history", message: "In a result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
-            let realm = try! Realm()
-            realm.beginWrite()
-            realm.delete(self.messagesResults)
-            try! realm.commitWrite()
-            self.messages = Array(self.messagesResults)
-            self.chatTableView.reloadData()
-        }))
-        alertController.addAction(UIAlertAction(title: "No", style: .default, handler: { (action) in
-            
-        }))
-        self.present(alertController, animated: true, completion: nil)
-    }
-    
-    func showImages() {
-        let imagesCVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "imagesCVC") as! ImagesCollectionViewController
-        imagesCVC.messagesHistory = self.messagesResults
-        self.navigationController?.pushViewController(imagesCVC, animated: true)
-    }
-}
 
-extension ChatViewController: UIPopoverPresentationControllerDelegate {
-    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
-        return .none
-    }
-    
-    func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController, willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>, in view: AutoreleasingUnsafeMutablePointer<UIView>) {
-        print(rect)
-    }
-}
 

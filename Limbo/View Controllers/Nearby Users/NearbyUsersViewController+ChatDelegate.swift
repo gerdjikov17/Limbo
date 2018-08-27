@@ -128,10 +128,11 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
             }
         }
         
-        chatVC.currentUser = self.currentUser
-        chatVC.chatRoom = chatRoom
-//        TO DO notificaiton tap action is not working now
-        chatVC.chatDelegate = self.usersConnectivity
+//        chatVC.currentUser = self.currentUser
+//        chatVC.chatRoom = chatRoom
+//        chatVC.chatDelegate = self.usersConnectivity
+        
+        let view = ChatRouter.createChatModule(using: self.navigationController!, usersConnectivityDelegate: self.usersConnectivity, chatRoom: chatRoom)
         
         if let tuple = self.chatRooms.first(where: { (key, value) -> Bool in
             value.chatRoom.uuid == chatRoomUUID
@@ -141,7 +142,7 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
         
         self.lastSelectedChatRoomUUID = chatRoomUUID
         
-        self.properlyPushChatVC(chatVC: chatVC)
+        self.properlyPushChatVC(chatVC: view)
     }
     
     private func properlyPushChatVC(chatVC: ChatViewController) {

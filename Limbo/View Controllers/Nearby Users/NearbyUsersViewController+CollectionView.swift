@@ -55,14 +55,12 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
         let selectedPeerID = Array(self.chatRooms.keys)[indexPath.row]
         self.lastSelectedChatRoomUUID = selectedRoom.chatRoom.uuid
         self.usersConnectivity.inviteUser(peerID: selectedPeerID)
-        let chatVC: ChatViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
-        chatVC.currentUser = self.currentUser
-        chatVC.chatRoom = selectedRoom.chatRoom
-        chatVC.chatDelegate = self.usersConnectivity
+        
+        let view = ChatRouter.createChatModule(using: self.navigationController!, usersConnectivityDelegate: self.usersConnectivity, chatRoom: selectedRoom.chatRoom)
         
         self.chatRooms[selectedPeerID]?.unreadMessages = 0
         
-        self.navigationController?.pushViewController(chatVC, animated: true)
+        self.navigationController?.pushViewController(view, animated: true)
         
     }
     

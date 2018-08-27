@@ -18,66 +18,42 @@ let receivedVoiceMessageCellIdentifier = "receivedVoiceMessage"
 
 extension ChatViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.messages.count
+        return self.chatPresenter.getMessages().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let messageModel = self.messages[indexPath.row]
+        let messageModel = self.chatPresenter.getMessages()[indexPath.row]
         var mainCell: UITableViewCell
+
+        let senderImage: UIImage? = self.chatPresenter.image(forMessage: messageModel, andIndexPath: indexPath)
+        
         switch messageModel.messageType {
         case MessageType.Message.rawValue:
             
-            let identifier = messageModel.sender == self.currentUser ? sentMessageCellIdentifier : receivedMessageCellIdentifier
+            let identifier = messageModel.sender == RealmManager.currentLoggedUser() ? sentMessageCellIdentifier : receivedMessageCellIdentifier
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! MessageCell
-            cell.messageLabel.text = self.messages[indexPath.row].messageString
+            cell.messageLabel.text = self.chatPresenter.getMessages()[indexPath.row].messageString
             cell.messageTimestampLabel.text = SmartFormatter.formatDate(date: messageModel.timeSent)
             cell.messageLabel.layer.masksToBounds = true;
             cell.messageLabel.layer.cornerRadius = 5
             cell.messageLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
-            if messageModel.sender != self.currentUser {
-                if indexPath.row - 1 >= 0 {
-                    if self.messages[indexPath.row - 1].sender != messageModel.sender {
-                        if let avatarString = messageModel.sender?.avatarString {
-                            cell.senderImageView.image = properImage(imageName: avatarString)
-                        }
-                    }
-                    else {
-                        cell.senderImageView.image = nil
-                    }
-                }
-            }
+            cell.senderImageView?.image = senderImage
             mainCell = cell
             
         case MessageType.Photo.rawValue:
-            let identifier = messageModel.sender == self.currentUser ? sentPhotoCellIdentifier : receivedPhotoCellIdentifier
+            let identifier = messageModel.sender == RealmManager.currentLoggedUser() ? sentPhotoCellIdentifier : receivedPhotoCellIdentifier
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! PhotoTableViewCell
             cell.setCellUI(forMessageModel: messageModel)
             cell.sentPhotoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnImage(recognizer:))))
-            if messageModel.sender != self.currentUser {
-                if indexPath.row - 1 >= 0 {
-                    if self.messages[indexPath.row - 1].sender != messageModel.sender {
-                        if let avatarString = messageModel.sender?.avatarString {
-                            cell.senderImageView.image = properImage(imageName: avatarString)
-                        }
-                    }
-                }
-            }
+            cell.senderImageView?.image = senderImage
             mainCell = cell
             
         case MessageType.Voice_Record.rawValue:
-            let identifier = messageModel.sender == self.currentUser ? sentVoiceMessageCellIdentifier : receivedVoiceMessageCellIdentifier
+            let identifier = messageModel.sender == RealmManager.currentLoggedUser() ? sentVoiceMessageCellIdentifier : receivedVoiceMessageCellIdentifier
             let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! VoiceMessageTableViewCell
             cell.initialConfiguration(message: messageModel)
             cell.voiceProgressView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didTapOnMessage(recognizer:))))
-            if messageModel.sender != self.currentUser {
-                if indexPath.row - 1 >= 0 {
-                    if self.messages[indexPath.row - 1].sender != messageModel.sender {
-                        if let avatarString = messageModel.sender?.avatarString {
-                            cell.senderImageView.image = properImage(imageName: avatarString)
-                        }
-                    }
-                }
-            }
+            cell.senderImageView?.image = senderImage
             mainCell = cell
             
         default:
@@ -105,24 +81,14 @@ extension ChatViewController: UITableViewDelegate {
         }
         self.chatTableView.endUpdates()
         
-        if indexPath.row == self.messages.count - 1 {
+        if indexPath.row == self.chatPresenter.getMessages().count - 1 {
             self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
         }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y == 0 {
-            let countBeforeUpdate = self.messages.count
-            guard countBeforeUpdate > 0 else {
-                return
-            }
-            
-            rangeOfMessagesToShow += 50
-            self.messages = Array(self.messagesResults[self.startIndex...])
-            chatTableView.reloadData()
-            
-            let countAfterUpdate = self.messages.count
-            self.chatTableView.scrollToRow(at: IndexPath(row: countAfterUpdate - countBeforeUpdate, section: 0), at: .top, animated: false)
+            self.chatPresenter.requestMoreMessages()
         }
     }
     
@@ -140,36 +106,22 @@ extension ChatViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let message = self.messages[indexPath.row]
+        let message = self.chatPresenter.getMessages()[indexPath.row]
         if message.messageType == MessageType.Message.rawValue {
-            let height: CGFloat = self.calculateHeight(forMessage: self.messages[indexPath.row])
+            let height: CGFloat = self.calculateHeight(forMessage: self.chatPresenter.getMessages()[indexPath.row])
             if self.selectedIndexPathForTimeStamp != nil && self.selectedIndexPathForTimeStamp == indexPath {
                 return height + 17
             }
             return height + 6
         }
         else if message.messageType == MessageType.Voice_Record.rawValue {
-            if self.selectedIndexPathForTimeStamp != nil && self.selectedIndexPathForTimeStamp == indexPath {
-                return 40
-            }
-            return 27
+            return 40
         }
         else {
             return 155
         }
         
     }
-    
-    func properImage(imageName: String) -> UIImage {
-        if let defaultImage = UIImage(named: imageName) {
-            return defaultImage
-        }
-        else {
-            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: imageName)!)) {
-                return imgurImage
-            }
-            return #imageLiteral(resourceName: "ghost_avatar.png")
-        }
-    }
 
 }
+

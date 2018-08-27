@@ -36,22 +36,32 @@ extension UsersConnectivity {
         print(info as Any)
         print(peerID)
         let username = String(peerID.displayName.prefix(upTo: peerID.displayName.index(peerID.displayName.startIndex, offsetBy: peerID.displayName.count - 5)))
-        var userModel: UserModel
+        var user: UserModel
         let realm = try! Realm()
         if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName) {
             try! realm.write {
                 realmUser.state = info!["gameName"]!
             }
-            userModel = realmUser
+            user = realmUser
         }
         else {
-            userModel = UserModel(username: username, state: info!["gameName"]!, uniqueDeviceID: peerID.displayName)
-            userModel.userID = -3
+            user = UserModel(username: username, state: info!["gameName"]!, uniqueDeviceID: peerID.displayName)
+            user.userID = -3
             realm.beginWrite()
-            realm.add(userModel)
+            realm.add(user)
             try! realm.commitWrite()
         }
+        let chatRoom = ChatRoomModel()
+        chatRoom.name = user.username
+        chatRoom.uuid = user.compoundKey
+        chatRoom.avatar = user.avatarString
+        chatRoom.usersChattingWith.append(user)
+        chatRoom.roomType = RoomType.SingleUserChat.rawValue
+        chatRoom.usersPeerIDs.append(peerID.displayName)
+        try! realm.write {
+            realm.add(chatRoom)
+        }
         realm.refresh()
-        self.delegate?.didFindNewUser(user: userModel, peerID: peerID)
+        self.delegate?.didFindNewUser(user: user, peerID: peerID)
     }
 }
