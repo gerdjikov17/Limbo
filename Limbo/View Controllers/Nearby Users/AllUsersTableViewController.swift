@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import DZNEmptyDataSet
 
 class AllUsersTableViewController: UITableViewController {
     var users: [UserModel]?
@@ -15,11 +16,17 @@ class AllUsersTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.tableView.emptyDataSetSource = self
+        self.tableView.emptyDataSetDelegate = self
+        
         let barButtonItem = groupChatDelegate == nil ? nil : UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(commitSelectedUsers))
         self.navigationItem.rightBarButtonItem = barButtonItem
         tableView.allowsSelection = groupChatDelegate == nil ? false : true
         tableView.allowsMultipleSelection = groupChatDelegate == nil ? false : true
         self.selectedIndexes = Array()
+        
+        
     }
 
     // MARK: - Table view data source
@@ -76,7 +83,7 @@ class AllUsersTableViewController: UITableViewController {
     }
     
     @objc func commitSelectedUsers() {
-        guard self.selectedIndexes.count >= 1 else {
+        guard self.selectedIndexes.count >= 2 else {
             self.view.window?.makeToast("Selected users must be at least 2")
             return
         }
@@ -93,4 +100,28 @@ class AllUsersTableViewController: UITableViewController {
         self.navigationController?.popViewController(animated: true)
     }
 
+}
+
+extension AllUsersTableViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return NSAttributedString(string: "No users around you to add.")
+    }
+    
+    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
+        let image = #imageLiteral(resourceName: "ghost_avatar.png")
+        var newWidth: CGFloat
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            newWidth = 200
+        }
+        else {
+            newWidth = 100
+        }
+        let scale = newWidth / image.size.width
+        let newHeight = image.size.height * scale
+        UIGraphicsBeginImageContext(CGSize(width: newWidth, height: newHeight))
+        image.draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight), blendMode: .normal, alpha: 0.5)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
+    }
 }

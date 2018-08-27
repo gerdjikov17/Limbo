@@ -16,7 +16,7 @@
 		060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */; };
 		061095BC210F176400A23D27 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061095BB210F176400A23D27 /* AudioToolbox.framework */; };
 		061095C0210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095BF210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift */; };
-		061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C121104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift */; };
+		061095C221104B1800A23D27 /* NearbyUsersViewController+NotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C121104B1800A23D27 /* NearbyUsersViewController+NotificationDelegate.swift */; };
 		061095C421104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C321104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift */; };
 		061095C6211054F600A23D27 /* CurseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 061095C5211054F600A23D27 /* CurseManager.swift */; };
 		0618F3EC212C01F20004FDE4 /* VoiceMessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618F3EB212C01F20004FDE4 /* VoiceMessageTableViewCell.swift */; };
@@ -94,7 +94,7 @@
 		061095BB210F176400A23D27 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		061095BD210F178F00A23D27 /* LNRSimpleNotifications.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LNRSimpleNotifications.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		061095BF210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCollectionReusableViewFooter.swift; sourceTree = "<group>"; };
-		061095C121104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersViewController+ChatDelegate.swift"; sourceTree = "<group>"; };
+		061095C121104B1800A23D27 /* NearbyUsersViewController+NotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersViewController+NotificationDelegate.swift"; sourceTree = "<group>"; };
 		061095C321104C8E00A23D27 /* UsersConnectivity+UsersConnectivityDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UsersConnectivity+UsersConnectivityDelegate.swift"; sourceTree = "<group>"; };
 		061095C5211054F600A23D27 /* CurseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurseManager.swift; sourceTree = "<group>"; };
 		0618F3EB212C01F20004FDE4 /* VoiceMessageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMessageTableViewCell.swift; sourceTree = "<group>"; };
@@ -259,7 +259,7 @@
 			isa = PBXGroup;
 			children = (
 				060FC53F210732DF00E5D6BB /* NearbyUsersViewController.swift */,
-				061095C121104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift */,
+				061095C121104B1800A23D27 /* NearbyUsersViewController+NotificationDelegate.swift */,
 				06262FE02109CE25003C6A1E /* NearbyUsersViewController+CollectionView.swift */,
 				060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */,
 				06A26F5D21149A930023F679 /* NearbyUsersViewController+ItemPopover.swift */,
@@ -536,7 +536,7 @@
 				06CADEDB212AFA50005A59A2 /* ImageCollectionViewCell.swift in Sources */,
 				0618F3F6212D5D520004FDE4 /* NearbyUsersViewController+GroupChats.swift in Sources */,
 				0618F3EC212C01F20004FDE4 /* VoiceMessageTableViewCell.swift in Sources */,
-				061095C221104B1800A23D27 /* NearbyUsersViewController+ChatDelegate.swift in Sources */,
+				061095C221104B1800A23D27 /* NearbyUsersViewController+NotificationDelegate.swift in Sources */,
 				0618F3F2212C3F120004FDE4 /* SmartFormatter.swift in Sources */,
 				065281622130050F008070C8 /* ChatInteractor.swift in Sources */,
 				0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */,

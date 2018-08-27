@@ -217,7 +217,7 @@ extension ChatInteractor: VoiceRecorderInteractorDelegate {
         }
         message.chatRoomUUID = self.chatRoom!.uuid
         RealmManager.addNewMessage(message: message)
-        self.voiceRecorder?.renameTempFile(newName: newFileName)
+        VoiceRecorder.renameTempFile(newName: newFileName)
         print("finish recording")
     }
 }

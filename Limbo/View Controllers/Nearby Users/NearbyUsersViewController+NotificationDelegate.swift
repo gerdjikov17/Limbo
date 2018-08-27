@@ -126,12 +126,7 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
                     self.usersConnectivity.inviteUser(peerID: peerID)
                 }
             }
-        }
-        
-//        chatVC.currentUser = self.currentUser
-//        chatVC.chatRoom = chatRoom
-//        chatVC.chatDelegate = self.usersConnectivity
-        
+        }        
         let view = ChatRouter.createChatModule(using: self.navigationController!, usersConnectivityDelegate: self.usersConnectivity, chatRoom: chatRoom)
         
         if let tuple = self.chatRooms.first(where: { (key, value) -> Bool in

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Toast_Swift
 
 class OptionsViewController: UIViewController {
 
@@ -37,18 +38,21 @@ class OptionsViewController: UIViewController {
      }
     
     @IBAction func changeChatNameButtonTap(_ sender: Any) {
-        let alertController = UIAlertController(title: "Change name", message: "Change group chat name", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Change name", message: "Change group chat name\nChanges will be visible only from you", preferredStyle: .alert)
         alertController.addTextField(configurationHandler: nil)
-        alertController.addAction(UIAlertAction(title: "Confirm", style: .destructive, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { (action) in
             guard let newName = alertController.textFields?.first?.text else {
                 return
             }
             if newName.count > 2 {
                 self.optionsDelegate.changeGroupChatName(newName: newName)
             }
+            else {
+                UIApplication.shared.keyWindow?.makeToast("New name must be longer than 2 characters")
+            }
             
         }))
-        alertController.addAction(UIAlertAction(title: "Abort", style: .default, handler: { (action) in
+        alertController.addAction(UIAlertAction(title: "Abort", style: .cancel, handler: { (action) in
             
         }))
         let presentingVC = self.presentingViewController!
@@ -61,7 +65,6 @@ class OptionsViewController: UIViewController {
     @IBAction func usersButtonTap(_ sender: Any) {
         let allUsersTVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "allUsersTVC") as! AllUsersTableViewController
         allUsersTVC.users = self.optionsDelegate.usersInCurrentRoom()
-        let presentingVC = self.presentingViewController!
         self.presentingViewController?.dismiss(animated: true, completion: {
             self.optionsDelegate.pushVC(vc: allUsersTVC)
         })

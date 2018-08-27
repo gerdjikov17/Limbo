@@ -43,7 +43,7 @@ class VoiceRecordingViewController: UIViewController {
     
     @IBAction func cancelButtonTap(_ sender: Any) {
         self.voiceRecorder?.cancelRecording()
-        self.voiceRecorder?.deleteTempFile()
+        VoiceRecorder.deleteTempFile()
         self.dismiss(animated: true, completion: nil)
     }
 

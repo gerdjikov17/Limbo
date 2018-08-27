@@ -58,13 +58,13 @@ class VoiceRecorder: NSObject {
         audioRecorder!.deleteRecording()
     }
     
-    func deleteTempFile() {
+    static func deleteTempFile() {
         let limboFolder = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true)
         let tempFileURL = limboFolder.appendingPathComponent("tempFile.mp3", isDirectory: false)
         try? FileManager.default.removeItem(at: tempFileURL)
     }
     
-    func renameTempFile(newName: String) {
+    static func renameTempFile(newName: String) {
         let limboFolder = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true)
         let tempFileURL = limboFolder.appendingPathComponent("tempFile.mp4", isDirectory: false)
         let newFileURL = limboFolder.appendingPathComponent(newName, isDirectory: false)

@@ -18,6 +18,8 @@ extension NearbyUsersViewController: GroupChatDelegate {
         })) else {
             return
         }
+        
+        
         let groupChatUser = UserModel(username: "Create Group", state: "Group", uniqueDeviceID: "GroupChat")
         groupChatUser.userID = Constants.groupChatAddID
         groupChatUser.avatarString = "group_chat_add_icon.png"

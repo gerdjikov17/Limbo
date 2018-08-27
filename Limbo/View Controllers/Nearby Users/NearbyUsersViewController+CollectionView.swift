@@ -41,7 +41,7 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
             cell.notSeenMessagesLabel.attributedText = NSAttributedString(string: "")
         }
         
-                return cell
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
