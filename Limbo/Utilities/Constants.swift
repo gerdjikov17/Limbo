@@ -81,3 +81,8 @@ enum RoomType: Int {
     case Game = 2
     case CreateGroupChat = 3
 }
+
+enum OptionsType: Int {
+    case GroupChat = 0
+    case NormalChat = 1
+}

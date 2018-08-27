@@ -21,7 +21,7 @@ class ChatViewController: UIViewController {
     @IBOutlet weak var messageTextFieldBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var addPhotoButton: UIButton!
     var selectedIndexPathForTimeStamp: IndexPath?
-    var chatPresenter: ChatPresenterInterface!
+    var chatPresenter: ChatViewToPresenterInterface!
     
     //    MARK: Life cycle
     
@@ -34,23 +34,19 @@ class ChatViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(self.optionsButtonTap))
         
         self.chatPresenter.requestMessages()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         let indexPath = IndexPath(row: self.chatPresenter.getMessages().count - 1, section: 0)
         if indexPath.row >= 0 {
-            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+            self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
         }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         let indexPath = IndexPath(row: self.chatPresenter.getMessages().count - 1, section: 0)
         if indexPath.row >= 0 {
-            self.chatTableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+            self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
         }
         
     }

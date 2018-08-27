@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChatPresenter: NSObject, ChatPresenterInterface {
+class ChatPresenter: NSObject {
     var chatRouter: ChatRouterInterface?
     var chatInteractor: ChatInteractorInterface?
     var chatView: ChatViewInterface!
@@ -30,13 +30,35 @@ class ChatPresenter: NSObject, ChatPresenterInterface {
         super.init()
     }
     
-    func sendButtonTap(message: String) {
-        self.chatInteractor!.handleMessage(message: message)
+}
+
+extension ChatPresenter: ChatRouterToPresenterInterface {
+    
+}
+
+extension ChatPresenter: ChatInteractorToPresenterInterface {
+    
+    func newMessage(message: MessageModel) {
+        print(self.messages.count)
+        self.messages.append(message)
+        print(self.messages.count)
+        let newIndexPath = IndexPath(row: self.messages.count - 1 , section: 0)
+        self.chatView.reloadAllData()
+        self.chatView.scrollTo(indexPath: newIndexPath, at: .bottom, animated: true)
     }
     
+    func silencedCallBack() {
+        self.chatView.showSilencedMessage()
+    }
     
     func didFetchMessages() {
         self.chatView.reloadAllData()
+    }
+}
+
+extension ChatPresenter: ChatViewToPresenterInterface {
+    func sendButtonTap(message: String) {
+        self.chatInteractor!.handleMessage(message: message)
     }
     
     func requestMessages() {
@@ -61,41 +83,6 @@ class ChatPresenter: NSObject, ChatPresenterInterface {
         
         self.chatView.reloadAllData()
         self.chatView.scrollTo(indexPath: IndexPath(row: countAfterUpdate - countBeforeUpdate, section: 0), at: .top, animated: false)
-    }
-    
-    func newMessage(message: MessageModel) {
-        print(self.messages.count)
-        self.messages.append(message)
-        print(self.messages.count)
-        let newIndexPath = IndexPath(row: self.messages.count - 1 , section: 0)
-//        self.chatView.reload(indexPaths: [newIndexPath])
-        self.chatView.reloadAllData()
-//        
-        self.chatView.scrollTo(indexPath: newIndexPath, at: .bottom, animated: true)
-    }
-    
-    func voiceRecordButtonTap() {
-        self.chatRouter?.presentVoiceRecorder(voiceRecordeDelegate: self.chatInteractor as! VoiceRecorderInteractorDelegate)
-    }
-    
-    func silencedCallBack() {
-        self.chatView.showSilencedMessage()
-    }
-    
-    func didTapOnImage(image: UIImage, fromUser sender: String) {
-        self.chatRouter?.presentImage(image: image, sender: sender)
-    }
-    
-    func didTapOnOptionsButton(navigatoinButton: UIBarButtonItem) {
-        self.chatRouter?.presentOptions(barButtonItem: navigatoinButton)
-    }
-    
-    func didTapOnItemsButton(sourceView: UIView) {
-        self.chatRouter?.presentItems(forUser: RealmManager.currentLoggedUser()!, sourceView: sourceView)
-    }
-    
-    func didTapOnAddPhotoButton() {
-        self.chatRouter?.presentUIImagePicker()
     }
     
     func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage? {
@@ -130,7 +117,29 @@ class ChatPresenter: NSObject, ChatPresenterInterface {
             return #imageLiteral(resourceName: "ghost_avatar.png")
         }
     }
+    
+    func didTapOnImage(image: UIImage, fromUser sender: String) {
+        self.chatRouter?.presentImage(image: image, sender: sender)
+    }
+    
+    func didTapOnOptionsButton(navigatoinButton: UIBarButtonItem) {
+        let optionsType = self.chatInteractor!.currentRoom().usersChattingWith.count > 1 ? OptionsType.GroupChat : OptionsType.NormalChat
+        self.chatRouter?.presentOptions(barButtonItem: navigatoinButton, optionsType: optionsType)
+    }
+    
+    func didTapOnItemsButton(sourceView: UIView) {
+        self.chatRouter?.presentItems(forUser: RealmManager.currentLoggedUser()!, sourceView: sourceView)
+    }
+    
+    func didTapOnAddPhotoButton() {
+        self.chatRouter?.presentUIImagePicker()
+    }
+    
+    func voiceRecordButtonTap() {
+        self.chatRouter?.presentVoiceRecorder(voiceRecordeDelegate: self.chatInteractor as! VoiceRecorderInteractorDelegate)
+    }
 }
+
 
 extension ChatPresenter: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -160,5 +169,18 @@ extension ChatPresenter: OptionsDelegate {
     
     func showImages() {
         self.chatRouter!.presentAllImagesCVC(messagesHistory: self.chatInteractor!.getMessageResults()!)
+    }
+    
+    func changeGroupChatName(newName: String) {
+        self.chatInteractor?.changeRoomName(newName: newName)
+        self.chatView.setNavigationItemName(name: newName)
+    }
+    
+    func usersInCurrentRoom() -> [UserModel] {
+        return Array(self.chatInteractor!.currentRoom().usersChattingWith)
+    }
+    
+    func pushVC(vc: UIViewController) {
+        self.chatRouter?.pushVC(vc: vc)
     }
 }

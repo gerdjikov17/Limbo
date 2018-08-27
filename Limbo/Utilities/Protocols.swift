@@ -39,33 +39,41 @@ protocol VoiceRecorderInteractorDelegate {
 protocol OptionsDelegate {
     func clearHistory()
     func showImages()
+    func changeGroupChatName(newName: String)
+    func usersInCurrentRoom() -> [UserModel]
+    func pushVC(vc: UIViewController)
 }
 
 protocol GroupChatDelegate {
-    func createGroupChat(withChatRooms chatRooms: [ChatRoomModel])
+    func createGroupChat(withUsers users: [UserModel])
 }
 
 // MARK: Chat Module
 
-protocol ChatPresenterInterface {
+protocol ChatInteractorToPresenterInterface {
+    func silencedCallBack()
+    func didFetchMessages()
+    func newMessage(message: MessageModel)
+}
+
+protocol ChatViewToPresenterInterface {
     func getMessages() -> [MessageModel]
+    func requestMessages()
     func requestMoreMessages()
     
-    func didTapOnImage(image: UIImage, fromUser sender: String)
     func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage?
     func properImage(imageName: String) -> UIImage
     
+    func sendButtonTap(message: String)
+    func didTapOnImage(image: UIImage, fromUser sender: String)
     func didTapOnOptionsButton(navigatoinButton: UIBarButtonItem)
     func didTapOnItemsButton(sourceView: UIView)
     func didTapOnAddPhotoButton()
-    
     func voiceRecordButtonTap()
+}
+
+protocol ChatRouterToPresenterInterface: ChatInteractorToPresenterInterface, ChatViewToPresenterInterface {
     
-    func sendButtonTap(message: String)
-    func silencedCallBack()
-    func didFetchMessages()
-    func requestMessages()
-    func newMessage(message: MessageModel)
 }
 
 protocol ChatViewInterface {
@@ -82,16 +90,19 @@ protocol ChatInteractorInterface {
     func handleMessage(message: String)
     func finishedPickingImage(pickedImage: UIImage)
     func currentRoomName() -> String
+    func currentRoom() -> ChatRoomModel
     
     func clearHistory(completionHandler: ())
+    func changeRoomName(newName: String)
 }
 
 protocol ChatRouterInterface {
     func presentImage(image: UIImage, sender: String)
-    func presentOptions(barButtonItem: UIBarButtonItem)
+    func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType)
     func presentItems(forUser: UserModel, sourceView: UIView)
     func presentAlertController(alertController: UIAlertController)
     func presentAllImagesCVC(messagesHistory: Results<MessageModel>)
     func presentUIImagePicker()
     func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate)
+    func pushVC(vc: UIViewController)
 }

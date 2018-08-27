@@ -99,7 +99,7 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
         for user in chatRoom.usersChattingWith {
             let peerIDString = user.uniqueDeviceID
             if let peerIDSendingMessageTo = self.usersConnectivity.getPeerIDForUID(uniqueID: peerIDString) {
-                self.usersConnectivity!.sendMessage(messageModel: messageModel, toPeerID: peerIDSendingMessageTo)
+                _ = self.usersConnectivity!.sendMessage(messageModel: messageModel, toPeerID: peerIDSendingMessageTo)
             }
         }
         

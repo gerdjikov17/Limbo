@@ -31,11 +31,11 @@ extension NearbyUsersViewController: GroupChatDelegate {
     func groupChatCellTap() {
         let allUsersTVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "allUsersTVC") as! AllUsersTableViewController
         allUsersTVC.groupChatDelegate = self
-        allUsersTVC.usersChatRooms = self.chatRooms.compactMap({ (arg) -> ChatRoomModel? in
+        allUsersTVC.users = self.chatRooms.compactMap({ (arg) -> UserModel? in
             let (_, value) = arg
             if value.chatRoom.usersChattingWith.count == 1 {
                 if value.chatRoom.usersChattingWith.first!.userID == -1 {
-                    return value.chatRoom
+                    return value.chatRoom.usersChattingWith.first!
                 }
             }
             return nil
@@ -43,14 +43,14 @@ extension NearbyUsersViewController: GroupChatDelegate {
         self.navigationController?.pushViewController(allUsersTVC, animated: true)
     }
     
-    func createGroupChat(withChatRooms chatRooms: [ChatRoomModel]) {
+    func createGroupChat(withUsers users: [UserModel]) {
         let chatRoom = ChatRoomModel()
         chatRoom.name = "Unnamed group"
         chatRoom.uuid.append(RealmManager.currentLoggedUser()!.uniqueDeviceID + RealmManager.currentLoggedUser()!.username + "-")
-        for room in chatRooms {
-            chatRoom.usersChattingWith.append(room.usersChattingWith.first!)
-            chatRoom.usersPeerIDs.append(room.usersPeerIDs.first!)
-            chatRoom.uuid.append(room.usersChattingWith.first!.compoundKey + "§")
+        for user in users {
+            chatRoom.usersChattingWith.append(user)
+            chatRoom.usersPeerIDs.append(user.compoundKey)
+            chatRoom.uuid.append(user.compoundKey + "§")
         }
         chatRoom.uuid.removeLast()
         chatRoom.roomType = RoomType.GroupChat.rawValue
@@ -77,8 +77,8 @@ extension NearbyUsersViewController: GroupChatDelegate {
         systemMessage.additionalData = NSKeyedArchiver.archivedData(withRootObject: usersDict)
         systemMessage.sender = self.currentUser
         systemMessage.chatRoomUUID = chatRoom.uuid
-        for room in chatRooms {
-            if let peerID = self.usersConnectivity.getPeerIDForUID(uniqueID: (room.usersPeerIDs.first)!) {
+        for user in users {
+            if let peerID = self.usersConnectivity.getPeerIDForUID(uniqueID: user.compoundKey) {
                 _ = self.usersConnectivity.sendMessage(messageModel: systemMessage, toPeerID: peerID)
             }
         }

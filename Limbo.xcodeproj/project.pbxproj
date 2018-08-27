@@ -40,7 +40,6 @@
 		06262FED210B63EB003C6A1E /* Pastel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06262FEC210B63EB003C6A1E /* Pastel.framework */; };
 		065281622130050F008070C8 /* ChatInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065281612130050F008070C8 /* ChatInteractor.swift */; };
 		06528165213026FD008070C8 /* ChatPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06528164213026FD008070C8 /* ChatPresenter.swift */; };
-		0652816721302DC5008070C8 /* ChatInteractor+VoiceRecorderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652816621302DC5008070C8 /* ChatInteractor+VoiceRecorderDelegate.swift */; };
 		06528169213042CE008070C8 /* ChatRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06528168213042CE008070C8 /* ChatRouter.swift */; };
 		0652816B2133E6B8008070C8 /* VoiceRecordingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652816A2133E6B8008070C8 /* VoiceRecordingViewController.swift */; };
 		0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906221198CEE005CF741 /* PastelViewManager.swift */; };
@@ -119,7 +118,6 @@
 		06262FEC210B63EB003C6A1E /* Pastel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pastel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		065281612130050F008070C8 /* ChatInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInteractor.swift; sourceTree = "<group>"; };
 		06528164213026FD008070C8 /* ChatPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPresenter.swift; sourceTree = "<group>"; };
-		0652816621302DC5008070C8 /* ChatInteractor+VoiceRecorderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatInteractor+VoiceRecorderDelegate.swift"; sourceTree = "<group>"; };
 		06528168213042CE008070C8 /* ChatRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRouter.swift; sourceTree = "<group>"; };
 		0652816A2133E6B8008070C8 /* VoiceRecordingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceRecordingViewController.swift; sourceTree = "<group>"; };
 		0657906221198CEE005CF741 /* PastelViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastelViewManager.swift; sourceTree = "<group>"; };
@@ -286,11 +284,10 @@
 			children = (
 				065281632130188E008070C8 /* MessageCells */,
 				06CADED5212AF3B2005A59A2 /* Options */,
-				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 				06262FD8210876BA003C6A1E /* ChatViewController.swift */,
-				065281612130050F008070C8 /* ChatInteractor.swift */,
-				0652816621302DC5008070C8 /* ChatInteractor+VoiceRecorderDelegate.swift */,
+				06262FDE2109C95D003C6A1E /* ChatViewController+TableView.swift */,
 				06528164213026FD008070C8 /* ChatPresenter.swift */,
+				065281612130050F008070C8 /* ChatInteractor.swift */,
 				06528168213042CE008070C8 /* ChatRouter.swift */,
 			);
 			path = Chat;
@@ -565,7 +562,6 @@
 				0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */,
 				06528165213026FD008070C8 /* ChatPresenter.swift in Sources */,
 				06262FCB21075E7A003C6A1E /* Constants.swift in Sources */,
-				0652816721302DC5008070C8 /* ChatInteractor+VoiceRecorderDelegate.swift in Sources */,
 				06579069211ACDDE005CF741 /* UsersConnectivity+Game.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

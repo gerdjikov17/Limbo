@@ -18,7 +18,7 @@ import MultipeerConnectivity
 
 class ChatInteractor: NSObject, ChatInteractorInterface {
     
-    var chatPresenter: ChatPresenterInterface!
+    var chatPresenter: ChatInteractorToPresenterInterface!
     var chatDelegate: UsersConnectivityDelegate!
     var chatRoom: ChatRoomModel?
     var currentUser = RealmManager.currentLoggedUser()
@@ -27,7 +27,7 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
     
     var voiceRecorder: VoiceRecorder?
     
-    init(chatDelegate: UsersConnectivityDelegate, chatPresenter: ChatPresenterInterface, chatRoom: ChatRoomModel) {
+    init(chatDelegate: UsersConnectivityDelegate, chatPresenter: ChatInteractorToPresenterInterface, chatRoom: ChatRoomModel) {
         self.chatDelegate = chatDelegate
         self.chatPresenter = chatPresenter
         self.chatRoom = chatRoom
@@ -41,28 +41,25 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
     }
     
     func handleMessage(message: String) {
-        var message = message
-        if message.count > 0 {
-            
-            if self.chatRoom!.usersChattingWith.first!.state == "Spectre" {
-                SpectreManager.sendMessageToSpectre(message: message)
-            }
-            else if message == UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) && self.chatRoom!.usersChattingWith.first!.uniqueDeviceID == UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID){
-                CurseManager.removeCurse()
-                NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
-            }
-            else if self.chatRoom!.roomType == RoomType.Game.rawValue {
-                self.sendMessageToGame(message: message)
-            }
-            else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
-                if self.currentUser?.curse == Curse.Posession.rawValue {
-                    message = message.shuffle()
-                }
-                self.sendMessageToUser(message: message)
-            }
-            else if self.currentUser!.curse == Curse.Silence.rawValue{
-                self.chatPresenter.silencedCallBack()
-            }
+        guard message.count > 0 else {
+            return
+        }
+        if self.chatRoom!.usersChattingWith.first!.state == "Spectre" {
+            SpectreManager.sendMessageToSpectre(message: message)
+        }
+        else if message == UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) && self.chatRoom!.usersChattingWith.first!.uniqueDeviceID == UserDefaults.standard.string(forKey: Constants.UserDefaults.curseUserUniqueDeviceID){
+            CurseManager.removeCurse()
+            NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
+        }
+        else if self.chatRoom!.roomType == RoomType.Game.rawValue {
+            self.sendMessageToGame(message: message)
+        }
+        else if message.count > 0 && self.currentUser!.curse != Curse.Silence.rawValue {
+            let message = self.currentUser?.curse == Curse.Posession.rawValue ? message.shuffle() : message
+            self.sendMessageToUser(message: message)
+        }
+        else if self.currentUser!.curse == Curse.Silence.rawValue{
+            self.chatPresenter.silencedCallBack()
         }
     }
     
@@ -144,6 +141,17 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         return chatRoom!.name
     }
     
+    func currentRoom() -> ChatRoomModel {
+        return chatRoom!
+    }
+    
+    func changeRoomName(newName: String) {
+        let realm = try! Realm()
+        try! realm.write {
+            self.chatRoom!.name = newName
+        }
+    }
+    
     func clearHistory(completionHandler: ()) {
         let realm = try! Realm()
         realm.beginWrite()
@@ -181,5 +189,35 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         message.additionalData = nil
         message.chatRoomUUID = self.chatRoom!.uuid
         RealmManager.addNewMessage(message: message)
+    }
+}
+
+extension ChatInteractor: VoiceRecorderInteractorDelegate {
+    
+    func didFinishRecording() {
+        let limboFolder = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true)
+        let tempFileURL = limboFolder.appendingPathComponent("tempFile.mp4", isDirectory: false)
+        let message = MessageModel()
+        message.sender = self.currentUser
+        message.messageType = MessageType.Voice_Record.rawValue
+        message.additionalData = try? Data(contentsOf: tempFileURL)
+        
+        let newFileName = message.additionalData!.base64EncodedString().suffix(10).replacingOccurrences(of: "/", with: "_").replacingOccurrences(of: "=", with: "a").appending(".mp4")
+        message.messageString = newFileName
+        if (self.chatRoom?.usersChattingWith.count)! > 1 {
+            message.chatRoomUUID = self.chatRoom!.uuid
+        }
+        else {
+            message.chatRoomUUID = self.currentUser!.uniqueDeviceID.appending(self.currentUser!.username)
+        }
+        for user in chatRoom!.usersChattingWith {
+            if let peerID = self.chatDelegate?.getPeerIDForUID(uniqueID: user.uniqueDeviceID) {
+                _ = self.chatDelegate!.sendMessage(messageModel: message, toPeerID: peerID)
+            }
+        }
+        message.chatRoomUUID = self.chatRoom!.uuid
+        RealmManager.addNewMessage(message: message)
+        self.voiceRecorder?.renameTempFile(newName: newFileName)
+        print("finish recording")
     }
 }

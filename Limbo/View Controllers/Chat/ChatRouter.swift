@@ -12,9 +12,9 @@ import RealmSwift
 class ChatRouter: NSObject, ChatRouterInterface {
     
     var navigationController: UINavigationController!
-    var chatPresenter: ChatPresenterInterface
+    var chatPresenter: ChatRouterToPresenterInterface
     
-    init(chatPresenter: ChatPresenterInterface, navigationController: UINavigationController) {
+    init(chatPresenter: ChatRouterToPresenterInterface, navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.chatPresenter = chatPresenter
         super.init()
@@ -24,9 +24,9 @@ class ChatRouter: NSObject, ChatRouterInterface {
         
         let view = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
         let presenter = ChatPresenter(chatView: view)
-        let interactor = ChatInteractor(chatDelegate: usersConnectivityDelegate, chatPresenter: presenter, chatRoom: chatRoom)
+        let interactor = ChatInteractor(chatDelegate: usersConnectivityDelegate, chatPresenter: presenter as ChatInteractorToPresenterInterface, chatRoom: chatRoom)
         let router = ChatRouter(chatPresenter: presenter, navigationController: navigationController)
-        view.chatPresenter = presenter
+        view.chatPresenter = presenter as ChatViewToPresenterInterface
         presenter.chatRouter = router
         presenter.chatInteractor = interactor
         
@@ -54,11 +54,12 @@ class ChatRouter: NSObject, ChatRouterInterface {
         self.navigationController.present(itemsVC, animated: true, completion: nil)
     }
     
-    func presentOptions(barButtonItem: UIBarButtonItem) {
+    func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType) {
         let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "optionsVC") as! OptionsViewController
         optionsVC.optionsDelegate = self.chatPresenter as! OptionsDelegate
         optionsVC.modalPresentationStyle = .popover
-        optionsVC.preferredContentSize = CGSize(width: 100, height: 200)
+        let height = optionsType == .GroupChat ? 120 : 60
+        optionsVC.preferredContentSize = CGSize(width: 140, height: height)
         let popOver = optionsVC.popoverPresentationController
         popOver?.delegate = self
         popOver?.barButtonItem = barButtonItem
@@ -88,6 +89,10 @@ class ChatRouter: NSObject, ChatRouterInterface {
         let voiceRecordingVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "VoiceRecordingVC") as! VoiceRecordingViewController
         voiceRecordingVC.voiceRecorderDelegate = voiceRecordeDelegate
         self.navigationController.present(voiceRecordingVC, animated: true, completion: nil)
+    }
+    
+    func pushVC(vc: UIViewController) {
+        self.navigationController.pushViewController(vc, animated: true)
     }
 }
 

@@ -30,7 +30,7 @@ extension NearbyUsersViewController: UICollectionViewDataSource, UICollectionVie
         cell.avatarImageView.image = self.getImage(forChatRoom: chatRoom)
 
         cell.usernameLabel.text = chatRoom.name
-        cell.state.text = chatRoom.usersChattingWith.first?.state
+        cell.state.text = chatRoom.usersChattingWith.count > 1 ? "Group Chat" : chatRoom.usersChattingWith.first?.state
         if unreadMessages > 0 {
             cell.notSeenMessagesLabel.layer.cornerRadius = cell.notSeenMessagesLabel.frame.size.height / 2
             cell.notSeenMessagesLabel.clipsToBounds = true
