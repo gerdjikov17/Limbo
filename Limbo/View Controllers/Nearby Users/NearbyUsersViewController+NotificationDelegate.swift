@@ -37,7 +37,7 @@ extension NearbyUsersViewController: ChatDelegate {
                     self.chatRooms[tuple.key]?.unreadMessages += 1
                 }
                 
-                NotificationManager.shared.presentNotification(withMessage: messageModel!, fromPeerID: fromPeerID, notificationDelegate: self)
+                NotificationManager.shared.presentNotification(withMessage: messageModel!, notificationDelegate: self)
                 
             }
             self.nearbyUsersCollectionView.reloadData()
@@ -63,8 +63,7 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
             let response = response as! UNTextInputNotificationResponse
             let text = response.userText
             replyAction(withText: text, andUserInfo: notification.request.content.userInfo)
-        }
-        else {
+        } else {
             notificationTapAction(withUserInfo: notification.request.content.userInfo)
         }
         
@@ -90,8 +89,7 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
         messageModel.sender = self.currentUser
         if chatRoom.usersChattingWith.count > 1 {
             messageModel.chatRoomUUID = chatRoomUUID
-        }
-        else {
+        } else {
             messageModel.chatRoomUUID = self.currentUser.uniqueDeviceID+self.currentUser.username
         }
         
@@ -141,18 +139,13 @@ extension NearbyUsersViewController: UNUserNotificationCenterDelegate {
     }
     
     private func properlyPushChatVC(chatVC: ChatViewController) {
-        guard var viewControllers = self.navigationController?.viewControllers else {
-            return
-        }
-        guard let lastViewController = viewControllers.last else {
-            return
-        }
+        guard var viewControllers = self.navigationController?.viewControllers else { return }
+        guard let lastViewController = viewControllers.last else { return }
         if lastViewController.isKind(of: ChatViewController.self) {
             _ = viewControllers.popLast()
             viewControllers.append(chatVC)
             self.navigationController?.setViewControllers(viewControllers, animated: true)
-        }
-        else {
+        } else {
             self.navigationController?.pushViewController(chatVC, animated: true)
         }
     }

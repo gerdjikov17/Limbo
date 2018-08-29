@@ -44,6 +44,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             center.setNotificationCategories([messageCategory, curseCategory, itemCategory])
         }
         try? FileManager.default.createDirectory(at: FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true), withIntermediateDirectories: true, attributes: nil)
+        
+        let nearbyUVC = NearbyUsersRouter.createNearbyUsersModule()
+        
+        window = UIWindow(frame: UIScreen.main.bounds);
+        window?.rootViewController = nearbyUVC
+        window?.makeKeyAndVisible();
+        
+        
         return true
     }
 

@@ -8,7 +8,9 @@
 
 import UIKit
 
-class PhotoTableViewCell: UITableViewCell {
+class PhotoTableViewCell: UITableViewCell, SetableForMessageModel {
+    
+    
     @IBOutlet weak var sentPhotoImageView: UIImageView!
     @IBOutlet weak var sentPhotoTimeStampLabel: UILabel!
     @IBOutlet weak var senderImageView: UIImageView!
@@ -18,10 +20,9 @@ class PhotoTableViewCell: UITableViewCell {
         // Initialization code
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    func set(forMessageModel message: MessageModel, senderImage: UIImage?) {
+        self.setCellUI(forMessageModel: message)
+        self.senderImageView?.image = senderImage
     }
     
     func setCellUI(forMessageModel messageModel: MessageModel) {

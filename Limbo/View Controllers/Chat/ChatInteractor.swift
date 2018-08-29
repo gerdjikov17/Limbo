@@ -133,6 +133,10 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         })
     }
     
+    func invalidateToken() {
+        self.notificationToken.invalidate()
+    }
+    
     func getMessageResults() -> Results<MessageModel>? {
         return self.messagesResults
     }
@@ -161,6 +165,8 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
     }
     
     func finishedPickingImage(pickedImage: UIImage) {
+        self.initNotificationToken()
+        
         let message = MessageModel()
         message.messageType = MessageType.Photo.rawValue
         message.additionalData = UIImageJPEGRepresentation(pickedImage, 1.0)
@@ -195,6 +201,8 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
 extension ChatInteractor: VoiceRecorderInteractorDelegate {
     
     func didFinishRecording() {
+        self.initNotificationToken()
+        
         let limboFolder = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true)
         let tempFileURL = limboFolder.appendingPathComponent("tempFile.mp4", isDirectory: false)
         let message = MessageModel()

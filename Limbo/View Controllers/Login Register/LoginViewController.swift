@@ -84,6 +84,7 @@ class LoginViewController: UIViewController {
         if authorization.success {
             if let user = RealmManager.userWith(username: usernameString, password: passwordString){
                 self.loginDelegate?.didLogin(userModel: user)
+                self.presentingViewController?.dismiss(animated: true, completion: nil)
             }
             else {
                 self.view.makeToast("User doesn't exist", point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)

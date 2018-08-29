@@ -9,7 +9,7 @@
 import UIKit
 import AVKit
 
-class VoiceMessageTableViewCell: UITableViewCell {
+class VoiceMessageTableViewCell: UITableViewCell, SetableForMessageModel {
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var voiceProgressView: UIProgressView!
     @IBOutlet weak var timeStampLabel: UILabel!
@@ -21,15 +21,14 @@ class VoiceMessageTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
     deinit {
         timer?.invalidate()
+    }
+    
+    func set(forMessageModel message: MessageModel, senderImage: UIImage?) {
+        self.initialConfiguration(message: message)
+        self.senderImageView?.image = senderImage
     }
     
     func initialConfiguration(message: MessageModel) {

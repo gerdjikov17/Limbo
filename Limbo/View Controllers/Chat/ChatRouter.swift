@@ -12,11 +12,9 @@ import RealmSwift
 class ChatRouter: NSObject, ChatRouterInterface {
     
     var navigationController: UINavigationController!
-    var chatPresenter: ChatRouterToPresenterInterface
     
-    init(chatPresenter: ChatRouterToPresenterInterface, navigationController: UINavigationController) {
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
-        self.chatPresenter = chatPresenter
         super.init()
     }
     
@@ -25,7 +23,7 @@ class ChatRouter: NSObject, ChatRouterInterface {
         let view = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
         let presenter = ChatPresenter(chatView: view)
         let interactor = ChatInteractor(chatDelegate: usersConnectivityDelegate, chatPresenter: presenter as ChatInteractorToPresenterInterface, chatRoom: chatRoom)
-        let router = ChatRouter(chatPresenter: presenter, navigationController: navigationController)
+        let router = ChatRouter(navigationController: navigationController)
         view.chatPresenter = presenter as ChatViewToPresenterInterface
         presenter.chatRouter = router
         presenter.chatInteractor = interactor
@@ -54,9 +52,9 @@ class ChatRouter: NSObject, ChatRouterInterface {
         self.navigationController.present(itemsVC, animated: true, completion: nil)
     }
     
-    func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType) {
+    func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType, optionsDelegate: OptionsDelegate) {
         let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "optionsVC") as! OptionsViewController
-        optionsVC.optionsDelegate = self.chatPresenter as! OptionsDelegate
+        optionsVC.optionsDelegate = optionsDelegate
         optionsVC.modalPresentationStyle = .popover
         let height = optionsType == .GroupChat ? 120 : 60
         optionsVC.preferredContentSize = CGSize(width: 140, height: height)
@@ -77,9 +75,9 @@ class ChatRouter: NSObject, ChatRouterInterface {
         self.navigationController?.pushViewController(imagesCVC, animated: true)
     }
     
-    func presentUIImagePicker() {
+    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate)) {
         let imgPicker = UIImagePickerController()
-        imgPicker.delegate = self.chatPresenter as! ChatPresenter
+        imgPicker.delegate = imgPickerDelegate
         imgPicker.allowsEditing = false
         imgPicker.sourceType = .photoLibrary
         self.navigationController.present(imgPicker, animated: true, completion: nil)

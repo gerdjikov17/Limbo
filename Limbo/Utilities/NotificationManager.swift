@@ -14,7 +14,7 @@ class NotificationManager: NSObject {
     
     static let shared = NotificationManager()
     
-    func presentNotification(withMessage message:MessageModel, fromPeerID: MCPeerID, notificationDelegate: UNUserNotificationCenterDelegate) {
+    func presentNotification(withMessage message:MessageModel, notificationDelegate: UNUserNotificationCenterDelegate) {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
             DispatchQueue.main.async {

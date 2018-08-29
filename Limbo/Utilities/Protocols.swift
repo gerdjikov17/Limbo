@@ -50,6 +50,10 @@ protocol GroupChatDelegate {
 
 // MARK: Chat Module
 
+protocol SetableForMessageModel {
+    func set(forMessageModel message: MessageModel, senderImage: UIImage?)
+}
+
 protocol ChatInteractorToPresenterInterface {
     func silencedCallBack()
     func didFetchMessages()
@@ -57,31 +61,33 @@ protocol ChatInteractorToPresenterInterface {
 }
 
 protocol ChatViewToPresenterInterface {
-    func getMessages() -> [MessageModel]
+//    func getMessages() -> [MessageModel]
+    func lastMessageIndex() -> Int
     func requestMessages()
     func requestMoreMessages()
+    
+    func viewDidDisappear()
     
     func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage?
     func properImage(imageName: String) -> UIImage
     
     func sendButtonTap(message: String)
-    func didTapOnImage(image: UIImage, fromUser sender: String)
+    func didTapOnImage(recognizer: UITapGestureRecognizer, inTableView tableView: UITableView)
+    func didTapOnMessage(recognizer: UITapGestureRecognizer, inTableView tableView: UITableView)
     func didTapOnOptionsButton(navigatoinButton: UIBarButtonItem)
     func didTapOnItemsButton(sourceView: UIView)
     func didTapOnAddPhotoButton()
     func voiceRecordButtonTap()
 }
 
-protocol ChatRouterToPresenterInterface: ChatInteractorToPresenterInterface, ChatViewToPresenterInterface {
-    
-}
-
-protocol ChatViewInterface {
+@objc protocol ChatViewInterface {
     func reloadAllData()
     func reload(indexPaths: [IndexPath])
     func scrollTo(indexPath: IndexPath, at: UITableViewScrollPosition, animated: Bool)
     func setNavigationItemName(name: String)
     func showSilencedMessage()
+    func didTapOnImage(recognizer: UITapGestureRecognizer)
+    func didTapOnMessage(recognizer: UITapGestureRecognizer)
 }
 
 protocol ChatInteractorInterface {
@@ -91,6 +97,7 @@ protocol ChatInteractorInterface {
     func finishedPickingImage(pickedImage: UIImage)
     func currentRoomName() -> String
     func currentRoom() -> ChatRoomModel
+    func invalidateToken()
     
     func clearHistory(completionHandler: ())
     func changeRoomName(newName: String)
@@ -98,11 +105,72 @@ protocol ChatInteractorInterface {
 
 protocol ChatRouterInterface {
     func presentImage(image: UIImage, sender: String)
-    func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType)
+    func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType, optionsDelegate: OptionsDelegate)
     func presentItems(forUser: UserModel, sourceView: UIView)
     func presentAlertController(alertController: UIAlertController)
     func presentAllImagesCVC(messagesHistory: Results<MessageModel>)
-    func presentUIImagePicker()
+    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate))
     func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate)
     func pushVC(vc: UIViewController)
+}
+
+// MARK: NearbyUsers Module
+
+protocol NearbyUsersRouterToPresenterInterface {
+    
+}
+
+protocol NearbyUsersViewToPresenterInterface {
+    func firstInitialization()
+    func viewDidAppear()
+    func viewDidDisappear()
+    func medallionImageTap(sourceView: UIView, presentingVC: UIViewController)
+    func candleImageTap(sourceView: UIView, presentingVC: UIViewController)
+    func batteryLevelDidChange(batteryLevel: Float)
+    func userImageTap()
+    func signOutButtonTap()
+    func numberOfItems() -> Int
+    func chatRoomModelView(forIndexPath indexPath: IndexPath) -> ChatRoomModelView
+    func didSelectItem(atIndexPath indexPath: IndexPath)
+}
+protocol NearbyUsersInteractorToPresenterInterface {
+    func userObjectChanged(user: UserModel)
+    func finishedSync(viewModels: [ChatRoomModelView])
+    func newChatRoom(chatRoomModelView: ChatRoomModelView)
+    func foundSpectre()
+    func lostSpectre()
+}
+
+protocol NearbyUsersPresenterToViewInterface {
+    func setUIContent(userModel: UserModel)
+    func reloadData()
+    func showToast(message: String)
+    func showGiftToast()
+}
+
+protocol NearbyUsersPresenterToInteractorInterface {
+    func initProperties()
+    func startLoopingForSpectres()
+    func checkForCurses()
+    func setBatteryLevelForCurrentUser(batteryLevel: Float)
+    func hasGifts() -> Bool
+    func userDidSignOut()
+    func isCurrentUserBlind() -> Bool
+    func chatRoom(forIndexPath indexPath: IndexPath) -> ChatRoomModel
+    func didSelectRoom(withUUID uuid: String?)
+    func usersConnectivityDelegate() -> UsersConnectivityDelegate
+    func replyAction(withText text: String, andUserInfo userInfo: [AnyHashable: Any]) -> (success: Bool, toastMessage: String?)
+    func inviteUsersIn(chatRoom: ChatRoomModel)
+    func filterUsersToShow()
+    func currentVisibleUsers() -> [UserModel]?
+    func addGroupChatCell()
+    func showGroupChats()
+}
+
+protocol NearbyUsersPresenterToRouterInterface {
+    func presentItemPopover(specialItem: SpecialItem, sourceView: UIView, presentingVC: UIViewController)
+    func presentLoginVC(loginDelegate: LoginDelegate)
+    func presentUserAvatars(user: UserModel)
+    func createAndPushChatModule(chatRoom: ChatRoomModel, usersConnectivityDelegate: UsersConnectivityDelegate)
+    func createAndPushAllUsersTVC(users: [UserModel], groupChatDelegate: GroupChatDelegate)
 }

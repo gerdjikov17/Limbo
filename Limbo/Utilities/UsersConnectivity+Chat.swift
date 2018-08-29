@@ -35,31 +35,33 @@ extension UsersConnectivity {
         let realm = try! Realm()
         var user: UserModel
         if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: info!["username"]!) {
+            let realmChatRoom = RealmManager.chatRoom(forUUID: realmUser.compoundKey)
             realm.beginWrite()
-                realmUser.state = userState
-                realmUser.avatarString = info!["avatar"]!
+            realmUser.state = userState
+            realmUser.avatarString = info!["avatar"]!
+            realmChatRoom?.roomType = RoomType.SingleUserChat.rawValue
+            realmChatRoom?.avatar = info!["avatar"]!
             try! realm.commitWrite()
             user = realmUser
         }
         else {
             user = UserModel(username: info!["username"]!, state: userState, uniqueDeviceID: peerID.displayName)
             user.avatarString = info!["avatar"]!
+            let chatRoom = ChatRoomModel()
+            chatRoom.name = user.username
+            chatRoom.uuid = user.compoundKey
+            chatRoom.avatar = user.avatarString
+            chatRoom.usersChattingWith.append(user)
+            chatRoom.roomType = RoomType.SingleUserChat.rawValue
+            chatRoom.usersPeerIDs.append(peerID.displayName)
             realm.beginWrite()
             realm.add(user)
+            realm.add(chatRoom)
             try! realm.commitWrite()
         }
         realm.refresh()
         print(user)
-        let chatRoom = ChatRoomModel()
-        chatRoom.name = user.username
-        chatRoom.uuid = user.compoundKey
-        chatRoom.avatar = user.avatarString
-        chatRoom.usersChattingWith.append(user)
-        chatRoom.roomType = RoomType.SingleUserChat.rawValue
-        chatRoom.usersPeerIDs.append(peerID.displayName)
-        try! realm.write {
-            realm.add(chatRoom)
-        }
+
         if shouldShowUserDependingOnState(currentUserState: RealmManager.currentLoggedUser()!.state, foundUserState: userState) {
             self.delegate?.didFindNewUser(user: user, peerID: peerID)
         }
@@ -111,8 +113,6 @@ extension UsersConnectivity {
                 let answerMessage = MessageModel()
                 answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"
                 answerMessage.sender = user
-//                answerMessage.receivers.append(messageModel.sender!)
-//                answerMessage.chatRoom = RealmManager.chatRoom(forUUID: messageModel.sender!.compoundKey)
                 answerMessage.chatRoomUUID = messageModel.sender!.compoundKey
                 _ = self.sendMessage(messageModel: answerMessage, toPeerID: peerID)
             }
@@ -138,7 +138,7 @@ extension UsersConnectivity {
             let chatRoom = ChatRoomModel()
             chatRoom.name = "Unnamed group"
             for key in usersDict.keys {
-                chatRoom.uuid.append(key+usersDict[key]! + "-")
+                chatRoom.uuid.append(key+usersDict[key]! + "§")
                 if key != RealmManager.currentLoggedUser()?.uniqueDeviceID {
                     chatRoom.usersChattingWith.append(RealmManager.userWith(uniqueID: key, andUsername: usersDict[key]!)!)
                 }

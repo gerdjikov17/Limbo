@@ -20,21 +20,21 @@ class ChatViewController: UIViewController {
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var messageTextFieldBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var addPhotoButton: UIButton!
-    var selectedIndexPathForTimeStamp: IndexPath?
+    
     var chatPresenter: ChatViewToPresenterInterface!
     
     //    MARK: Life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.chatTableView.dataSource = self
-        self.chatTableView.delegate = self
+        self.chatTableView.dataSource = self.chatPresenter as? UITableViewDataSource
+        self.chatTableView.delegate = self.chatPresenter as? UITableViewDelegate
         self.messageTextField.delegate = self;
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard)))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(self.optionsButtonTap))
         
         self.chatPresenter.requestMessages()
-        let indexPath = IndexPath(row: self.chatPresenter.getMessages().count - 1, section: 0)
+        let indexPath = IndexPath(row: self.chatPresenter.lastMessageIndex(), section: 0)
         if indexPath.row >= 0 {
             self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
         }
@@ -44,7 +44,7 @@ class ChatViewController: UIViewController {
         super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        let indexPath = IndexPath(row: self.chatPresenter.getMessages().count - 1, section: 0)
+        let indexPath = IndexPath(row: self.chatPresenter.lastMessageIndex(), section: 0)
         if indexPath.row >= 0 {
             self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
         }
@@ -60,6 +60,7 @@ class ChatViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        self.chatPresenter.viewDidDisappear()
     }
     
     //    MARK: Keyboard Notifications
@@ -76,7 +77,7 @@ class ChatViewController: UIViewController {
             }
         }, completion: { (finished: Bool) in
             if self.messageTextFieldBottomConstraint.constant > 50 {
-                let indexPath = IndexPath(row: self.chatPresenter.getMessages().count - 1, section: 0)
+                let indexPath = IndexPath(row: self.chatPresenter.lastMessageIndex(), section: 0)
                 if indexPath.row >= 0 {
                     self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
                 }
@@ -130,22 +131,12 @@ class ChatViewController: UIViewController {
         self.chatPresenter.didTapOnItemsButton(sourceView: button)
     }
     
+    @objc func didTapOnMessage(recognizer: UITapGestureRecognizer) {
+        self.chatPresenter.didTapOnMessage(recognizer: recognizer, inTableView: self.chatTableView)
+    }
+    
     @objc func didTapOnImage(recognizer: UITapGestureRecognizer) {
-        let touchPoint = recognizer.location(in: self.chatTableView)
-        let indexPath: IndexPath = self.chatTableView.indexPathForRow(at: touchPoint)!
-        guard let cell = self.chatTableView.cellForRow(at: indexPath) as? PhotoTableViewCell else {
-            return
-        }
-        guard let image = cell.sentPhotoImageView.image else {
-            return
-        }
-        let message = self.chatPresenter.getMessages()[indexPath.row]
-        guard let sender = message.sender else {
-            return
-        }
-        
-        self.chatPresenter.didTapOnImage(image: image, fromUser: sender.username)
-        
+        self.chatPresenter.didTapOnImage(recognizer: recognizer, inTableView: self.chatTableView)
     }
     
 }

@@ -70,7 +70,7 @@ class UsersConnectivity: NSObject {
                     DispatchQueue.global(qos: .background).async {
                         self.serviceAdvertiser.stopAdvertisingPeer()
                         self.serviceBrowser.stopBrowsingForPeers()
-                        //                    sleep(2)
+                        
                         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: discoveryInfo, serviceType:Constants.MCServiceType)
                         self.serviceAdvertiser.delegate = self
                         self.serviceAdvertiser.startAdvertisingPeer()

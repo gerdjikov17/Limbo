@@ -14,6 +14,8 @@ class ChatPresenter: NSObject {
     var chatView: ChatViewInterface!
     
     var messages: [MessageModel]!
+    
+    var selectedIndexPathForTimeStamp: IndexPath?
     var rangeOfMessagesToShow = 50
     var startIndex: Int! {
         get {
@@ -29,10 +31,6 @@ class ChatPresenter: NSObject {
         self.chatView = chatView
         super.init()
     }
-    
-}
-
-extension ChatPresenter: ChatRouterToPresenterInterface {
     
 }
 
@@ -61,13 +59,17 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         self.chatInteractor!.handleMessage(message: message)
     }
     
+    func viewDidDisappear() {
+        self.chatInteractor?.invalidateToken()
+    }
+    
     func requestMessages() {
         self.messages = Array(self.chatInteractor!.getMessageResults()![startIndex...])
         self.chatView.setNavigationItemName(name: self.chatInteractor!.currentRoomName())
     }
     
-    func getMessages() -> [MessageModel] {
-        return self.messages
+    func lastMessageIndex() -> Int {
+        return self.messages.count - 1
     }
     
     func requestMoreMessages() {
@@ -118,13 +120,45 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         }
     }
     
-    func didTapOnImage(image: UIImage, fromUser sender: String) {
-        self.chatRouter?.presentImage(image: image, sender: sender)
+    func didTapOnImage(recognizer: UITapGestureRecognizer, inTableView tableView: UITableView) {
+        let touchPoint = recognizer.location(in: tableView)
+        let indexPath: IndexPath = tableView.indexPathForRow(at: touchPoint)!
+        guard let cell = tableView.cellForRow(at: indexPath) as? PhotoTableViewCell else {
+            return
+        }
+        guard let image = cell.sentPhotoImageView.image else {
+            return
+        }
+        let message = self.messages[indexPath.row]
+        guard let sender = message.sender else {
+            return
+        }
+        
+        self.chatRouter?.presentImage(image: image, sender: sender.username)
+    }
+    
+    func didTapOnMessage(recognizer: UITapGestureRecognizer, inTableView tableView: UITableView) {
+        let touchPoint = recognizer.location(in: tableView)
+        let indexPath: IndexPath = tableView.indexPathForRow(at: touchPoint)!
+        
+        tableView.beginUpdates()
+        
+        if self.selectedIndexPathForTimeStamp == indexPath {
+            self.selectedIndexPathForTimeStamp = nil
+        }
+        else {
+            self.selectedIndexPathForTimeStamp = indexPath
+        }
+        tableView.endUpdates()
+        
+        if indexPath.row == self.messages.count - 1 {
+            tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+        }
     }
     
     func didTapOnOptionsButton(navigatoinButton: UIBarButtonItem) {
         let optionsType = self.chatInteractor!.currentRoom().usersChattingWith.count > 1 ? OptionsType.GroupChat : OptionsType.NormalChat
-        self.chatRouter?.presentOptions(barButtonItem: navigatoinButton, optionsType: optionsType)
+        self.chatRouter?.presentOptions(barButtonItem: navigatoinButton, optionsType: optionsType, optionsDelegate: self)
     }
     
     func didTapOnItemsButton(sourceView: UIView) {
@@ -132,7 +166,7 @@ extension ChatPresenter: ChatViewToPresenterInterface {
     }
     
     func didTapOnAddPhotoButton() {
-        self.chatRouter?.presentUIImagePicker()
+        self.chatRouter?.presentUIImagePicker(imgPickerDelegate: self)
     }
     
     func voiceRecordButtonTap() {
