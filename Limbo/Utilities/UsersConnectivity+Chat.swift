@@ -109,8 +109,8 @@ extension UsersConnectivity {
                 chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
             }
             else {
-                let remainingTime = String("Someone tried to haunt you! But you are protected for " +
-                    Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.remainingTime)) + " seconds!"
+                let remainingTime = "Someone tried to haunt you! But you are protected for " +
+                    String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.remainingTime)) + " seconds!"
                 NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion",
                                                                    andText: remainingTime)
                 let answerMessage = MessageModel()
