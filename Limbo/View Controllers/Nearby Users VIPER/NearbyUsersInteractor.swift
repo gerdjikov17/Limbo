@@ -27,7 +27,7 @@ class NearbyUsersInteractor: NSObject {
 }
 
 extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
-    func filterUsersToShow() {
+    @objc func filterUsersToShow() {
         var newUsers: [(peerID: MCPeerID, chatRoom: ChatRoomModel, unreadMessages: Int)] = Array()
         var modelViews: [ChatRoomModelView] = Array()
         //        error here
@@ -259,10 +259,10 @@ extension NearbyUsersInteractor: ChatDelegate {
         
         DispatchQueue.main.async {
             if curse == .Blind {
-//                self.nearbyUsersCollectionView.reloadData()
+                self.filterUsersToShow()
                 
-//                let timer = Timer.init(fireAt: Date(timeIntervalSinceNow: remainingTime), interval: 0, target: self, selector: #selector(self.reloadDataFromSelector), userInfo: nil, repeats: false)
-//                RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+                let timer = Timer.init(fireAt: Date(timeIntervalSinceNow: remainingTime), interval: 0, target: self, selector: #selector(self.filterUsersToShow), userInfo: nil, repeats: false)
+                RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
             }
         }
     }

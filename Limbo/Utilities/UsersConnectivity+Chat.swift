@@ -62,7 +62,8 @@ extension UsersConnectivity {
         realm.refresh()
         print(user)
 
-        if shouldShowUserDependingOnState(currentUserState: RealmManager.currentLoggedUser()!.state, foundUserState: userState) {
+        if shouldShowUserDependingOnState(currentUserState: RealmManager.currentLoggedUser()!.state,
+                                          foundUserState: userState) {
             self.delegate?.didFindNewUser(user: user, peerID: peerID)
         }
         
@@ -108,12 +109,15 @@ extension UsersConnectivity {
                 chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
             }
             else {
-                let remainingTime = String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.remainingTime)) + " seconds!"
-                NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: "Someone tried to haunt you! But you are protected for " + remainingTime)
+                let remainingTime = String("Someone tried to haunt you! But you are protected for " +
+                    Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.remainingTime)) + " seconds!"
+                NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion",
+                                                                   andText: remainingTime)
                 let answerMessage = MessageModel()
                 answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"
                 answerMessage.sender = user
-                answerMessage.chatRoomUUID = messageModel.sender!.compoundKey
+                answerMessage.messageType = MessageType.Message.rawValue
+                answerMessage.chatRoomUUID = self.myPeerID.displayName.appending(RealmManager.currentLoggedUser()!.username)
                 _ = self.sendMessage(messageModel: answerMessage, toPeerID: peerID)
             }
         }
