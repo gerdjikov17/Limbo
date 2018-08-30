@@ -269,8 +269,17 @@ extension NearbyUsersInteractor: ChatDelegate {
                 })) {
                     self.chatRooms[index].unreadMessages += 1
                 }
-                NotificationManager.shared.presentNotification(withMessage: messageModel!, notificationDelegate: self.presenter as! UNUserNotificationCenterDelegate)
                 
+                if let chatRoom = RealmManager.chatRoom(forUUID: messageModel!.chatRoomUUID) {
+                    if chatRoom.roomType == RoomType.GroupChat.rawValue {
+                        if chatRoom.uuid.components(separatedBy: Constants.chatRoomSeparator).contains(self.currentUser.compoundKey) {
+                            NotificationManager.shared.presentNotification(withMessage: messageModel!, notificationDelegate: self.presenter as! UNUserNotificationCenterDelegate)
+                        }
+                    }
+                    else {
+                        NotificationManager.shared.presentNotification(withMessage: messageModel!, notificationDelegate: self.presenter as! UNUserNotificationCenterDelegate)
+                    }
+                }
             }
             self.filterUsersToShow()
         }
