@@ -40,8 +40,10 @@ class NearbyUsersViewControllerV: UIViewController {
         self.medallionImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.medallionImageTap)))
         self.medallionImageView.layer.cornerRadius = 10
         
-        self.nearbyUsersCollectionView.emptyDataSetSource = self
-        self.nearbyUsersCollectionView.emptyDataSetDelegate = self
+        self.nearbyUsersCollectionView.emptyDataSetSource = self.presenter as! DZNEmptyDataSetSource
+        self.nearbyUsersCollectionView.emptyDataSetDelegate = self.presenter as! DZNEmptyDataSetDelegate
+        self.nearbyUsersCollectionView.delegate = self.presenter as? UICollectionViewDelegate
+        self.nearbyUsersCollectionView.dataSource = self.presenter as? UICollectionViewDataSource
         self.presenter.firstInitialization()
         
 

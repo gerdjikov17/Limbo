@@ -90,6 +90,16 @@ class UserModel: Object {
         try! realm.commitWrite()
     }
     
+    func decrementSpecialItem(specialItem: SpecialItem) {
+        let realm = try! Realm()
+        realm.beginWrite()
+        self.items[specialItem.rawValue]! -= 1
+        self.specialItem = specialItem.rawValue
+        self.specialItemUsedDate = Date()
+        try? realm.commitWrite()
+        realm.refresh()
+    }
+    
     func toJSONDict() -> Dictionary<String, Any> {
         let jsonDict = [
             "userID": self.userID,

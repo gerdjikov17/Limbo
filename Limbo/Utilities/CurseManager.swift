@@ -38,55 +38,10 @@ class CurseManager: NSObject {
     }
 
     static func applySpecialItem(specialItem: SpecialItem, toUser: UserModel) {
-        let realm = try! Realm()
         if specialItem == SpecialItem.SaintsMedallion {
-            
-            guard toUser.specialItemUsedDate == nil || (toUser.specialItemUsedDate?.timeIntervalSinceNow.isLess(than: -Constants.Curses.curseTime))! else {
-                let remainingTime = Constants.SpecialItems.itemTime + (toUser.specialItemUsedDate?.timeIntervalSinceNow)!
-                NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: String("You are already protected by Saint's Medallion for " + String(Int(remainingTime)) + " seconds"))
-                return
-                
-            }
-            
-            let medallionCount = toUser.items[specialItem.rawValue]
-            
-            guard medallionCount! > 0 else {
-                NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: "You are out of Saint's Medallions! Hurry up and buy more to stay safe!")
-                return
-            }
-            
-            let remainingTime = Constants.SpecialItems.itemTime
-            
-            realm.beginWrite()
-            toUser.items[specialItem.rawValue] = medallionCount! - 1
-            toUser.specialItem = specialItem.rawValue
-            toUser.specialItemUsedDate = Date()
-            try? realm.commitWrite()
-            realm.refresh()
-            
-            CurseManager.removeCurse()
-            let fireAt = Date(timeIntervalSinceNow: remainingTime)
-            let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeItem), userInfo: ["item": specialItem, "user": toUser], repeats: false)
-            RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
-            NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion", andText: String("You are protected from curses with Saint's Medallion for " + String(Int(remainingTime)) + " seconds"))
-            
-        }
-        else {
-            guard toUser.curse != Curse.None.rawValue else {
-                NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You are not cursed")
-                return
-            }
-            let userCandlesCount = toUser.items[SpecialItem.HolyCandle.rawValue]
-            guard userCandlesCount! > 0 else {
-                NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You are out of candles, buy more to stay safe!")
-                return
-            }
-            realm.beginWrite()
-            toUser.items[SpecialItem.HolyCandle.rawValue] = userCandlesCount! - 1
-            try? realm.commitWrite()
-            realm.refresh()
-            NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle", andText: "You removed your curse using holy candle!")
-            CurseManager.removeCurse()
+            self.applySaintsMedallion(toUser: toUser, specialItem: specialItem)
+        } else {
+            self.applyHolyCandle(toUser: toUser, specialItem: specialItem)
         }
     }
     
@@ -120,5 +75,67 @@ class CurseManager: NSObject {
                 user.specialItem = "None"
             }
         }
+    }
+    
+    private static func applySaintsMedallion(toUser: UserModel, specialItem: SpecialItem) {
+        guard toUser.specialItemUsedDate == nil || (toUser.specialItemUsedDate?.timeIntervalSinceNow.isLess(than: -Constants.Curses.curseTime))! else {
+            
+            let remainingTime = Constants.SpecialItems.itemTime + (toUser.specialItemUsedDate?.timeIntervalSinceNow)!
+            
+            let notificationText = String("You are already protected by Saint's Medallion for " +
+                String(Int(remainingTime)) + " seconds")
+            
+            NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion",
+                                                               andText: notificationText)
+            return
+            
+        }
+        
+        let medallionCount = toUser.items[specialItem.rawValue]
+        
+        guard medallionCount! > 0 else {
+            
+            NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion",
+                                                               andText: "You are out of Saint's Medallions! Hurry up and buy more to stay safe!")
+            return
+        }
+        
+        let remainingTime = Constants.SpecialItems.itemTime
+        
+        toUser.decrementSpecialItem(specialItem: specialItem)
+        
+        CurseManager.removeCurse()
+        let fireAt = Date(timeIntervalSinceNow: remainingTime)
+        let timer = Timer.init(fireAt: fireAt, interval: 0,
+                               target: self, selector: #selector(removeItem),
+                               userInfo: ["item": specialItem, "user": toUser], repeats: false)
+        
+        RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+        
+        let notificationText = String("You are protected from curses with Saint's Medallion for " +
+            String(Int(remainingTime)) + " seconds")
+        
+        NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion",
+                                                           andText: notificationText)
+    }
+    
+    private static func applyHolyCandle(toUser: UserModel, specialItem: SpecialItem) {
+        guard toUser.curse != Curse.None.rawValue else {
+            NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle",
+                                                               andText: "You are not cursed")
+            return
+        }
+        let userCandlesCount = toUser.items[SpecialItem.HolyCandle.rawValue]
+        guard userCandlesCount! > 0 else {
+            NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle",
+                                                               andText: "You are out of candles, buy more to stay safe!")
+            return
+        }
+        
+        toUser.decrementSpecialItem(specialItem: specialItem)
+        
+        NotificationManager.shared.presentItemNotification(withTitle: "Holy Candle",
+                                                           andText: "You removed your curse using holy candle!")
+        CurseManager.removeCurse()
     }
 }

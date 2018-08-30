@@ -47,7 +47,8 @@ class NotificationManager: NSObject {
                 content.categoryIdentifier = Constants.Notifications.Identifiers.Message
                 
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
-                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Message, content: content, trigger: trigger)
+                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Message,
+                                                    content: content, trigger: trigger)
                 
                 center.delegate = notificationDelegate
                 center.add(request, withCompletionHandler: { (err) in
@@ -76,7 +77,8 @@ class NotificationManager: NSObject {
                 content.categoryIdentifier = Constants.Notifications.Identifiers.Curse
                 
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
-                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Curse, content: content, trigger: trigger)
+                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Curse,
+                                                    content: content, trigger: trigger)
                 
                 center.delegate = self
                 center.add(request, withCompletionHandler: { (err) in
@@ -104,7 +106,8 @@ class NotificationManager: NSObject {
                 content.categoryIdentifier = Constants.Notifications.Identifiers.Item
                 
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
-                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Item, content: content, trigger: trigger)
+                let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Item,
+                                                    content: content, trigger: trigger)
                 
                 center.delegate = self
                 center.add(request, withCompletionHandler: { (err) in
@@ -118,11 +121,15 @@ class NotificationManager: NSObject {
 }
 
 extension NotificationManager: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.alert, .badge, .sound])
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
         switch response.actionIdentifier {
             
         case Constants.Notifications.Identifiers.CurseActionItemCandle :

@@ -12,27 +12,27 @@ import UIKit
 import DZNEmptyDataSet
 import RealmSwift
 
-extension NearbyUsersViewControllerV: UICollectionViewDataSource, UICollectionViewDelegate {
+extension NearbyUsersPresenter: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.presenter.numberOfItems()
+        return self.numberOfItems()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NearbyUserCell", for: indexPath) as! NearbyDevicesCollectionViewCell
-        let modelView = self.presenter.chatRoomModelView(forIndexPath: indexPath)
+        let modelView = self.chatRoomModelView(forIndexPath: indexPath)
         cell.set(forChatRoomModelView: modelView)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.presenter.didSelectItem(atIndexPath: indexPath)        
+        self.didSelectItem(atIndexPath: indexPath)
     }
     
     //    MARK: Cell content help functions
 }
 
-extension NearbyUsersViewControllerV: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+extension NearbyUsersPresenter: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
         return NSAttributedString(string: "No one is in the limbo\nLooking for someone")
     }

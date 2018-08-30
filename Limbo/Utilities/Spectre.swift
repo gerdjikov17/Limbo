@@ -20,8 +20,25 @@ class Spectre: NSObject {
     
     //    MARK: Properties
     
-    static let specialAntiCurseSpell: [String] = ["ghost", "spell", "witch", "remove", "decurse", "your", "me", "final", "monster", "branch", "wand", "touch", "kiss", "fly", "draw", "must", "band", "broom", "hard", "barrel", "cook", "hair", "ludogorec", "free", "boiko borisov", "spectre", "say", "told", "human", "weak", "pleasure", "says", "blood", "wound", "sword", "queen", "king", "fire", "hot", "30 years", "forever", "baby", "magic", "pain", "forest", "troll", "eye", "flesh", "brain", "dark", "dirty", "👻", "☠️", "💀", "🎃", "👽", "🧙‍♀️", "🧝‍♂️", "🧙‍♂️", "🕷", "🦂", "🦇", "🦉", "🐉", "🐲", "🌙", "🌪"]
-    static let specialMessages: [String] = ["How many ghosts are around me", "Give me the anti-spell", "Hello Spectre", "Hi Spectre", "Who cursed me", "Who is haunting me", "What is the afterlife", "\u{0001F44B}", "Help me", "How are you"]
+    static let specialAntiCurseSpell: [String] = ["ghost", "spell", "witch", "remove", "decurse", "your", "me",
+                                                  "final", "monster", "branch", "wand", "touch", "kiss", "fly",
+                                                  "draw", "must", "band", "broom", "hard", "barrel", "cook", "hair",
+                                                  "ludogorec", "free", "boiko borisov", "spectre", "say", "told",
+                                                  "human", "weak", "pleasure", "says", "blood", "wound", "sword",
+                                                  "queen", "king", "fire", "hot", "30 years", "forever", "baby",
+                                                  "magic", "pain", "forest", "troll", "eye", "flesh", "brain", "dark",
+                                                  "dirty", "👻", "☠️", "💀", "🎃", "👽", "🧙‍♀️", "🧝‍♂️", "🧙‍♂️", "🕷",
+                                                  "🦂", "🦇", "🦉", "🐉", "🐲", "🌙", "🌪"]
+    static let specialMessages: [String] = ["How many ghosts are around me",
+                                            "Give me the anti-spell",
+                                            "Hello Spectre",
+                                            "Hi Spectre",
+                                            "Who cursed me",
+                                            "Who is haunting me",
+                                            "What is the afterlife",
+                                            "\u{0001F44B}",
+                                            "Help me",
+                                            "How are you"]
     static var specialAnswers: [String] {
         get {
             return [getGhostsNearby(),
@@ -30,7 +47,9 @@ class Spectre: NSObject {
                     "Greetings " + (RealmManager.currentLoggedUser()?.state)!,
                     theLastOneWhoHaunted(),
                     theLastOneWhoHaunted(),
-                    "All human beings have eternal life. No matter how strongly intellectuals may reject the idea, our souls are eternal; we are beings living in an eternal chain that consists of past, present and future.",
+                    "All human beings have eternal life. No matter how strongly intellectuals may reject the idea," +
+                        " our souls are eternal; we are beings living in an eternal chain that consists of past," +
+                        " present and future.",
                     "\u{0001F44B}",
                     "Ha-ha",
                     "I am pretty dead, you ?",
@@ -53,7 +72,8 @@ class Spectre: NSObject {
                                                decorate: { $0.firstLetterCapitalized() })
                 UserDefaults.standard.set(composedSentence, forKey: Constants.UserDefaults.antiCurse)
                 let fireAt = Date(timeIntervalSinceNow: 30)
-                let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeAntiCurse), userInfo: nil, repeats: false)
+                let timer = Timer.init(fireAt: fireAt, interval: 0, target: self,
+                                       selector: #selector(removeAntiCurse), userInfo: nil, repeats: false)
                 RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
                 return composedSentence + "\n\n\nYou have 30 seconds.\nSay the anti-spell to the one who cursed you."
             }
@@ -143,7 +163,8 @@ class SpectreManager {
     
     func startLoopingForSpectres() {
         print("startLoopingForSpectres")
-        self.timer = Timer.init(fireAt: Date(), interval: 10, target: self, selector: #selector(checkForSpectres), userInfo: nil, repeats: true)
+        self.timer = Timer.init(fireAt: Date(), interval: 10, target: self,
+                                selector: #selector(checkForSpectres), userInfo: nil, repeats: true)
         RunLoop.main.add(timer!, forMode: RunLoopMode.commonModes)
     }
     

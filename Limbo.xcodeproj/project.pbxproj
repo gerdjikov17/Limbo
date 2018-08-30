@@ -43,7 +43,7 @@
 		0652817221343184008070C8 /* NearbyUsersPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652817121343184008070C8 /* NearbyUsersPresenter.swift */; };
 		0652817421343190008070C8 /* NearbyUsersInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652817321343190008070C8 /* NearbyUsersInteractor.swift */; };
 		0652817621355AE5008070C8 /* MessageCellsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652817521355AE5008070C8 /* MessageCellsManager.swift */; };
-		0652817821355E8F008070C8 /* NearbyUsersView+CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652817721355E8F008070C8 /* NearbyUsersView+CollectionView.swift */; };
+		0652817821355E8F008070C8 /* NearbyUsersPresenter+CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652817721355E8F008070C8 /* NearbyUsersPresenter+CollectionView.swift */; };
 		0652817A213565E4008070C8 /* ChatRoomModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06528179213565E4008070C8 /* ChatRoomModelView.swift */; };
 		0652817C21357FAC008070C8 /* NearbyUsersPresenter+NotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0652817B21357FAC008070C8 /* NearbyUsersPresenter+NotificationDelegate.swift */; };
 		0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657906221198CEE005CF741 /* PastelViewManager.swift */; };
@@ -124,7 +124,7 @@
 		0652817121343184008070C8 /* NearbyUsersPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyUsersPresenter.swift; sourceTree = "<group>"; };
 		0652817321343190008070C8 /* NearbyUsersInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyUsersInteractor.swift; sourceTree = "<group>"; };
 		0652817521355AE5008070C8 /* MessageCellsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellsManager.swift; sourceTree = "<group>"; };
-		0652817721355E8F008070C8 /* NearbyUsersView+CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersView+CollectionView.swift"; sourceTree = "<group>"; };
+		0652817721355E8F008070C8 /* NearbyUsersPresenter+CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersPresenter+CollectionView.swift"; sourceTree = "<group>"; };
 		06528179213565E4008070C8 /* ChatRoomModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomModelView.swift; sourceTree = "<group>"; };
 		0652817B21357FAC008070C8 /* NearbyUsersPresenter+NotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NearbyUsersPresenter+NotificationDelegate.swift"; sourceTree = "<group>"; };
 		0657906221198CEE005CF741 /* PastelViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastelViewManager.swift; sourceTree = "<group>"; };
@@ -235,7 +235,6 @@
 				060FC5422107336E00E5D6BB /* UserModel.swift */,
 				06262FDC2108A88A003C6A1E /* MessageModel.swift */,
 				0618F3F3212D5A310004FDE4 /* ChatRoomModel.swift */,
-				06528179213565E4008070C8 /* ChatRoomModelView.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -314,17 +313,58 @@
 		0652816C213430E2008070C8 /* Nearby Users */ = {
 			isa = PBXGroup;
 			children = (
-				0652816D21343116008070C8 /* NearbyUsersViewControllerV.swift */,
-				0652817721355E8F008070C8 /* NearbyUsersView+CollectionView.swift */,
-				0652817121343184008070C8 /* NearbyUsersPresenter.swift */,
-				0652817B21357FAC008070C8 /* NearbyUsersPresenter+NotificationDelegate.swift */,
-				0652817321343190008070C8 /* NearbyUsersInteractor.swift */,
-				0652816F21343130008070C8 /* NearbyUsersRouter.swift */,
+				0664C9F521383204005BAAC1 /* EntityViewModel */,
+				0664C9F4213831EF005BAAC1 /* Interactor */,
+				0664C9F3213831E7005BAAC1 /* Router */,
+				0664C9F2213831DC005BAAC1 /* View */,
+				0664C9F1213830A0005BAAC1 /* Presenter */,
 				0618F3F9212D6C5C0004FDE4 /* AllUsersTableViewController.swift */,
 				06A26F5B211496980023F679 /* ItemPopoverViewController.swift */,
-				060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */,
 			);
 			path = "Nearby Users";
+			sourceTree = "<group>";
+		};
+		0664C9F1213830A0005BAAC1 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				0652817121343184008070C8 /* NearbyUsersPresenter.swift */,
+				0652817B21357FAC008070C8 /* NearbyUsersPresenter+NotificationDelegate.swift */,
+				0652817721355E8F008070C8 /* NearbyUsersPresenter+CollectionView.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		0664C9F2213831DC005BAAC1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				0652816D21343116008070C8 /* NearbyUsersViewControllerV.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		0664C9F3213831E7005BAAC1 /* Router */ = {
+			isa = PBXGroup;
+			children = (
+				0652816F21343130008070C8 /* NearbyUsersRouter.swift */,
+			);
+			path = Router;
+			sourceTree = "<group>";
+		};
+		0664C9F4213831EF005BAAC1 /* Interactor */ = {
+			isa = PBXGroup;
+			children = (
+				0652817321343190008070C8 /* NearbyUsersInteractor.swift */,
+			);
+			path = Interactor;
+			sourceTree = "<group>";
+		};
+		0664C9F521383204005BAAC1 /* EntityViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				06528179213565E4008070C8 /* ChatRoomModelView.swift */,
+				060FC5442107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift */,
+			);
+			path = EntityViewModel;
 			sourceTree = "<group>";
 		};
 		066C84962122F6150022CA95 /* Avatars */ = {
@@ -538,7 +578,7 @@
 				0657906F211AEEAE005CF741 /* Extensions.swift in Sources */,
 				061095C0210F3ED700A23D27 /* AvatarCollectionReusableViewFooter.swift in Sources */,
 				066C84B2212448E10022CA95 /* PhotoTableViewCell.swift in Sources */,
-				0652817821355E8F008070C8 /* NearbyUsersView+CollectionView.swift in Sources */,
+				0652817821355E8F008070C8 /* NearbyUsersPresenter+CollectionView.swift in Sources */,
 				060FC52B21071DE700E5D6BB /* AppDelegate.swift in Sources */,
 				060FC5432107336E00E5D6BB /* UserModel.swift in Sources */,
 				069361FD210745DC00D02D22 /* Protocols.swift in Sources */,
