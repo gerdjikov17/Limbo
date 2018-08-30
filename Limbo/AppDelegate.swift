@@ -25,9 +25,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first
         if spectre == nil {
             let spectre = UserModel(username: "Spectre", state: "Spectre", uniqueDeviceID: "Spectre")
+            let chatRoom = ChatRoomModel()
             try! realm.write {
                 realm.add(spectre)
                 spectre.userID = -2
+                chatRoom.usersChattingWith.append(spectre)
+                chatRoom.roomType = RoomType.SingleUserChat.rawValue
+                chatRoom.uuid = spectre.compoundKey
+                chatRoom.name = spectre.username
+//                chatRoom.currentUserUsername = RealmManager.currentLoggedUser()!.username
+                realm.add(chatRoom)
             }
         }
         let center = UNUserNotificationCenter.current()

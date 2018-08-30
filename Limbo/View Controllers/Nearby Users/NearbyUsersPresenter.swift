@@ -94,6 +94,10 @@ extension NearbyUsersPresenter: NearbyUsersViewToPresenterInterface {
     }
     
     func numberOfItems() -> Int {
+//        temporary or pernament bug fix , method gets called even after presenting the login VC
+        guard UserDefaults.standard.bool(forKey: Constants.UserDefaults.isLoged) else {
+            return 0
+        }
         if self.interactor.isCurrentUserBlind() {
             return itemsCountIfBlind
         }
@@ -117,13 +121,16 @@ extension NearbyUsersPresenter: NearbyUsersViewToPresenterInterface {
     
     
     func viewDidAppear() {
-        self.interactor.didSelectRoom(withUUID: nil)
-        self.interactor.showGroupChats()
-        self.interactor.addGroupChatCell()
-        self.interactor.filterUsersToShow()
-        if self.interactor.hasGifts() {
-            self.view.showGiftToast()
+        if UserDefaults.standard.bool(forKey: Constants.UserDefaults.isLoged) {
+            self.interactor.didSelectRoom(withUUID: nil)
+            self.interactor.showGroupChats()
+            self.interactor.addGroupChatCell()
+            self.interactor.filterUsersToShow()
+            if self.interactor.hasGifts() {
+                self.view.showGiftToast()
+            }
         }
+        
     }
     
     func viewDidDisappear() {

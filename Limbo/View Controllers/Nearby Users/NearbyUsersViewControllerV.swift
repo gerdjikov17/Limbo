@@ -76,9 +76,11 @@ class NearbyUsersViewControllerV: UIViewController {
     
     @objc func becomeGhost() {
         let realm = try! Realm()
-        let results = realm.objects(ChatRoomModel.self).filter("name = %@", "Unnamed group")
+        let results1 = realm.objects(ChatRoomModel.self)
+        let results2 = realm.objects(UserModel.self).filter("userID = %d OR userID = %d", -1, -2)
         try! realm.write {
-            realm.delete(results)
+            realm.delete(results1)
+            realm.delete(results2)
         }
         self.nearbyUsersCollectionView.reloadData()
 //        var batteryLevel: Float
