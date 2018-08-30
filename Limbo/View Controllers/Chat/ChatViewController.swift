@@ -42,8 +42,12 @@ class ChatViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)),
+                                               name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)),
+                                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
         let indexPath = IndexPath(row: self.chatPresenter.lastMessageIndex(), section: 0)
         if indexPath.row >= 0 {
             self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
@@ -127,7 +131,11 @@ class ChatViewController: UIViewController {
     @IBAction func itemsButtonTap(_ sender: AnyObject) {
         let button: UIButton = sender as! UIButton
         //        using this hack because otherwise button.frame.origin.y is < 0 and popover is not visible
-        button.frame = CGRect(x: button.frame.origin.x, y: self.sendButton.frame.origin.y, width: self.sendButton.frame.size.width, height: self.sendButton.frame.size.height)
+        button.frame = CGRect(x: button.frame.origin.x,
+                              y: self.sendButton.frame.origin.y,
+                              width: self.sendButton.frame.size.width,
+                              height: self.sendButton.frame.size.height)
+        
         self.chatPresenter.didTapOnItemsButton(sourceView: button)
     }
     
@@ -146,10 +154,16 @@ class ChatViewController: UIViewController {
 
 extension ChatViewController: ChatViewInterface {
     func showSilencedMessage() {
-        let pointForToast = CGPoint(x: self.view.center.x, y: (self.navigationController?.navigationBar.frame.size.height)! + CGFloat(100))
+        let pointForToast = CGPoint(x: self.view.center.x,
+                                    y: (self.navigationController?.navigationBar.frame.size.height)! + CGFloat(100))
+        
         let remainingTime = Constants.Curses.curseTime + (RealmManager.currentLoggedUser()?.curseCastDate?.timeIntervalSinceNow)!
+        
         let curseRemainingTime = Int(remainingTime)
-        self.view.makeToast("You are cursed with Silence", point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+        
+        self.view.makeToast("You are cursed with Silence",
+                            point: pointForToast, title: "You can't chat with people for \(curseRemainingTime) seconds",
+                            image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
     }
     
     func setNavigationItemName(name: String) {

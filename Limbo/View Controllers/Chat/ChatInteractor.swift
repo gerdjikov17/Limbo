@@ -103,7 +103,8 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         }
         let dataDict = [key: message]
         
-        let success = self.chatDelegate?.sendJSONtoGame(dataDict: dataDict, toPeerID: (self.chatDelegate?.getPeerIDForUID(uniqueID: self.chatRoom!.usersPeerIDs.first!)!)!)
+        let success = self.chatDelegate?.sendJSONtoGame(dataDict: dataDict,
+                                                        toPeerID: (self.chatDelegate?.getPeerIDForUID(uniqueID: self.chatRoom!.usersPeerIDs.first!)!)!)
         if success! {
             let realm = try! Realm()
             if let chatRoom = RealmManager.chatRoom(forUUID: self.chatRoom!.uuid) {

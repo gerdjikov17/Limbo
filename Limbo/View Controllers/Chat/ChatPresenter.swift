@@ -188,7 +188,10 @@ extension ChatPresenter: UIImagePickerControllerDelegate, UINavigationController
 
 extension ChatPresenter: OptionsDelegate {
     func clearHistory() {
-        let alertController = UIAlertController(title: "Clear history", message: "In a result of clearing your history you wont be able to recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Clear history",
+                                                message: "In a result of clearing your history you wont be able to " +
+            "recover it back.\nAre you sure you want to delete it ?", preferredStyle: .alert)
+        
         alertController.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
             self.chatInteractor?.clearHistory(completionHandler : {
                 self.messages = Array()
