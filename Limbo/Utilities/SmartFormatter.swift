@@ -8,19 +8,19 @@
 
 import UIKit
 
-class SmartFormatter: NSObject {
-    static func formatDate(date: Date) -> String {
-        let formatter = DateFormatter()
+class SmartFormatter: DateFormatter {
+    
+    static let instance = SmartFormatter()
+    
+    func formatDate(date: Date) -> String {
         if date.timeIntervalSinceNow >= -86000 { // < one day
-            formatter.dateFormat = "HH:mm"
+            self.dateFormat = "HH:mm"
+        } else if date.timeIntervalSinceNow <= -86000*7 { // > one week
+            self.dateFormat = "E, d MMM yyyy HH:mm"
+        } else if date.timeIntervalSinceNow <= -86000 { // > one day
+            self.dateFormat = "E, HH:mm"
         }
-        else if date.timeIntervalSinceNow <= -86000*7 { // > one week
-            formatter.dateFormat = "E, d MMM yyyy HH:mm"
-        }
-        else if date.timeIntervalSinceNow <= -86000 { // > one day
-            formatter.dateFormat = "E, HH:mm"
-        }
-        return formatter.string(from: date)
+        return self.string(from: date)
         
     }
 }

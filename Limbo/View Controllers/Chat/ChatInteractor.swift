@@ -18,7 +18,7 @@ import MultipeerConnectivity
 
 class ChatInteractor: NSObject, ChatInteractorInterface {
     
-    var chatPresenter: ChatInteractorToPresenterInterface!
+    weak var chatPresenter: ChatInteractorToPresenterInterface!
     var chatDelegate: UsersConnectivityDelegate!
     var chatRoom: ChatRoomModel?
     var currentUser = RealmManager.currentLoggedUser()

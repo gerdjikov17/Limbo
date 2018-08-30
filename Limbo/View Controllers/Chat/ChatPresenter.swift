@@ -11,7 +11,7 @@ import UIKit
 class ChatPresenter: NSObject {
     var chatRouter: ChatRouterInterface?
     var chatInteractor: ChatInteractorInterface?
-    var chatView: ChatViewInterface!
+    weak var chatView: ChatViewInterface!
     
     var messages: [MessageModel]!
     

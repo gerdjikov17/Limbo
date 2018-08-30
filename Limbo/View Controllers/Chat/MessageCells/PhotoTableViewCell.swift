@@ -48,7 +48,7 @@ class PhotoTableViewCell: UITableViewCell, SetableForMessageModel {
             
             
         }
-        self.sentPhotoTimeStampLabel.text = SmartFormatter.formatDate(date: messageModel.timeSent)
+        self.sentPhotoTimeStampLabel.text = SmartFormatter.instance.formatDate(date: messageModel.timeSent)
     }
 
 }

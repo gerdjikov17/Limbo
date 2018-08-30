@@ -32,7 +32,7 @@ class VoiceMessageTableViewCell: UITableViewCell, SetableForMessageModel {
     }
     
     func initialConfiguration(message: MessageModel) {
-        timeStampLabel.text = SmartFormatter.formatDate(date: message.timeSent)
+        timeStampLabel.text = SmartFormatter.instance.formatDate(date: message.timeSent)
         
         let limboFolder = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true)
         let fileURL = limboFolder.appendingPathComponent(message.messageString, isDirectory: false)

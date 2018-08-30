@@ -54,7 +54,7 @@ protocol SetableForMessageModel {
     func set(forMessageModel message: MessageModel, senderImage: UIImage?)
 }
 
-protocol ChatInteractorToPresenterInterface {
+protocol ChatInteractorToPresenterInterface: class {
     func silencedCallBack()
     func didFetchMessages()
     func newMessage(message: MessageModel)
@@ -89,8 +89,7 @@ protocol ChatViewToPresenterInterface {
     func didTapOnImage(recognizer: UITapGestureRecognizer)
     func didTapOnMessage(recognizer: UITapGestureRecognizer)
 }
-
-protocol ChatInteractorInterface {
+protocol ChatInteractorInterface: class {
     func sendMessageToUser(message: String)
     func getMessageResults() -> Results<MessageModel>?
     func handleMessage(message: String)
