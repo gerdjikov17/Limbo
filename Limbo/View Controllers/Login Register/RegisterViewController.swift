@@ -72,9 +72,9 @@ class RegisterViewController: UIViewController {
     
     @IBAction func registerButtonTap(_ sender: Any) {
         self.resignAllTextFields()
-        let username: String! = self.usernameTextField.text
-        let password: String! = self.passwordTextField.text
-        let confirmPassword: String! = self.confirmPasswordTextField.text
+        let username: String! = self.usernameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let password: String! = self.passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let confirmPassword: String! = self.confirmPasswordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         
         let authorization = self.authorizeUserInput(username: username, password: password, confirmedPassword: confirmPassword)
         if authorization.success {
