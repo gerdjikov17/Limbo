@@ -100,6 +100,16 @@ class UserModel: Object {
         realm.refresh()
     }
     
+    func setCurse(curse: Curse) {
+        let realm = try! Realm()
+        try! realm.write {
+            self.curse = curse.rawValue
+            self.curseCastDate = Date()
+            self.specialItemUsedDate = nil
+            self.specialItem = Curse.None.rawValue
+        }
+    }
+    
     func toJSONDict() -> Dictionary<String, Any> {
         let jsonDict = [
             "userID": self.userID,

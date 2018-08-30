@@ -17,30 +17,35 @@ class CurseManager: NSObject {
             }
         }
         let remainingTime = Constants.Curses.curseTime
-        let realm = try! Realm()
-        try! realm.write {
-            toUser.curse = curse.rawValue
-            toUser.curseCastDate = Date()
-            toUser.specialItemUsedDate = nil
-            toUser.specialItem = Curse.None.rawValue
-        }
+        
+        toUser.setCurse(curse: curse)
+        
         let fireAt = Date(timeIntervalSinceNow: remainingTime)
-        let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeCurse), userInfo: ["curse": curse, "user": toUser], repeats: false)
+        let timer = Timer.init(fireAt: fireAt, interval: 0, target: self,
+                               selector: #selector(removeCurse),
+                               userInfo: ["curse": curse, "user": toUser], repeats: false)
+        
         RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
-        NotificationManager.shared.presentCurseNotification(withTitle: "You have been cursed", andText: String(curse.rawValue + " for \(Int(remainingTime)) seconds"))
+        
+        NotificationManager.shared.presentCurseNotification(withTitle: "You have been cursed",
+                                                            andText: String(curse.rawValue + " for \(Int(remainingTime)) seconds"))
+        
         return (true, remainingTime)
     }
     
     static func reApplyCurse(curse: Curse, toUser: UserModel, remainingTime: Double) {
         let fireAt = Date(timeIntervalSinceNow: remainingTime)
-        let timer = Timer.init(fireAt: fireAt, interval: 0, target: self, selector: #selector(removeCurse), userInfo: ["curse": curse, "user": toUser], repeats: false)
+        let timer = Timer.init(fireAt: fireAt, interval: 0, target: self,
+                               selector: #selector(removeCurse),
+                               userInfo: ["curse": curse, "user": toUser], repeats: false)
+        
         RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
     }
 
     static func applySpecialItem(specialItem: SpecialItem, toUser: UserModel) {
         if specialItem == SpecialItem.SaintsMedallion {
             self.applySaintsMedallion(toUser: toUser, specialItem: specialItem)
-        } else {
+        } else if specialItem == SpecialItem.HolyCandle {
             self.applyHolyCandle(toUser: toUser, specialItem: specialItem)
         }
     }

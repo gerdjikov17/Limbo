@@ -15,15 +15,16 @@ extension UsersConnectivity {
     func handleGameData(data: Data, fromPeer peerID: MCPeerID) {
         let dictWithData = try! JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as! [String: Any]
         let messageModel = MessageModel()
+        
         messageModel.messageString = dictWithData.first?.value as! String
         messageModel.sender = RealmManager.userWith(uniqueID: peerID.displayName)
-//        messageModel.receivers.append(RealmManager.currentLoggedUser()!)
-//        messageModel.chatRoom = RealmManager.chatRoom(forUUID: messageModel.sender!.compoundKey)
         messageModel.chatRoomUUID = messageModel.sender!.compoundKey
+        
         let realm = try! Realm()
         realm.beginWrite()
         realm.add(messageModel)
         try? realm.commitWrite()
+        
         if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
             let threadSafeMessage = ThreadSafeReference(to: messageModel)
             chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
@@ -35,7 +36,8 @@ extension UsersConnectivity {
     func foundGamePeer(peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         print(info as Any)
         print(peerID)
-        let username = String(peerID.displayName.prefix(upTo: peerID.displayName.index(peerID.displayName.startIndex, offsetBy: peerID.displayName.count - 5)))
+        let username = String(peerID.displayName.prefix(upTo: peerID.displayName.index(peerID.displayName.startIndex,
+                                                                                       offsetBy: peerID.displayName.count - 5)))
         var user: UserModel
         let realm = try! Realm()
         if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName) {

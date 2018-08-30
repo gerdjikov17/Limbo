@@ -26,7 +26,8 @@ class NearbyUsersRouter: NSObject {
     }
     
     static func createNearbyUsersModule() -> UIViewController {
-        let view = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: nearbyUsersVCIdentifier) as! NearbyUsersViewControllerV
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let view = storyboard.instantiateViewController(withIdentifier: nearbyUsersVCIdentifier) as! NearbyUsersViewControllerV
         let navigationController = UINavigationController(rootViewController: view)
         
         let presenter = NearbyUsersPresenter()
@@ -35,7 +36,6 @@ class NearbyUsersRouter: NSObject {
         
         view.presenter = presenter
         interactor.presenter = presenter
-//        router.presenter = presenter
         
         presenter.view = view
         presenter.router = router
@@ -72,19 +72,22 @@ extension NearbyUsersRouter: NearbyUsersPresenterToRouterInterface {
     }
     
     func presentLoginVC(loginDelegate: LoginDelegate) {
-        let loginVC: LoginViewController = storyboard?.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
+        let loginVC: LoginViewController = storyboard.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
         loginVC.loginDelegate = loginDelegate
         self.mainViewController.present(loginVC, animated: true, completion: nil)
     }
     
     func presentUserAvatars(user: UserModel) {
-        let avatarChooseVC = storyboard?.instantiateViewController(withIdentifier: "AvatarCollectionViewController") as! AvatarCollectionViewController
+        let avatarChooseVC = storyboard.instantiateViewController(withIdentifier: "AvatarCollectionViewController") as! AvatarCollectionViewController
         avatarChooseVC.currentUser = user
         self.mainViewController.present(avatarChooseVC, animated: true, completion: nil)
     }
     
     func createAndPushChatModule(chatRoom: ChatRoomModel, usersConnectivityDelegate: UsersConnectivityDelegate) {
-        let view = ChatRouter.createChatModule(using: self.navigationController, usersConnectivityDelegate: usersConnectivityDelegate, chatRoom: chatRoom)
+        
+        let view = ChatRouter.createChatModule(using: self.navigationController,
+                                               usersConnectivityDelegate: usersConnectivityDelegate,
+                                               chatRoom: chatRoom)
         
         self.properlyPushChatVC(chatVC: view)
     }

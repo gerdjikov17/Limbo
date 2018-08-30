@@ -37,9 +37,13 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
         }
         for chatRoom in chatRooms {
             if chatRoom.chatRoom.roomType == RoomType.GroupChat.rawValue || chatRoom.peerID.displayName == "C"{
-                modelViews.append(ChatRoomModelView(chatRoom: chatRoom.chatRoom, unreadMessages: chatRoom.unreadMessages, state: "")) // change name here
+                modelViews.append(ChatRoomModelView(chatRoom: chatRoom.chatRoom,
+                                                    unreadMessages: chatRoom.unreadMessages,
+                                                    state: "Group"))
             } else {
-                modelViews.append(ChatRoomModelView(chatRoom: chatRoom.chatRoom, unreadMessages: chatRoom.unreadMessages, state: chatRoom.chatRoom.usersChattingWith.first!.state))
+                modelViews.append(ChatRoomModelView(chatRoom: chatRoom.chatRoom,
+                                                    unreadMessages: chatRoom.unreadMessages,
+                                                    state: chatRoom.chatRoom.usersChattingWith.first!.state))
             }
             newUsers.append(chatRoom)
         }
@@ -58,7 +62,9 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
                 CurseManager.removeCurse()
             }
             else {
-                CurseManager.reApplyCurse(curse: Curse(rawValue: self.currentUser.curse)!, toUser: self.currentUser, remainingTime: lastCurseCastDate.timeIntervalSinceNow)
+                CurseManager.reApplyCurse(curse: Curse(rawValue: self.currentUser.curse)!,
+                                          toUser: self.currentUser,
+                                          remainingTime: lastCurseCastDate.timeIntervalSinceNow)
             }
         }
     }
@@ -252,7 +258,11 @@ extension NearbyUsersInteractor: ChatDelegate {
             if curse == .Blind {
                 self.filterUsersToShow()
                 
-                let timer = Timer.init(fireAt: Date(timeIntervalSinceNow: remainingTime), interval: 0, target: self, selector: #selector(self.filterUsersToShow), userInfo: nil, repeats: false)
+                let timer = Timer.init(fireAt: Date(timeIntervalSinceNow: remainingTime),
+                                       interval: 0, target: self,
+                                       selector: #selector(self.filterUsersToShow),
+                                       userInfo: nil, repeats: false)
+                
                 RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
             }
         }
@@ -271,17 +281,23 @@ extension NearbyUsersInteractor: ChatDelegate {
                 }
                 
                 if let chatRoom = RealmManager.chatRoom(forUUID: messageModel!.chatRoomUUID) {
-                    if chatRoom.roomType == RoomType.GroupChat.rawValue {
-                        if chatRoom.uuid.components(separatedBy: Constants.chatRoomSeparator).contains(self.currentUser.compoundKey) {
-                            NotificationManager.shared.presentNotification(withMessage: messageModel!, notificationDelegate: self.presenter as! UNUserNotificationCenterDelegate)
-                        }
-                    }
-                    else {
-                        NotificationManager.shared.presentNotification(withMessage: messageModel!, notificationDelegate: self.presenter as! UNUserNotificationCenterDelegate)
-                    }
+                    self.showNewMessageNotification(newMessage: messageModel!, forChatRoom: chatRoom)
                 }
             }
             self.filterUsersToShow()
+        }
+    }
+    
+    private func showNewMessageNotification(newMessage messageModel: MessageModel, forChatRoom chatRoom: ChatRoomModel) {
+        if chatRoom.roomType == RoomType.GroupChat.rawValue {
+            if chatRoom.uuid.components(separatedBy: Constants.chatRoomSeparator).contains(self.currentUser.compoundKey) {
+                NotificationManager.shared.presentNotification(withMessage: messageModel,
+                                                               notificationDelegate: self.presenter as! UNUserNotificationCenterDelegate)
+            }
+        }
+        else {
+            NotificationManager.shared.presentNotification(withMessage: messageModel,
+                                                           notificationDelegate: self.presenter as! UNUserNotificationCenterDelegate)
         }
     }
 }
