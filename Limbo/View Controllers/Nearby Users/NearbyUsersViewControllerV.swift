@@ -45,7 +45,9 @@ class NearbyUsersViewControllerV: UIViewController {
         self.presenter.firstInitialization()
         
 
-        NotificationCenter.default.addObserver(self, selector: #selector(batteryLevelDidChange(notification:)), name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(batteryLevelDidChange(notification:)),
+                                               name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -65,8 +67,6 @@ class NearbyUsersViewControllerV: UIViewController {
     
     @objc func signOutButtonTap() {
         self.presenter.signOutButtonTap()
-        
-        //        self.batteryLevelDidChange(notification: NSNotification.init(name: NSNotification.Name.UIDeviceBatteryLevelDidChange, object: nil, userInfo: nil))
     }
     
     @objc func userImageTap() {
@@ -77,9 +77,6 @@ class NearbyUsersViewControllerV: UIViewController {
     @objc func becomeGhost() {
         let realm = try! Realm()
         let results = realm.objects(ChatRoomModel.self).filter("name = %@", "Unnamed group")
-//        self.chatRooms.remove(at: self.chatRooms.index(where: { (key, value) -> Bool in
-//            value.chatRoom.name == "Unnamed group"
-//        })!)
         try! realm.write {
             realm.delete(results)
         }
@@ -103,7 +100,6 @@ class NearbyUsersViewControllerV: UIViewController {
     @objc func reloadDataFromSelector() {
         DispatchQueue.main.async {
             self.nearbyUsersCollectionView.reloadData()
-//            self.setUIContent(userModel: self.currentUser)
         }
     }
     
@@ -132,9 +128,6 @@ class NearbyUsersViewControllerV: UIViewController {
     @objc func medallionImageTap() {
         self.presenter.medallionImageTap(sourceView: self.currentUserImageView, presentingVC: self)
     }
-    
-    
-
 }
 
 extension NearbyUsersViewControllerV: NearbyUsersPresenterToViewInterface {
@@ -152,6 +145,9 @@ extension NearbyUsersViewControllerV: NearbyUsersPresenterToViewInterface {
         style.titleColor = .black
         style.messageColor = .black
         self.view.hideToast()
-        self.view.makeToast("As a new user you are twice likely to find spectres.", duration: 3600 , point: CGPoint(x: self.currentUserImageView.center.x, y: self.currentUserImageView.center.y - 115), title: "The Gift", image: #imageLiteral(resourceName: "gift-icon.png"), style: style, completion: nil)
+        self.view.makeToast("As a new user you are twice likely to find spectres.",
+                            duration: 3600 ,
+                            point: CGPoint(x: self.view.center.x, y: self.currentUserImageView.center.y - 115),
+                            title: "The Gift", image: #imageLiteral(resourceName: "gift-icon.png"), style: style, completion: nil)
     }
 }

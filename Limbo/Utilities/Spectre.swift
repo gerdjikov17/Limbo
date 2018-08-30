@@ -135,6 +135,7 @@ class SpectreManager {
     
     let nearbyUsersDelegate: NearbyUsersDelegate?
     let spectrePeerID = MCPeerID(displayName: "Spectre")
+    var timer: Timer?
     
     init(nearbyUsersDelegate: NearbyUsersDelegate) {
         self.nearbyUsersDelegate = nearbyUsersDelegate
@@ -142,8 +143,12 @@ class SpectreManager {
     
     func startLoopingForSpectres() {
         print("startLoopingForSpectres")
-        let timer = Timer.init(fireAt: Date(), interval: 10, target: self, selector: #selector(checkForSpectres), userInfo: nil, repeats: true)
-        RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+        self.timer = Timer.init(fireAt: Date(), interval: 10, target: self, selector: #selector(checkForSpectres), userInfo: nil, repeats: true)
+        RunLoop.main.add(timer!, forMode: RunLoopMode.commonModes)
+    }
+    
+    func stopLoopingForSpectres() {
+        self.timer?.invalidate()
     }
     
     @objc func checkForSpectres() {

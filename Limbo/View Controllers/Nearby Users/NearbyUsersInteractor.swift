@@ -22,7 +22,7 @@ class NearbyUsersInteractor: NSObject {
     var chatRooms: [(peerID: MCPeerID, chatRoom: ChatRoomModel, unreadMessages: Int)]!
     var usersConnectivity: UsersConnectivity!
     var lastSelectedChatRoomUUID: String?
-    
+    var spectreManager: SpectreManager!
     
 }
 
@@ -39,7 +39,7 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
             if chatRoom.chatRoom.roomType == RoomType.GroupChat.rawValue || chatRoom.peerID.displayName == "C"{
                 modelViews.append(ChatRoomModelView(chatRoom: chatRoom.chatRoom, unreadMessages: chatRoom.unreadMessages, state: "")) // change name here
             } else {
-                modelViews.append(ChatRoomModelView(chatRoom: chatRoom.chatRoom, unreadMessages: 0, state: chatRoom.chatRoom.usersChattingWith.first!.state))
+                modelViews.append(ChatRoomModelView(chatRoom: chatRoom.chatRoom, unreadMessages: chatRoom.unreadMessages, state: chatRoom.chatRoom.usersChattingWith.first!.state))
             }
             newUsers.append(chatRoom)
         }
@@ -48,8 +48,8 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
     }
     
     func startLoopingForSpectres() {
-        let spectreM = SpectreManager(nearbyUsersDelegate: self)
-        spectreM.startLoopingForSpectres()
+        self.spectreManager = SpectreManager(nearbyUsersDelegate: self)
+        self.spectreManager.startLoopingForSpectres()
     }
     
     func checkForCurses() {
@@ -79,21 +79,17 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
     }
     
     func hasGifts() -> Bool {
-        if let gift = UserDefaults.standard.value(forKey: Constants.UserDefaults.gift) {
-            let gift = gift as! [String: Any]
-            if gift["username"] as? String == RealmManager.currentLoggedUser()?.username {
-                let date = gift["date"] as! Date
-                let oneDayTimeInterval = -86400.0
-                if date.timeIntervalSinceNow > oneDayTimeInterval {
-                    return true
-                }
-            }
-        }
-        return false
+        guard let gift = UserDefaults.standard.value(forKey: Constants.UserDefaults.gift) as? [String: Any] else { return false }
+        guard gift["username"] as? String == RealmManager.currentLoggedUser()?.username else { return false }
+        let date = gift["date"] as! Date
+        let oneDayTimeInterval = -86400.0
+        guard date.timeIntervalSinceNow > oneDayTimeInterval else { return false }
+        return true
     }
     
     func userDidSignOut() {
         self.notificationToken?.invalidate()
+        self.spectreManager.stopLoopingForSpectres()
         RealmManager.clearUsersStates()
         UserDefaults.standard.set(false, forKey: Constants.UserDefaults.isLoged)
         UserDefaults.standard.synchronize()
@@ -101,12 +97,7 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
     }
     
     func isCurrentUserBlind() -> Bool {
-        if let user = RealmManager.currentLoggedUser() {
-            if user.curse == "Blind" {
-                return true
-            }
-        }
-        return false
+        return self.currentUser.state == "Blind"
     }
     
     func chatRoom(forIndexPath indexPath: IndexPath) -> ChatRoomModel {
@@ -196,16 +187,16 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
         let realm = try! Realm()
         let realmChatRooms = realm.objects(ChatRoomModel.self).filter("usersChattingWith.@count > %d", 1)
         for chatRoom in realmChatRooms {
-            self.chatRooms.append((MCPeerID(displayName: "Unnamed group"), chatRoom, 0))
+            if chatRoom.uuid.components(separatedBy: Constants.chatRoomSeparator).contains(self.currentUser.compoundKey) {
+                self.chatRooms.append((MCPeerID(displayName: "Unnamed group"), chatRoom, 0))
+            }
         }
     }
     
     func currentVisibleUsers() -> [UserModel]? {
         let users = self.chatRooms.compactMap({ arg -> UserModel? in
-            if arg.chatRoom.usersChattingWith.count == 1 {
-                if arg.chatRoom.usersChattingWith.first!.userID == -1 {
-                    return arg.chatRoom.usersChattingWith.first!
-                }
+            if arg.chatRoom.usersChattingWith.count == 1 && arg.chatRoom.usersChattingWith.first!.userID == -1 {
+                return arg.chatRoom.usersChattingWith.first
             }
             return nil
         })
@@ -215,8 +206,7 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
 
 extension NearbyUsersInteractor: NearbyUsersDelegate {
     func didFindNewUser(user: UserModel, peerID: MCPeerID) {
-        let realm = try! Realm()
-        guard let realmChatRoom = realm.objects(ChatRoomModel.self).filter("uuid = %@", user.compoundKey).first else { return }
+        guard let realmChatRoom = RealmManager.chatRoom(forUUID: user.compoundKey) else { return }
         guard !(self.chatRooms.contains(where: { arg -> Bool in
             arg.peerID == peerID
         })) else { return }
@@ -224,8 +214,8 @@ extension NearbyUsersInteractor: NearbyUsersDelegate {
         if user.state == "Spectre" {
             self.presenter.foundSpectre()
         }
-        let chatRoomModelView = ChatRoomModelView(chatRoom: realmChatRoom, unreadMessages: 0, state: user.state)
-        self.presenter.newChatRoom(chatRoomModelView: chatRoomModelView)
+        self.presenter.newChatRoom(chatRoomModelView:
+            ChatRoomModelView(chatRoom: realmChatRoom, unreadMessages: 0, state: user.state))
     }
     
     func didFindNewChatRoom(chatRoomThreadSafeReference: ThreadSafeReference<ChatRoomModel>) {
@@ -233,7 +223,8 @@ extension NearbyUsersInteractor: NearbyUsersDelegate {
             let realm = try! Realm()
             guard let chatRoom = realm.resolve(chatRoomThreadSafeReference) else { return }
             self.chatRooms.append((MCPeerID(displayName: "Unnamed group"), chatRoom, 0))
-            self.presenter.newChatRoom(chatRoomModelView: ChatRoomModelView(chatRoom: chatRoom, unreadMessages: 0, state: "NewChatRoom"))
+            self.presenter.newChatRoom(chatRoomModelView:
+                ChatRoomModelView(chatRoom: chatRoom, unreadMessages: 0, state: "NewChatRoom"))
             
         }
     }
@@ -288,42 +279,14 @@ extension NearbyUsersInteractor: ChatDelegate {
 
 extension NearbyUsersInteractor: GroupChatDelegate {
     func createGroupChat(withUsers users: [UserModel]) {
-        let chatRoom = ChatRoomModel()
-        chatRoom.name = "Unnamed group"
-        chatRoom.uuid.append(RealmManager.currentLoggedUser()!.uniqueDeviceID + RealmManager.currentLoggedUser()!.username + "-")
-        for user in users {
-            chatRoom.usersChattingWith.append(user)
-            chatRoom.usersPeerIDs.append(user.compoundKey)
-            chatRoom.uuid.append(user.compoundKey + "§")
-        }
-        chatRoom.uuid.removeLast()
-        chatRoom.roomType = RoomType.GroupChat.rawValue
-        
-        let usersDict = chatRoom.usersDictionary()
-        chatRoom.uuid = ""
-        for key in usersDict.keys {
-            chatRoom.uuid.append(key+usersDict[key]! + "§")
-        }
-        chatRoom.uuid.removeLast()
-        let realm = try! Realm()
-        if realm.objects(ChatRoomModel.self).filter("uuid = %@", chatRoom.uuid).first == nil {
-            try! realm.write {
-                realm.add(chatRoom)
-            }
+        let chatRoom = ChatRoomModel(withUsers: users)
+        if !RealmManager.hasChatRoomInRealm(chatRoom: chatRoom) {
+            RealmManager.addChatRoom(chatRoom: chatRoom)
             self.chatRooms.append((MCPeerID(displayName: "Unnamed group"), chatRoom, 0))
             let chatModelView = ChatRoomModelView(chatRoom: chatRoom, unreadMessages: 0, state: "Group Chat")
             self.presenter.newChatRoom(chatRoomModelView: chatModelView)
         }
-        else {
-            
-        }
-        
-        let systemMessage = MessageModel()
-        systemMessage.messageType = MessageType.System.rawValue
-        systemMessage.messageString = SystemMessage.NewGroupCreated.rawValue
-        systemMessage.additionalData = NSKeyedArchiver.archivedData(withRootObject: usersDict)
-        systemMessage.sender = self.currentUser
-        systemMessage.chatRoomUUID = chatRoom.uuid
+        let systemMessage = MessageModel(uuid: chatRoom.uuid, sender: self.currentUser)
         for user in users {
             if let peerID = self.usersConnectivity.getPeerIDForUID(uniqueID: user.uniqueDeviceID) {
                 _ = self.usersConnectivity.sendMessage(messageModel: systemMessage, toPeerID: peerID)

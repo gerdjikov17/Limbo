@@ -12,16 +12,20 @@ import UserNotifications
 extension NearbyUsersPresenter: UNUserNotificationCenterDelegate {
     
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         guard UserDefaults.standard.bool(forKey: Constants.UserDefaults.isLoged) else {
             return
         }
         completionHandler([.alert, .badge, .sound])
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
         let notification = response.notification
-        if notification.request.identifier == Constants.Notifications.Identifiers.Curse && notification.request.identifier == Constants.Notifications.Identifiers.Item { return }
+        if notification.request.identifier == Constants.Notifications.Identifiers.Curse &&
+            notification.request.identifier == Constants.Notifications.Identifiers.Item { return }
         if response.actionIdentifier == Constants.Notifications.Identifiers.MessageActionReply {
             let response = response as! UNTextInputNotificationResponse
             let text = response.userText
@@ -48,7 +52,8 @@ extension NearbyUsersPresenter: UNUserNotificationCenterDelegate {
         self.interactor.inviteUsersIn(chatRoom: chatRoom)
         self.interactor.didSelectRoom(withUUID: chatRoomUUID)
         
-        self.router.createAndPushChatModule(chatRoom: chatRoom, usersConnectivityDelegate: self.interactor.usersConnectivityDelegate())
+        self.router.createAndPushChatModule(chatRoom: chatRoom,
+                                            usersConnectivityDelegate: self.interactor.usersConnectivityDelegate())
     }
 }
 

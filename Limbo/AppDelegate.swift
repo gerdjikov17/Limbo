@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        UIDevice.current.isBatteryMonitoringEnabled = true;
+//        UIDevice.current.isBatteryMonitoringEnabled = true;
         let realm = try! Realm()
         realm.autorefresh = true
         let spectre = realm.objects(UserModel.self).filter("state = %@", "Spectre").first
@@ -31,19 +31,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound])
-        { (granted, error) in
-            let replyAction = UNTextInputNotificationAction(identifier: Constants.Notifications.Identifiers.MessageActionReply, title: "Reply", options: [], textInputButtonTitle: "Reply", textInputPlaceholder: "Write a message...")
-            let messageCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Message, actions: [replyAction], intentIdentifiers: [], options: [])
+        center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+            let replyAction = UNTextInputNotificationAction(identifier: Constants.Notifications.Identifiers.MessageActionReply,
+                                                            title: "Reply", options: [], textInputButtonTitle: "Reply",
+                                                            textInputPlaceholder: "Write a message...")
             
-            let candleAction = UNNotificationAction(identifier: Constants.Notifications.Identifiers.CurseActionItemCandle, title: "Use Holy Candle", options: [])
-            let medallionAction = UNNotificationAction(identifier: Constants.Notifications.Identifiers.CurseActionItemMedallion, title: "Use Saint's Medallion", options: [])
-            let curseCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Curse, actions: [candleAction, medallionAction], intentIdentifiers: [], options: [])
+            let messageCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Message,
+                                                         actions: [replyAction], intentIdentifiers: [], options: [])
             
-            let itemCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Item, actions: [], intentIdentifiers: [], options: [])
+            let candleAction = UNNotificationAction(identifier: Constants.Notifications.Identifiers.CurseActionItemCandle,
+                                                    title: "Use Holy Candle", options: [])
+            
+            let medallionAction = UNNotificationAction(identifier: Constants.Notifications.Identifiers.CurseActionItemMedallion,
+                                                       title: "Use Saint's Medallion", options: [])
+            
+            let curseCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Curse,
+                                                       actions: [candleAction, medallionAction],
+                                                       intentIdentifiers: [], options: [])
+            
+            let itemCategory = UNNotificationCategory(identifier: Constants.Notifications.Identifiers.Item,
+                                                      actions: [], intentIdentifiers: [], options: [])
+            
             center.setNotificationCategories([messageCategory, curseCategory, itemCategory])
         }
-        try? FileManager.default.createDirectory(at: FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true), withIntermediateDirectories: true, attributes: nil)
+        try? FileManager.default.createDirectory(
+            at: FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true),
+            withIntermediateDirectories: true, attributes: nil)
         
         let nearbyUVC = NearbyUsersRouter.createNearbyUsersModule()
         

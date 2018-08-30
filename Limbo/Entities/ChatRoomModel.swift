@@ -34,4 +34,36 @@ class ChatRoomModel: Object {
         return dict
     }
     
+    convenience init(withUsers users: [UserModel]) {
+        self.init()
+        self.name = "Unnamed group"
+        self.uuid.append(RealmManager.currentLoggedUser()!.uniqueDeviceID +
+            RealmManager.currentLoggedUser()!.username +
+            Constants.chatRoomSeparator)
+        for user in users {
+            self.usersChattingWith.append(user)
+            self.usersPeerIDs.append(user.compoundKey)
+            self.uuid.append(user.compoundKey + Constants.chatRoomSeparator)
+        }
+        self.uuid.removeLast()
+        self.roomType = RoomType.GroupChat.rawValue
+        
+        let usersDict = self.usersDictionary()
+        self.uuid = ""
+        for key in usersDict.keys {
+            self.uuid.append(key+usersDict[key]! + Constants.chatRoomSeparator)
+        }
+        self.uuid.removeLast()
+    }
+    
+    convenience init(uuid: String) {
+        self.init()
+        self.name = "Unnamed group"
+        for compoundKey in uuid.components(separatedBy: Constants.chatRoomSeparator) {
+            self.usersChattingWith.append(RealmManager.userWith(compoundKey: compoundKey)!)
+        }
+        self.uuid = uuid
+        self.roomType = RoomType.GroupChat.rawValue
+    }
+    
 }

@@ -12,6 +12,8 @@ struct Constants {
     
     static let groupChatAddID = -10
     
+    static let chatRoomSeparator = "§"
+    
     struct UserDefaults {
         static let isLoged = "UserDefaultsIsLogged"
         static let loggedUserID = "UserDefaultsLoggedUserID"

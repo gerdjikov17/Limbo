@@ -137,27 +137,13 @@ extension UsersConnectivity {
     private func handleMessageTypeSystem(messageModel: MessageModel, peerID: MCPeerID) {
         switch messageModel.messageString.first {
         case SystemMessage.NewGroupCreated.rawValue.first:
-            let usersDict = NSKeyedUnarchiver.unarchiveObject(with: messageModel.additionalData!) as! [String: String]
+            let uuid = NSKeyedUnarchiver.unarchiveObject(with: messageModel.additionalData!) as! String
             
-            let chatRoom = ChatRoomModel()
-            chatRoom.name = "Unnamed group"
-            for key in usersDict.keys {
-                chatRoom.uuid.append(key+usersDict[key]! + "§")
-                if key != RealmManager.currentLoggedUser()?.uniqueDeviceID {
-                    chatRoom.usersChattingWith.append(RealmManager.userWith(uniqueID: key, andUsername: usersDict[key]!)!)
-                }
-                
-            }
-            chatRoom.uuid.removeLast()
-            chatRoom.roomType = RoomType.GroupChat.rawValue
-            let realm = try! Realm()
-            if realm.objects(ChatRoomModel.self).filter("uuid = %@", chatRoom.uuid).first == nil {
-                try! realm.write {
-                    realm.add(chatRoom)
-                }
+            let chatRoom = ChatRoomModel(uuid: uuid)
+            if !RealmManager.hasChatRoomInRealm(chatRoom: chatRoom) {
+                RealmManager.addChatRoom(chatRoom: chatRoom)
                 self.delegate?.didFindNewChatRoom(chatRoomThreadSafeReference: ThreadSafeReference(to: chatRoom))
-            }          
-            
+            }            
         default:
             return
         }

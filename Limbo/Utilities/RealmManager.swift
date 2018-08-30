@@ -12,36 +12,28 @@ import RealmSwift
 class RealmManager: NSObject {
     static func currentLoggedUser() -> UserModel? {
         let realm = try! Realm()
-        realm.refresh()
-        if let user = realm.objects(UserModel.self).filter("userID = %d", UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first {
-           return user
-        }
-        return nil
+        return realm.objects(UserModel.self).filter("userID = %d",
+                                                    UserDefaults.standard.integer(forKey: Constants.UserDefaults.loggedUserID)).first
     }
     
     static func userWith(uniqueID: String) -> UserModel? {
         let realm = try! Realm()
-        if let user = realm.objects(UserModel.self).filter("uniqueDeviceID = %@", uniqueID).first {
-            return user
-        }
-        return nil
+        return realm.objects(UserModel.self).filter("uniqueDeviceID = %@", uniqueID).first
     }
     
     static func userWith(uniqueID: String, andUsername username: String) -> UserModel? {
         let realm = try! Realm()
-        realm.refresh()
-        if let user = realm.objects(UserModel.self).filter("uniqueDeviceID = %@ AND username = %@", uniqueID, username).first {
-            return user
-        }
-        return nil
+        return realm.objects(UserModel.self).filter("uniqueDeviceID = %@ AND username = %@", uniqueID, username).first
     }
     
     static func userWith(username: String, password: String) -> UserModel? {
         let realm = try! Realm()
-        if let user = (realm.objects(UserModel.self).filter("username = %@ and password = %@", username, password)).first {
-            return user
-        }
-        return nil
+        return (realm.objects(UserModel.self).filter("username = %@ and password = %@", username, password)).first
+    }
+    
+    static func userWith(compoundKey: String) -> UserModel? {
+        let realm = try! Realm()
+        return realm.objects(UserModel.self).filter("compoundKey = %@", compoundKey).first
     }
     
     static func registerUser(username: String, password: String) -> Bool {
@@ -62,16 +54,18 @@ class RealmManager: NSObject {
     
     static func getMessagesForUsers(firstUser: UserModel, secondUser: UserModel) -> Results<MessageModel>? {
         let realm = try! Realm()
-        let results = realm.objects(MessageModel.self).filter("(sender = %@ AND ANY receivers = %@) OR (sender = %@ AND ANY receivers = %@)", firstUser, secondUser, secondUser, firstUser)
-        return results
+        return realm.objects(MessageModel.self)
+            .filter("(sender = %@ AND ANY receivers = %@) OR (sender = %@ AND ANY receivers = %@)",
+                    firstUser, secondUser, secondUser, firstUser)
         
     }
     
     static func getMessagesForChatRoom(firstUser: UserModel, chatRoom: ChatRoomModel) -> Results<MessageModel>? {
         let realm = try! Realm()
         let resultsUsers = chatRoom.usersChattingWith.filter("userID != %d", 5)
-        let results = realm.objects(MessageModel.self).filter("(sender = %@ AND chatRoomUUID = %@) OR (sender IN %@ AND chatRoomUUID = %@)", firstUser, chatRoom.uuid, resultsUsers, chatRoom.uuid)
-        return results
+        return realm.objects(MessageModel.self)
+            .filter("(sender = %@ AND chatRoomUUID = %@) OR (sender IN %@ AND chatRoomUUID = %@)",
+                    firstUser, chatRoom.uuid, resultsUsers, chatRoom.uuid)
         
     }
     
@@ -84,8 +78,7 @@ class RealmManager: NSObject {
     
     static func chatRoom(forUUID uuid: String) -> ChatRoomModel? {
         let realm = try! Realm()
-        let result = realm.objects(ChatRoomModel.self).filter("uuid = %@", uuid).first
-        return result
+        return realm.objects(ChatRoomModel.self).filter("uuid = %@", uuid).first
     }
     
     static func itemsCountForCurrentUser() -> (candles :Int, medallions: Int) {
@@ -99,11 +92,25 @@ class RealmManager: NSObject {
     
     static func clearUsersStates() {
         let realm = try! Realm()
-        let users = realm.objects(UserModel.self).filter("state != %@ AND userID = %d", "Offline", -1).filter("state != %@", "Spectre")
+        let users = realm.objects(UserModel.self)
+            .filter("state != %@ AND userID = %d", "Offline", -1)
+            .filter("state != %@", "Spectre")
         realm.beginWrite()
         users.setValue("Offline", forKey: "state")
         try! realm.commitWrite()
         realm.refresh()
+    }
+    
+    static func addChatRoom(chatRoom: ChatRoomModel) {
+        let realm = try! Realm()
+        try? realm.write {
+            realm.add(chatRoom)
+        }
+    }
+    
+    static func hasChatRoomInRealm(chatRoom: ChatRoomModel) -> Bool {
+        let realm = try! Realm()
+        return realm.objects(ChatRoomModel.self).filter("uuid = %@", chatRoom.uuid).first != nil
     }
     
 }

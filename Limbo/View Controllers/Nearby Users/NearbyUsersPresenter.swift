@@ -25,6 +25,11 @@ class NearbyUsersPresenter: NSObject {
 
     }
     
+    func groupChatCellTap() {
+        let users = self.interactor.currentVisibleUsers()
+        guard users != nil else { return }
+        self.router.createAndPushAllUsersTVC(users: users!, groupChatDelegate: self.interactor as! GroupChatDelegate)
+    }
 }
 
 extension NearbyUsersPresenter: NearbyUsersInteractorToPresenterInterface {
@@ -84,6 +89,7 @@ extension NearbyUsersPresenter: NearbyUsersViewToPresenterInterface {
             self.view.showToast(message: "You can't sign out while cursed")
             return
         }
+        self.interactor.userDidSignOut()
         self.router.presentLoginVC(loginDelegate: self)
     }
     
@@ -115,6 +121,9 @@ extension NearbyUsersPresenter: NearbyUsersViewToPresenterInterface {
         self.interactor.showGroupChats()
         self.interactor.addGroupChatCell()
         self.interactor.filterUsersToShow()
+        if self.interactor.hasGifts() {
+            self.view.showGiftToast()
+        }
     }
     
     func viewDidDisappear() {

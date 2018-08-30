@@ -39,7 +39,8 @@ class MessageModel: Object {
         self.timeSent = dictionary["timeSent"] as! Date
         let senderDict: Dictionary = dictionary["sender"] as! Dictionary<String, Any>
         if let uniqueDeviceID = senderDict["uniqueDeviceID"] {
-            self.sender = RealmManager.userWith(uniqueID: uniqueDeviceID as! String, andUsername: senderDict["username"] as! String)
+            self.sender = RealmManager.userWith(uniqueID: uniqueDeviceID as! String,
+                                                andUsername: senderDict["username"] as! String)
             
         }
         let uuid = dictionary["chatRoomUUID"] as! String
@@ -49,6 +50,15 @@ class MessageModel: Object {
     convenience init(withType messageType: MessageType) {
         self.init()
         self.setMessageType(messageType: messageType)
+    }
+    
+    convenience init(uuid: String, sender: UserModel) {
+        self.init()
+        self.messageType = MessageType.System.rawValue
+        self.messageString = SystemMessage.NewGroupCreated.rawValue
+        self.additionalData = NSKeyedArchiver.archivedData(withRootObject: uuid)
+        self.sender = sender
+        self.chatRoomUUID = uuid
     }
     
     func setMessageType(messageType: MessageType) {
