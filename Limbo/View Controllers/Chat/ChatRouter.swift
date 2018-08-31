@@ -69,24 +69,25 @@ class ChatRouter: NSObject, ChatRouterInterface {
         self.navigationController.present(alertController, animated: true, completion: nil)
     }
     
-    func presentAllImagesCVC(messagesHistory: Results<MessageModel>) {
+    func presentAllImagesCVC(messagesHistory: Results<MessageModel>, completion: (() -> Void)?) {
         let imagesCVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "imagesCVC") as! ImagesCollectionViewController
         imagesCVC.messagesHistory = messagesHistory
-        self.navigationController?.pushViewController(imagesCVC, animated: true)
+        let navC = UINavigationController(rootViewController: imagesCVC)
+        self.navigationController?.present(navC, animated: true, completion: completion)
     }
     
-    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate)) {
+    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate), completion: (() -> Void)?) {
         let imgPicker = UIImagePickerController()
         imgPicker.delegate = imgPickerDelegate
         imgPicker.allowsEditing = false
         imgPicker.sourceType = .photoLibrary
-        self.navigationController.present(imgPicker, animated: true, completion: nil)
+        self.navigationController.present(imgPicker, animated: true, completion: completion)
     }
     
-    func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate) {
+    func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate, completion: (() -> Void)?) {
         let voiceRecordingVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "VoiceRecordingVC") as! VoiceRecordingViewController
         voiceRecordingVC.voiceRecorderDelegate = voiceRecordeDelegate
-        self.navigationController.present(voiceRecordingVC, animated: true, completion: nil)
+        self.navigationController.present(voiceRecordingVC, animated: true, completion: completion)
     }
     
     func pushVC(vc: UIViewController) {

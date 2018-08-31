@@ -98,6 +98,7 @@ protocol ChatInteractorInterface: class {
     func currentRoomName() -> String
     func currentRoom() -> ChatRoomModel
     func invalidateToken()
+    func didStartPresentingSomeVC()
     
     func clearHistory(completionHandler: ())
     func changeRoomName(newName: String)
@@ -108,9 +109,9 @@ protocol ChatRouterInterface {
     func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType, optionsDelegate: OptionsDelegate)
     func presentItems(forUser: UserModel, sourceView: UIView)
     func presentAlertController(alertController: UIAlertController)
-    func presentAllImagesCVC(messagesHistory: Results<MessageModel>)
-    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate))
-    func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate)
+    func presentAllImagesCVC(messagesHistory: Results<MessageModel>, completion: (() -> Void)?)
+    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate), completion: (() -> Void)?)
+    func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate, completion: (() -> Void)?)
     func pushVC(vc: UIViewController)
 }
 

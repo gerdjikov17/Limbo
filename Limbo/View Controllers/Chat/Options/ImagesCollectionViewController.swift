@@ -20,11 +20,17 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
         images_Senders = Array()
         getImagesFromMessageHistory()
         self.definesPresentationContext = true
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(dismisSelf))
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @objc func dismisSelf() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     func getImagesFromMessageHistory() {

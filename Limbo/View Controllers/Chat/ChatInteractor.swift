@@ -132,6 +132,10 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         self.notificationToken.invalidate()
     }
     
+    func didStartPresentingSomeVC() {
+        self.initNotificationToken()
+    }
+    
     func getMessageResults() -> Results<MessageModel>? {
         return self.messagesResults
     }
@@ -160,7 +164,6 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
     }
     
     func finishedPickingImage(pickedImage: UIImage) {
-        self.initNotificationToken()
         
         let imageData = UIImageJPEGRepresentation(pickedImage, 1.0)
         var imageName = imageData?.base64EncodedString().suffix(10).appending(".jpeg")

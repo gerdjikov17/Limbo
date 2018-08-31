@@ -182,11 +182,17 @@ extension ChatPresenter: ChatViewToPresenterInterface {
     }
     
     func didTapOnAddPhotoButton() {
-        self.chatRouter?.presentUIImagePicker(imgPickerDelegate: self)
+        self.chatRouter?.presentUIImagePicker(imgPickerDelegate: self, completion: {
+            self.chatInteractor?.didStartPresentingSomeVC()
+        })
+        
     }
     
     func voiceRecordButtonTap() {
-        self.chatRouter?.presentVoiceRecorder(voiceRecordeDelegate: self.chatInteractor as! VoiceRecorderInteractorDelegate)
+        self.chatRouter?.presentVoiceRecorder(voiceRecordeDelegate: self.chatInteractor as! VoiceRecorderInteractorDelegate, completion: {
+        self.chatInteractor?.didStartPresentingSomeVC()
+            
+        })
     }
 }
 
@@ -221,7 +227,9 @@ extension ChatPresenter: OptionsDelegate {
     }
     
     func showImages() {
-        self.chatRouter!.presentAllImagesCVC(messagesHistory: self.chatInteractor!.getMessageResults()!)
+        self.chatRouter!.presentAllImagesCVC(messagesHistory: self.chatInteractor!.getMessageResults()!, completion: {
+            self.chatInteractor?.didStartPresentingSomeVC()
+        })
     }
     
     func changeGroupChatName(newName: String) {
