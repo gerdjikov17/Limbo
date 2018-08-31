@@ -61,6 +61,33 @@ class MessageModel: Object {
         self.chatRoomUUID = uuid
     }
     
+    convenience init(messageString: String, sender: UserModel, chatRoom: ChatRoomModel) {
+        self.init()
+        self.messageString = messageString
+        self.messageType = MessageType.Message.rawValue
+        self.sender = sender
+        if chatRoom.usersChattingWith.count > 1 {
+            self.chatRoomUUID = chatRoom.uuid
+        }
+        else {
+            self.chatRoomUUID = sender.uniqueDeviceID.appending(sender.username)
+        }
+    }
+    
+    convenience init(messageType: MessageType, additionalData: Data?, dataName: String, sender: UserModel, chatRoom: ChatRoomModel) {
+        self.init()
+        self.messageType = messageType.rawValue
+        self.additionalData = additionalData
+        self.sender = sender
+        self.messageString = dataName
+        if chatRoom.usersChattingWith.count > 1 {
+            self.chatRoomUUID = chatRoom.uuid
+        }
+        else {
+            self.chatRoomUUID = sender.uniqueDeviceID.appending(sender.username)
+        }
+    }
+    
     func setMessageType(messageType: MessageType) {
         let realm = try! Realm()
         realm.beginWrite()

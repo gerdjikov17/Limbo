@@ -34,10 +34,7 @@ class ChatViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(self.optionsButtonTap))
         
         self.chatPresenter.requestMessages()
-        let indexPath = IndexPath(row: self.chatPresenter.lastMessageIndex(), section: 0)
-        if indexPath.row >= 0 {
-            self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-        }
+        self.chatPresenter.viewDidLoad()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -48,10 +45,7 @@ class ChatViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)),
                                                name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        let indexPath = IndexPath(row: self.chatPresenter.lastMessageIndex(), section: 0)
-        if indexPath.row >= 0 {
-            self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-        }
+        self.chatPresenter.viewDidAppear()
         
     }
     
@@ -81,10 +75,7 @@ class ChatViewController: UIViewController {
             }
         }, completion: { (finished: Bool) in
             if self.messageTextFieldBottomConstraint.constant > 50 {
-                let indexPath = IndexPath(row: self.chatPresenter.lastMessageIndex(), section: 0)
-                if indexPath.row >= 0 {
-                    self.chatTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-                }
+                self.chatPresenter.makeTableViewScrollToLastRow(animated: true)
             }
         })
         
@@ -176,9 +167,9 @@ extension ChatViewController: ChatViewInterface {
         }
     }
     
-    func reload(indexPaths: [IndexPath]) {
+    func insert(indexPaths: [IndexPath]) {
         DispatchQueue.main.async {
-            self.chatTableView.reloadRows(at: indexPaths, with: .automatic)
+            self.chatTableView.insertRows(at: indexPaths, with: .automatic)
         }
     }
     

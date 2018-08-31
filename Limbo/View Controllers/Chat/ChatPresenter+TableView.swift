@@ -40,6 +40,7 @@ extension ChatPresenter: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        /*
         let message = self.messages[indexPath.row]
         if message.messageType == MessageType.Message.rawValue {
             let height: CGFloat = MessageCellsManager.calculateHeight(forMessage: self.messages[indexPath.row])
@@ -54,8 +55,9 @@ extension ChatPresenter: UITableViewDelegate {
         else {
             return 155
         }
-        
+         */
+        let bonusHeight = self.selectedIndexPathForTimeStamp == indexPath ? 11 : 0
+        return self.messagesHeights[indexPath.row] + CGFloat(bonusHeight)
     }
-
 }
 

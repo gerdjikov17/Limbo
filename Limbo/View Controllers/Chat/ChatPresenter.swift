@@ -14,6 +14,7 @@ class ChatPresenter: NSObject {
     weak var chatView: ChatViewInterface!
     
     var messages: [MessageModel]!
+    var messagesHeights: [CGFloat]!
     
     var selectedIndexPathForTimeStamp: IndexPath?
     var rangeOfMessagesToShow = 50
@@ -27,9 +28,29 @@ class ChatPresenter: NSObject {
         }
     }
     
+    
     init(chatView: ChatViewInterface) {
         self.chatView = chatView
         super.init()
+    }
+    
+    func heightForMessage(for message: MessageModel) -> CGFloat {
+        if message.messageType == MessageType.Message.rawValue {
+            return MessageCellsManager.calculateHeight(forMessage: message) + 6
+        }
+        else if message.messageType == MessageType.Voice_Record.rawValue {
+            return 40
+        }
+        else {
+            return 155
+        }
+    }
+    
+    func storeHeightForMessages(messages: [MessageModel]) {
+        self.messagesHeights = Array()
+        for message in messages {
+            self.messagesHeights.append(self.heightForMessage(for: message))
+        }
     }
     
 }
@@ -37,34 +58,44 @@ class ChatPresenter: NSObject {
 extension ChatPresenter: ChatInteractorToPresenterInterface {
     
     func newMessage(message: MessageModel) {
-        print(self.messages.count)
         self.messages.append(message)
-        print(self.messages.count)
+        self.messagesHeights.append(heightForMessage(for: message))
+        
         let newIndexPath = IndexPath(row: self.messages.count - 1 , section: 0)
-        self.chatView.reloadAllData()
+        self.chatView.insert(indexPaths: [newIndexPath])
         self.chatView.scrollTo(indexPath: newIndexPath, at: .bottom, animated: true)
     }
     
     func silencedCallBack() {
         self.chatView.showSilencedMessage()
     }
-    
-    func didFetchMessages() {
-        self.chatView.reloadAllData()
-    }
 }
 
 extension ChatPresenter: ChatViewToPresenterInterface {
-    func sendButtonTap(message: String) {
-        self.chatInteractor!.handleMessage(message: message)
+    func viewDidLoad() {
+        self.makeTableViewScrollToLastRow(animated: false)
+    }
+    
+    func viewDidAppear() {
+        self.makeTableViewScrollToLastRow(animated: false)
     }
     
     func viewDidDisappear() {
         self.chatInteractor?.invalidateToken()
     }
     
+    func makeTableViewScrollToLastRow(animated: Bool) {
+        let indexPath = IndexPath(row: self.lastMessageIndex(), section: 0)
+        if indexPath.row >= 0 {
+            self.chatView.scrollTo(indexPath: indexPath, at: .bottom, animated: animated)
+        }
+    }
+    
     func requestMessages() {
         self.messages = Array(self.chatInteractor!.getMessageResults()![startIndex...])
+        
+        self.storeHeightForMessages(messages: self.messages)
+        
         self.chatView.setNavigationItemName(name: self.chatInteractor!.currentRoomName())
     }
     
@@ -74,12 +105,12 @@ extension ChatPresenter: ChatViewToPresenterInterface {
     
     func requestMoreMessages() {
         let countBeforeUpdate = self.messages.count
-        guard countBeforeUpdate > 0 else {
-            return
-        }
+        guard countBeforeUpdate > 0 else { return }
         
         rangeOfMessagesToShow += 50
         self.messages = Array(self.chatInteractor!.getMessageResults()![self.startIndex...])
+        
+        self.storeHeightForMessages(messages: self.messages)
         
         let countAfterUpdate = self.messages.count
         
@@ -88,51 +119,40 @@ extension ChatPresenter: ChatViewToPresenterInterface {
     }
     
     func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage? {
-        if message.sender != RealmManager.currentLoggedUser() {
-            if indexPath.row - 1 >= 0 {
-                if self.messages[indexPath.row - 1].sender != message.sender {
-                    if let avatarString = message.sender?.avatarString {
-                        return properImage(imageName: avatarString)
-                    }
-                }
-                else {
-                    return nil
-                }
-            }
-            else {
-                if let avatarString = message.sender?.avatarString {
-                    return properImage(imageName: avatarString)
-                }
-            }
+        guard message.sender != RealmManager.currentLoggedUser() else { return nil }
+        guard indexPath.row - 1 >= 0 else {
+            return properImage(imageName: message.sender!.avatarString)
         }
-        return nil
+        guard self.messages[indexPath.row - 1].sender != message.sender else { return nil }
+        
+        return properImage(imageName: message.sender!.avatarString)
     }
     
     func properImage(imageName: String) -> UIImage {
         if let defaultImage = UIImage(named: imageName) {
             return defaultImage
         }
-        else {
-            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: imageName)!)) {
-                return imgurImage
-            }
-            return #imageLiteral(resourceName: "ghost_avatar.png")
+        else if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: imageName)!)){
+//            image loading not yet optimized
+            return imgurImage
         }
+        return #imageLiteral(resourceName: "ghost_avatar.png")
+    }
+    
+    func sendButtonTap(message: String) {
+        self.chatInteractor!.handleMessage(message: message)
     }
     
     func didTapOnImage(recognizer: UITapGestureRecognizer, inTableView tableView: UITableView) {
         let touchPoint = recognizer.location(in: tableView)
         let indexPath: IndexPath = tableView.indexPathForRow(at: touchPoint)!
-        guard let cell = tableView.cellForRow(at: indexPath) as? PhotoTableViewCell else {
-            return
-        }
-        guard let image = cell.sentPhotoImageView.image else {
-            return
-        }
+        
+        guard let cell = tableView.cellForRow(at: indexPath) as? PhotoTableViewCell else { return }
+        guard let image = cell.sentPhotoImageView.image else { return }
+        
         let message = self.messages[indexPath.row]
-        guard let sender = message.sender else {
-            return
-        }
+        
+        guard let sender = message.sender else { return }
         
         self.chatRouter?.presentImage(image: image, sender: sender.username)
     }
@@ -143,12 +163,8 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         
         tableView.beginUpdates()
         
-        if self.selectedIndexPathForTimeStamp == indexPath {
-            self.selectedIndexPathForTimeStamp = nil
-        }
-        else {
-            self.selectedIndexPathForTimeStamp = indexPath
-        }
+        self.selectedIndexPathForTimeStamp = self.selectedIndexPathForTimeStamp == indexPath ? nil : indexPath
+        
         tableView.endUpdates()
         
         if indexPath.row == self.messages.count - 1 {

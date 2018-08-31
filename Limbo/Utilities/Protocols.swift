@@ -56,7 +56,6 @@ protocol SetableForMessageModel {
 
 protocol ChatInteractorToPresenterInterface: class {
     func silencedCallBack()
-    func didFetchMessages()
     func newMessage(message: MessageModel)
 }
 
@@ -67,7 +66,10 @@ protocol ChatViewToPresenterInterface {
     func requestMoreMessages()
     
     func viewDidDisappear()
+    func viewDidLoad()
+    func viewDidAppear()
     
+    func makeTableViewScrollToLastRow(animated: Bool)
     func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage?
     func properImage(imageName: String) -> UIImage
     
@@ -82,7 +84,7 @@ protocol ChatViewToPresenterInterface {
 
 @objc protocol ChatViewInterface {
     func reloadAllData()
-    func reload(indexPaths: [IndexPath])
+    func insert(indexPaths: [IndexPath])
     func scrollTo(indexPath: IndexPath, at: UITableViewScrollPosition, animated: Bool)
     func setNavigationItemName(name: String)
     func showSilencedMessage()
@@ -90,7 +92,6 @@ protocol ChatViewToPresenterInterface {
     func didTapOnMessage(recognizer: UITapGestureRecognizer)
 }
 protocol ChatInteractorInterface: class {
-    func sendMessageToUser(message: String)
     func getMessageResults() -> Results<MessageModel>?
     func handleMessage(message: String)
     func finishedPickingImage(pickedImage: UIImage)
