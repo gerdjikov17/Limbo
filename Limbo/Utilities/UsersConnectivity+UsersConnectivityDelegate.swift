@@ -35,13 +35,13 @@ extension UsersConnectivity: UsersConnectivityDelegate {
     }
     
     func sendJSONtoGame(dataDict: [String: String], toPeerID: MCPeerID) -> Bool {
-        if !self.session.connectedPeers.contains(toPeerID) {
+        if !self.gameSession.connectedPeers.contains(toPeerID) {
             self.inviteUser(peerID: toPeerID)
         }
         if let toPeer = getPeerIDForUID(uniqueID: toPeerID.displayName) {
             do {
                 let data = try! JSONSerialization.data(withJSONObject: dataDict, options: .sortedKeys)
-                try self.session.send(data, toPeers: [toPeer], with: .reliable)
+                try self.gameSession.send(data, toPeers: [toPeer], with: .reliable)
                 return true
             }
             catch let error {

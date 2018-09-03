@@ -13,7 +13,7 @@ private let reuseIdentifier = "avatarCell"
 class AvatarCollectionViewController: UICollectionViewController {
 
     var currentUser: UserModel?
-    private var imageStrings: [String] = Array()
+    var imageStrings: [String] = Array()
     
     override func viewDidLoad() {
         super.viewDidLoad()

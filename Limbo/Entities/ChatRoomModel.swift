@@ -60,10 +60,19 @@ class ChatRoomModel: Object {
         self.init()
         self.name = "Unnamed group"
         for compoundKey in uuid.components(separatedBy: Constants.chatRoomSeparator) {
-            self.usersChattingWith.append(RealmManager.userWith(compoundKey: compoundKey)!)
+            if compoundKey != RealmManager.currentLoggedUser()?.compoundKey {
+                self.usersChattingWith.append(RealmManager.userWith(compoundKey: compoundKey)!)
+            }
         }
         self.uuid = uuid
         self.roomType = RoomType.GroupChat.rawValue
+    }
+    
+    func changeAvatar(newAvatar: String) {
+        let realm = try! Realm()
+        try! realm.write {
+            self.avatar = newAvatar
+        }
     }
     
 }

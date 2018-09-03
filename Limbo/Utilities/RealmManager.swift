@@ -74,6 +74,7 @@ class RealmManager: NSObject {
         try? realm.write {
             realm.add(message)
         }
+        realm.refresh()
     }
     
     static func chatRoom(forUUID uuid: String) -> ChatRoomModel? {

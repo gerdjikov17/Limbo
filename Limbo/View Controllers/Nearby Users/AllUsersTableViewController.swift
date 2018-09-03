@@ -23,7 +23,7 @@ class AllUsersTableViewController: UITableViewController {
         
         let editable = groupChatDelegate != nil
         
-        let barButtonItem = editable ?
+        let barButtonItem = !editable ?
             nil :
             UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(commitSelectedUsers))
         

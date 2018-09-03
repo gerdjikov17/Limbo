@@ -12,9 +12,11 @@ import RealmSwift
 class ChatRouter: NSObject, ChatRouterInterface {
     
     var navigationController: UINavigationController!
+    var storyboard: UIStoryboard!
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+        self.storyboard = UIStoryboard(name: "Main", bundle: nil)
         super.init()
     }
     
@@ -32,7 +34,7 @@ class ChatRouter: NSObject, ChatRouterInterface {
     }
     
     func presentImage(image: UIImage, sender: String) {
-        let chatImageVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatImageVC") as! ChatImageViewController
+        let chatImageVC = storyboard.instantiateViewController(withIdentifier: "chatImageVC") as! ChatImageViewController
         chatImageVC.image = image
         chatImageVC.senderUsername = sender
         self.navigationController.present(chatImageVC, animated: true, completion: nil)
@@ -40,7 +42,7 @@ class ChatRouter: NSObject, ChatRouterInterface {
     
     func presentItems(forUser: UserModel, sourceView: UIView) {
         
-        let itemsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "itemsVC") as! ItemsViewController
+        let itemsVC = storyboard.instantiateViewController(withIdentifier: "itemsVC") as! ItemsViewController
         itemsVC.user = forUser
         itemsVC.modalPresentationStyle = .popover
         itemsVC.preferredContentSize = CGSize(width: 120, height: 70)
@@ -53,10 +55,10 @@ class ChatRouter: NSObject, ChatRouterInterface {
     }
     
     func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType, optionsDelegate: OptionsDelegate) {
-        let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "optionsVC") as! OptionsViewController
+        let optionsVC = storyboard.instantiateViewController(withIdentifier: "optionsVC") as! OptionsViewController
         optionsVC.optionsDelegate = optionsDelegate
         optionsVC.modalPresentationStyle = .popover
-        let height = optionsType == .GroupChat ? 120 : 60
+        let height = optionsType == .GroupChat ? 150 : 60
         optionsVC.preferredContentSize = CGSize(width: 140, height: height)
         let popOver = optionsVC.popoverPresentationController
         popOver?.delegate = self
@@ -70,7 +72,7 @@ class ChatRouter: NSObject, ChatRouterInterface {
     }
     
     func presentAllImagesCVC(messagesHistory: Results<MessageModel>, completion: (() -> Void)?) {
-        let imagesCVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "imagesCVC") as! ImagesCollectionViewController
+        let imagesCVC = storyboard.instantiateViewController(withIdentifier: "imagesCVC") as! ImagesCollectionViewController
         imagesCVC.messagesHistory = messagesHistory
         let navC = UINavigationController(rootViewController: imagesCVC)
         self.navigationController?.present(navC, animated: true, completion: completion)
@@ -85,9 +87,16 @@ class ChatRouter: NSObject, ChatRouterInterface {
     }
     
     func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate, completion: (() -> Void)?) {
-        let voiceRecordingVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "VoiceRecordingVC") as! VoiceRecordingViewController
+        let voiceRecordingVC = storyboard.instantiateViewController(withIdentifier: "VoiceRecordingVC") as! VoiceRecordingViewController
         voiceRecordingVC.voiceRecorderDelegate = voiceRecordeDelegate
         self.navigationController.present(voiceRecordingVC, animated: true, completion: completion)
+    }
+    
+    func presentAvatars(chatRoom: ChatRoomModel) {
+        let avatarChooseVC = storyboard.instantiateViewController(withIdentifier: "AvatarCollectionViewController") as! AvatarCollectionViewController_ChatRoom
+        avatarChooseVC.chatRoom = chatRoom
+        self.navigationController.present(avatarChooseVC, animated: true, completion: nil)
+        
     }
     
     func pushVC(vc: UIViewController) {

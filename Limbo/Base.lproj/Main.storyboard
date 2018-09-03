@@ -1149,7 +1149,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="99O-jZ-kn9">
-                                <rect key="frame" x="33" y="0.0" width="134" height="120"/>
+                                <rect key="frame" x="33" y="0.0" width="134" height="150"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6U1-WB-H2v">
                                         <rect key="frame" x="0.0" y="0.0" width="134" height="30"/>
@@ -1172,8 +1172,15 @@
                                             <action selector="changeChatNameButtonTap:" destination="cLT-zN-Zye" eventType="touchUpInside" id="Jmk-Y6-HZd"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oth-gy-VFF">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rsx-oe-kgd">
                                         <rect key="frame" x="0.0" y="90" width="134" height="30"/>
+                                        <state key="normal" title="Change Avatar"/>
+                                        <connections>
+                                            <action selector="changeAvatarButtonTap:" destination="cLT-zN-Zye" eventType="touchUpInside" id="j3X-z4-XMZ"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oth-gy-VFF">
+                                        <rect key="frame" x="0.0" y="120" width="134" height="30"/>
                                         <state key="normal" title="Users"/>
                                         <connections>
                                             <action selector="usersButtonTap:" destination="cLT-zN-Zye" eventType="touchUpInside" id="aEB-vW-uzF"/>
@@ -1418,10 +1425,10 @@
             </objects>
             <point key="canvasLocation" x="1055" y="1790"/>
         </scene>
-        <!--Avatar Collection View Controller-->
+        <!--Avatar Collection View Controller Chat Room-->
         <scene sceneID="Rmv-sr-YQO">
             <objects>
-                <collectionViewController storyboardIdentifier="AvatarCollectionViewController" id="KDM-yy-Lm6" customClass="AvatarCollectionViewController" customModule="Limbo" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="AvatarCollectionViewController" id="KDM-yy-Lm6" customClass="AvatarCollectionViewController_ChatRoom" customModule="Limbo" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="dGC-71-ru8">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -29,6 +29,11 @@ class UsersConnectivity: NSObject {
     
     var delegate: NearbyUsersDelegate?
     var chatDelegate: ChatDelegate?
+    lazy var gameSession: MCSession = {
+        let session = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .none)
+        session.delegate = self
+        return session
+    }()
     
     //    MARK: Initialization
     
@@ -108,6 +113,43 @@ class UsersConnectivity: NSObject {
         self.serviceBrowser.stopBrowsingForPeers()
     }
     
+    func isPeerAGhost(peerID: MCPeerID, withUsername username: String) -> Bool {
+        if let user = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: username) {
+            return user.state == "Ghost"
+        }
+        else {
+            return false
+        }
+    }
+    
+    func inviteUser(peerID: MCPeerID) {
+        if peerID.displayName.contains(".game") {
+            self.serviceBrowser.invitePeer(peerID, to: self.gameSession, withContext: nil, timeout: 10)
+        }
+        else {
+            self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
+        }
+        
+    }
+    
+    func shouldShowUserDependingOnState(currentUserState: String, foundUserState: String) -> Bool {
+        switch currentUserState {
+        case "Human":
+            if (foundUserState == "Human") { return true }
+            else { return false }
+        case "Dying":
+            if foundUserState == "Dying"{ return true }
+            else { return false }
+        case "Hollow":
+            if (foundUserState == "Hollow") || (foundUserState == "Dying") { return true }
+            else { return false }
+        case "Undead":
+            if (foundUserState == "Hollow") || (foundUserState == "Dying") || (foundUserState == "Undead") || (foundUserState == "Ghost") { return true }
+            else { return false }
+        default:
+            return true
+        }
+    }
 }
 
 // MARK: Protocol conforms
@@ -130,10 +172,6 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
         NSLog("%@", "didNotStartBrowsingForPeers: \(error)")
     }
     
-    func inviteUser(peerID: MCPeerID) {
-        self.serviceBrowser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
-    }
-    
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
         self.foundPeers?.append(peerID)
@@ -145,30 +183,12 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
             self.inviteUser(peerID: peerID)
         }
     }
-    
-    func shouldShowUserDependingOnState(currentUserState: String, foundUserState: String) -> Bool {
-        switch currentUserState {
-        case "Human":
-            if (foundUserState == "Human") { return true }
-            else { return false }
-        case "Dying":
-            if foundUserState == "Dying"{ return true }
-            else { return false }
-        case "Hollow":
-            if (foundUserState == "Hollow") || (foundUserState == "Dying") { return true }
-            else { return false }
-        case "Undead":
-            if (foundUserState == "Hollow") || (foundUserState == "Dying") || (foundUserState == "Undead") || (foundUserState == "Ghost") { return true }
-            else { return false }
-        default:
-            return true
-        }
-    }
+
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
         if let index = self.foundPeers?.index(where: { iPeerID -> Bool in
-            iPeerID.displayName == peerID.displayName
+            iPeerID == peerID
         }) {
             self.foundPeers?.remove(at: index)
         }
@@ -207,15 +227,6 @@ extension UsersConnectivity : MCSessionDelegate {
         }
         else {
             self.handleChatData(data: data, fromPeer: peerID)
-        }
-    }
-    
-    func isPeerAGhost(peerID: MCPeerID, withUsername username: String) -> Bool {
-        if let user = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: username) {
-            return user.state == "Ghost"
-        }
-        else {
-          return false
         }
     }
     

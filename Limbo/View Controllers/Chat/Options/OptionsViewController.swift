@@ -62,6 +62,13 @@ class OptionsViewController: UIViewController {
         
     }
     
+    @IBAction func changeAvatarButtonTap(_ sender: Any) {
+        self.dismiss(animated: true, completion: {
+            self.optionsDelegate.changeAvatarTap()
+        })
+    }
+    
+    
     @IBAction func usersButtonTap(_ sender: Any) {
         let allUsersTVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "allUsersTVC") as! AllUsersTableViewController
         allUsersTVC.users = self.optionsDelegate.usersInCurrentRoom()

@@ -44,10 +44,15 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         guard message.count > 0 else { return }
         guard let chatRoom = self.chatRoom else { return }
         
+//        guard chatRoom.roomType == RoomType.Game.rawValue else {
+//            
+//        }
+        
         guard self.currentUser!.curse != Curse.Silence.rawValue else {
             self.chatPresenter.silencedCallBack()
             return
         }
+        
         
         let antiCurseMessage = UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse)
         let currentCurseCasterUniqueDeviceID = UserDefaults.standard.string(forKey:
@@ -83,13 +88,13 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
     
     func sendMessageToGame(message: String, chatRoom: ChatRoomModel) {
         
-        let messageBeforeThis = self.messagesResults.last?.messageString
+        let messageBeforeThis = self.messagesResults.last?.messageString ?? "|"
         var key: String
 
         if messageBeforeThis == QUESTION_NAME {
             key = KEY_NAME
         }
-        else if messageBeforeThis!.contains("|") || messageBeforeThis!.contains("Invalid") {
+        else if messageBeforeThis.contains("|") || messageBeforeThis.contains("Invalid") {
             key = KEY_COORDINATES
         }
         else {

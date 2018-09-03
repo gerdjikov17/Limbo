@@ -40,6 +40,7 @@ protocol OptionsDelegate {
     func clearHistory()
     func showImages()
     func changeGroupChatName(newName: String)
+    func changeAvatarTap()
     func usersInCurrentRoom() -> [UserModel]
     func pushVC(vc: UIViewController)
 }
@@ -112,6 +113,7 @@ protocol ChatRouterInterface {
     func presentAllImagesCVC(messagesHistory: Results<MessageModel>, completion: (() -> Void)?)
     func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate), completion: (() -> Void)?)
     func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate, completion: (() -> Void)?)
+    func presentAvatars(chatRoom: ChatRoomModel)
     func pushVC(vc: UIViewController)
 }
 

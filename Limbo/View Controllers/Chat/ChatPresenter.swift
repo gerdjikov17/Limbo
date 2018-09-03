@@ -60,9 +60,10 @@ extension ChatPresenter: ChatInteractorToPresenterInterface {
     func newMessage(message: MessageModel) {
         self.messages.append(message)
         self.messagesHeights.append(heightForMessage(for: message))
-        
+        print("appending message")
         let newIndexPath = IndexPath(row: self.messages.count - 1 , section: 0)
         self.chatView.insert(indexPaths: [newIndexPath])
+        print("inserting row")
         self.chatView.scrollTo(indexPath: newIndexPath, at: .bottom, animated: true)
     }
     
@@ -235,6 +236,10 @@ extension ChatPresenter: OptionsDelegate {
     func changeGroupChatName(newName: String) {
         self.chatInteractor?.changeRoomName(newName: newName)
         self.chatView.setNavigationItemName(name: newName)
+    }
+    
+    func changeAvatarTap() {
+        self.chatRouter?.presentAvatars(chatRoom: self.chatInteractor!.currentRoom())
     }
     
     func usersInCurrentRoom() -> [UserModel] {
