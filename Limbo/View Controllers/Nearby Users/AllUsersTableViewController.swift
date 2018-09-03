@@ -17,14 +17,23 @@ class AllUsersTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.emptyDataSetSource = self
-        self.tableView.emptyDataSetDelegate = self
+        let emptyDataSetDelegate = CustomEmptyDataSetDelegate(emptyDataSetTitle: "No users around you to add.")
+        self.tableView.emptyDataSetSource = emptyDataSetDelegate
+        self.tableView.emptyDataSetDelegate = emptyDataSetDelegate
         
-        let barButtonItem = groupChatDelegate == nil ? nil : UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(commitSelectedUsers))
+        let editable = groupChatDelegate != nil
+        
+        let barButtonItem = editable ?
+            nil :
+            UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(commitSelectedUsers))
+        
         self.navigationItem.rightBarButtonItem = barButtonItem
-        tableView.allowsSelection = groupChatDelegate == nil ? false : true
-        tableView.allowsMultipleSelection = groupChatDelegate == nil ? false : true
-        self.selectedIndexes = Array()
+        
+        tableView.allowsSelection = editable
+        tableView.allowsMultipleSelection = editable
+        
+        self.selectedIndexes = editable ? Array() : nil
+        self.tableView.reloadData()
         
         
     }
@@ -36,32 +45,20 @@ class AllUsersTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard users != nil else {
-            return 0
-        }
-        return users!.count
+        return users != nil ? users!.count : 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "allUsersCell", for: indexPath)
+        let user = users![indexPath.row]
         cell.textLabel?.textColor = .white
-        cell.textLabel?.text = users![indexPath.row].username
+        cell.textLabel?.text = user.username
         cell.tintColor = .white
         let backgroundView = UIView()
         backgroundView.backgroundColor = .clear
         cell.selectedBackgroundView? = backgroundView
-        if let defaultImage = UIImage(named: users![indexPath.row].avatarString) {
-            cell.imageView?.image = defaultImage
-        }
-        else {
-            if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: users![indexPath.row].avatarString)!)) {
-                cell.imageView?.image = imgurImage
-            }
-            else {
-                cell.imageView?.image = #imageLiteral(resourceName: "ghost_avatar.png")
-            }
-            
-        }
+        cell.imageView?.image = image(forAvatarString: user.avatarString)
+        
         if self.selectedIndexes.contains(indexPath.row) {
             cell.accessoryType = UITableViewCellAccessoryType.checkmark
         }
@@ -99,29 +96,15 @@ class AllUsersTableViewController: UITableViewController {
     @objc func dismissMe() {
         self.navigationController?.popViewController(animated: true)
     }
-
-}
-
-extension AllUsersTableViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
-    func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return NSAttributedString(string: "No users around you to add.")
-    }
     
-    func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
-        let image = #imageLiteral(resourceName: "ghost_avatar.png")
-        var newWidth: CGFloat
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            newWidth = 200
+    func image(forAvatarString avatarString: String) -> UIImage {
+        if let defaultImage = UIImage(named: avatarString) {
+            return defaultImage
+        } else if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: avatarString)!)) {
+            return imgurImage
+        } else {
+            return #imageLiteral(resourceName: "ghost_avatar.png")
         }
-        else {
-            newWidth = 100
-        }
-        let scale = newWidth / image.size.width
-        let newHeight = image.size.height * scale
-        UIGraphicsBeginImageContext(CGSize(width: newWidth, height: newHeight))
-        image.draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight), blendMode: .normal, alpha: 0.5)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage
     }
+
 }

@@ -97,18 +97,11 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         }
         let dataDict = [key: message]
         
+        let messageModel = MessageModel(messageString: message, sender: self.currentUser!, chatRoom: chatRoom)
+        RealmManager.addNewMessage(message: messageModel)
+        
         let success = self.chatDelegate!.sendJSONtoGame(dataDict: dataDict,
                                                         toPeerID: (self.chatDelegate!.getPeerIDForUID(uniqueID: chatRoom.usersPeerIDs.first!)!))
-        if success {
-            let messageModel = MessageModel()
-            messageModel.messageString = message
-            messageModel.sender = self.currentUser
-            messageModel.chatRoomUUID = chatRoom.uuid
-            let realm = try! Realm()
-            try? realm.write {
-                realm.add(messageModel)
-            }
-        }
     }
     
     func initNotificationToken() {

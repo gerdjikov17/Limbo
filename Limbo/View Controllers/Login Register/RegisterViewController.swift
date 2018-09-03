@@ -19,7 +19,6 @@ class RegisterViewController: UIViewController {
     @IBOutlet weak var signInLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var greyContainerView: UIView!
-    
     @IBOutlet weak var backgroundView: UIView!
     //    MARK: Lifecycle
     

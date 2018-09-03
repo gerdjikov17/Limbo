@@ -17,6 +17,7 @@ class UsersConnectivity: NSObject {
     private var userModel: UserModel?
     var notificationToken: NotificationToken?
     var myPeerID: MCPeerID
+    var foundPeers: [MCPeerID]?
     private var serviceAdvertiser: MCNearbyServiceAdvertiser
     private let serviceBrowser: MCNearbyServiceBrowser
     
@@ -34,6 +35,7 @@ class UsersConnectivity: NSObject {
     init(userModel: UserModel, delegate: NearbyUsersDelegate, peerID: MCPeerID?) {
         self.userModel = RealmManager.currentLoggedUser()!
         self.delegate = delegate
+        self.foundPeers = Array()
         if let unwrappedPeerID = peerID {
             self.myPeerID = unwrappedPeerID
         }
@@ -134,7 +136,7 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("%@", "foundPeer: \(peerID)")
-        
+        self.foundPeers?.append(peerID)
         if peerID.displayName.hasSuffix(".game") {
             self.foundGamePeer(peerID: peerID, withDiscoveryInfo: info)
         }
@@ -165,7 +167,11 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("%@", "lostPeer: \(peerID)")
-        
+        if let index = self.foundPeers?.index(where: { iPeerID -> Bool in
+            iPeerID.displayName == peerID.displayName
+        }) {
+            self.foundPeers?.remove(at: index)
+        }
         let realm = try! Realm()
         if let user = realm.objects(UserModel.self).filter("uniqueDeviceID == %@ AND state != %@", peerID.displayName, "Offline").filter("state != %@", "Spectre").first {
             realm.beginWrite()

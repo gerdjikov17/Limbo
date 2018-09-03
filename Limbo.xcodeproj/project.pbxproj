@@ -81,6 +81,7 @@
 		06CADED7212AF3D3005A59A2 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADED6212AF3D3005A59A2 /* OptionsViewController.swift */; };
 		06CADED9212AF833005A59A2 /* ImagesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADED8212AF833005A59A2 /* ImagesCollectionViewController.swift */; };
 		06CADEDB212AFA50005A59A2 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADEDA212AFA50005A59A2 /* ImageCollectionViewCell.swift */; };
+		06EF53C8213D1A4900AE93BB /* CustomEmptyDataSetDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF53C7213D1A4900AE93BB /* CustomEmptyDataSetDelegate.swift */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
 /* End PBXBuildFile section */
 
@@ -162,6 +163,7 @@
 		06CADED6212AF3D3005A59A2 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
 		06CADED8212AF833005A59A2 /* ImagesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesCollectionViewController.swift; sourceTree = "<group>"; };
 		06CADEDA212AFA50005A59A2 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		06EF53C7213D1A4900AE93BB /* CustomEmptyDataSetDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEmptyDataSetDelegate.swift; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
 		9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Limbo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECBC6D0F2B39D67B3E92515C /* Pods-Limbo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.release.xcconfig"; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				066C84B3212455B80022CA95 /* ImageCache.swift */,
 				0618F3ED212C09DD0004FDE4 /* VoiceRecorder.swift */,
 				0618F3F1212C3F120004FDE4 /* SmartFormatter.swift */,
+				06EF53C7213D1A4900AE93BB /* CustomEmptyDataSetDelegate.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -596,6 +599,7 @@
 				069361FA2107459900D02D22 /* UsersConnectivity.swift in Sources */,
 				060FC5452107348900E5D6BB /* NearbyDeviceCollectionViewCell.swift in Sources */,
 				0652816B2133E6B8008070C8 /* VoiceRecordingViewController.swift in Sources */,
+				06EF53C8213D1A4900AE93BB /* CustomEmptyDataSetDelegate.swift in Sources */,
 				06262FD9210876BA003C6A1E /* ChatViewController.swift in Sources */,
 				0652817221343184008070C8 /* NearbyUsersPresenter.swift in Sources */,
 				0652817021343130008070C8 /* NearbyUsersRouter.swift in Sources */,

@@ -61,7 +61,7 @@ extension UsersConnectivity: UsersConnectivityDelegate {
     }
     
     func getPeerIDForUID(uniqueID: String) -> MCPeerID? {
-        for peerID in self.session.connectedPeers {
+        for peerID in self.foundPeers! {
             if peerID.displayName == uniqueID {
                 return peerID
             }

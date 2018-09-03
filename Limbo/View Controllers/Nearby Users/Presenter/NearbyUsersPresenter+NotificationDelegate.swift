@@ -41,10 +41,6 @@ extension NearbyUsersPresenter: UNUserNotificationCenterDelegate {
         completionHandler()
     }
     
-    func replyAction(withText text: String, andUserInfo userInfo: [AnyHashable: Any]) {
-
-    }
-    
     private func notificationTapAction(withUserInfo userInfo: [AnyHashable: Any]) {
         let chatRoomUUID = userInfo["chatRoomUUID"] as! String
         guard let chatRoom = RealmManager.chatRoom(forUUID: chatRoomUUID) else { return }

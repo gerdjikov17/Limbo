@@ -124,16 +124,7 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
         guard let chatRoom = RealmManager.chatRoom(forUUID: chatRoomUUID) else {
             return(false, "Error sending message")
         }
-        let messageModel = MessageModel()
-        messageModel.messageString = text
-        messageModel.messageType = MessageType.Message.rawValue
-        messageModel.sender = self.currentUser
-        if chatRoom.usersChattingWith.count > 1 {
-            messageModel.chatRoomUUID = chatRoomUUID
-        } else {
-            messageModel.chatRoomUUID = self.currentUser.uniqueDeviceID+self.currentUser.username
-        }
-        
+        let messageModel = MessageModel(messageString: text, sender: self.currentUser, chatRoom: chatRoom)
         
         for user in chatRoom.usersChattingWith {
             let peerIDString = user.uniqueDeviceID
@@ -161,6 +152,7 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
         if let index = (self.chatRooms.index { arg -> Bool in
             arg.chatRoom.uuid == uuid
         }) {
+            inviteUsersIn(chatRoom: self.chatRooms[index].chatRoom)
             self.chatRooms[index].unreadMessages = 0
         }
         
@@ -284,6 +276,7 @@ extension NearbyUsersInteractor: ChatDelegate {
                     self.showNewMessageNotification(newMessage: messageModel!, forChatRoom: chatRoom)
                 }
             }
+            
             self.filterUsersToShow()
         }
     }
