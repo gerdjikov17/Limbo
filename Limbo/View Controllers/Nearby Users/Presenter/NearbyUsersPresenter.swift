@@ -81,7 +81,7 @@ extension NearbyUsersPresenter: NearbyUsersViewToPresenterInterface {
     }
     
     func userImageTap() {
-        self.router.presentUserAvatars(user: RealmManager.currentLoggedUser()!)
+        self.router.presentUserAvatars(user: RealmManager.currentLoggedUser()!, imagePickingDelegate: self)
     }
     
     func signOutButtonTap() {
@@ -138,10 +138,6 @@ extension NearbyUsersPresenter: NearbyUsersViewToPresenterInterface {
     }
 }
 
-extension NearbyUsersPresenter: NearbyUsersRouterToPresenterInterface {
-    
-}
-
 extension NearbyUsersPresenter: LoginDelegate {
     func didLogin(userModel: UserModel) {
         UserDefaults.standard.set(true, forKey: Constants.UserDefaults.isLoged)
@@ -149,4 +145,16 @@ extension NearbyUsersPresenter: LoginDelegate {
         UserDefaults.standard.synchronize()
         self.initRequiredPropertiesForLoggedUser()
     }
+}
+
+extension NearbyUsersPresenter: ImagePickingToPresenterInterface {
+    func didStarUploadingImage() {
+        self.router.addActivityIndicator(toImageView: self.view.userImageView())
+    }
+    
+    func didFinishUploadingImage() {
+        self.router.removeActivityIndicator(fromImageView: self.view.userImageView())
+    }
+    
+    
 }

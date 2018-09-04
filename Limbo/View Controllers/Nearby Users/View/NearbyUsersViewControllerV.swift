@@ -155,4 +155,8 @@ extension NearbyUsersViewControllerV: NearbyUsersPresenterToViewInterface {
                             point: CGPoint(x: self.view.center.x, y: self.currentUserImageView.center.y - 115),
                             title: "The Gift", image: #imageLiteral(resourceName: "gift-icon.png"), style: style, completion: nil)
     }
+    
+    func userImageView() -> UIImageView {
+        return self.currentUserImageView
+    }
 }

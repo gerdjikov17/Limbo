@@ -9,6 +9,7 @@
 import Foundation
 import MultipeerConnectivity
 import RealmSwift
+import NVActivityIndicatorView
 
 protocol NearbyUsersDelegate {
     func didFindNewUser(user: UserModel, peerID: MCPeerID)
@@ -121,10 +122,6 @@ protocol ChatRouterInterface {
 
 // MARK: NearbyUsers Module
 
-protocol NearbyUsersRouterToPresenterInterface {
-    
-}
-
 protocol NearbyUsersViewToPresenterInterface {
     func firstInitialization()
     func viewDidAppear()
@@ -151,6 +148,7 @@ protocol NearbyUsersPresenterToViewInterface {
     func reloadData()
     func showToast(message: String)
     func showGiftToast()
+    func userImageView() -> UIImageView
 }
 
 protocol NearbyUsersPresenterToInteractorInterface {
@@ -175,7 +173,14 @@ protocol NearbyUsersPresenterToInteractorInterface {
 protocol NearbyUsersPresenterToRouterInterface {
     func presentItemPopover(specialItem: SpecialItem, sourceView: UIView, presentingVC: UIViewController)
     func presentLoginVC(loginDelegate: LoginDelegate)
-    func presentUserAvatars(user: UserModel)
+    func presentUserAvatars(user: UserModel, imagePickingDelegate: ImagePickingToPresenterInterface)
     func createAndPushChatModule(chatRoom: ChatRoomModel, usersConnectivityDelegate: UsersConnectivityDelegate)
     func createAndPushAllUsersTVC(users: [UserModel], groupChatDelegate: GroupChatDelegate)
+    func addActivityIndicator(toImageView imageView: UIImageView)
+    func removeActivityIndicator(fromImageView imageView: UIImageView)
+}
+
+protocol ImagePickingToPresenterInterface {
+    func didStarUploadingImage()
+    func didFinishUploadingImage()
 }

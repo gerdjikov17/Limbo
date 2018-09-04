@@ -15,6 +15,7 @@ class AvatarCollectionViewController: UICollectionViewController {
     var currentUser: UserModel?
     var chatRoom: ChatRoomModel?
     var imageStrings: [String] = Array()
+    var imagePickingDelegate: ImagePickingToPresenterInterface!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,6 +82,7 @@ class AvatarCollectionViewController: UICollectionViewController {
         if kind == UICollectionElementKindSectionFooter {
             let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath) as! AvatarCollectionReusableViewFooter
             footer.presentingVC = self
+            footer.imagePickingDelegate = self.imagePickingDelegate
             return footer
         }
         return collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "avatarHeader", for: indexPath)

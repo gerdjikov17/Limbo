@@ -11,6 +11,7 @@ let nearbyUsersVCIdentifier = "nearbyUsersVC"
 let itemsVCIdentifier = "itemPopoverVC"
 
 import UIKit
+import NVActivityIndicatorView
 
 class NearbyUsersRouter: NSObject {
     
@@ -77,9 +78,10 @@ extension NearbyUsersRouter: NearbyUsersPresenterToRouterInterface {
         self.mainViewController.present(loginVC, animated: true, completion: nil)
     }
     
-    func presentUserAvatars(user: UserModel) {
+    func presentUserAvatars(user: UserModel, imagePickingDelegate: ImagePickingToPresenterInterface) {
         let avatarChooseVC = storyboard.instantiateViewController(withIdentifier: "AvatarCollectionViewController") as! AvatarCollectionViewController
         avatarChooseVC.currentUser = user
+        avatarChooseVC.imagePickingDelegate = imagePickingDelegate
         self.mainViewController.present(avatarChooseVC, animated: true, completion: nil)
     }
     
@@ -99,6 +101,21 @@ extension NearbyUsersRouter: NearbyUsersPresenterToRouterInterface {
         self.navigationController?.pushViewController(allUsersTVC, animated: true)
     }
     
+    func addActivityIndicator(toImageView imageView: UIImageView) {
+        let activityIndicator = NVActivityIndicatorView(frame: imageView.frame,
+                                                        type: NVActivityIndicatorType.ballSpinFadeLoader,
+                                                        color: .white, padding: 0)
+        imageView.superview?.addSubview(activityIndicator)
+        imageView.superview?.bringSubview(toFront: activityIndicator)
+        imageView.image = nil
+        activityIndicator.startAnimating()
+    }
+    
+    func removeActivityIndicator(fromImageView imageView: UIImageView) {
+        DispatchQueue.main.async {
+            imageView.superview?.subviews.last!.removeFromSuperview()
+        }
+    }
 
 }
 

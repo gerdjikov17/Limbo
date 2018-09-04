@@ -77,7 +77,9 @@ class MessageModel: Object {
         }
     }
     
-    convenience init(messageType: MessageType, additionalData: Data?, dataName: String, sender: UserModel, chatRoom: ChatRoomModel) {
+    convenience init(messageType: MessageType, additionalData: Data?,
+                     dataName: String, sender: UserModel, chatRoom: ChatRoomModel) {
+        
         self.init()
         self.messageType = messageType.rawValue
         self.additionalData = additionalData
