@@ -20,11 +20,18 @@ class ChatRouter: NSObject, ChatRouterInterface {
         super.init()
     }
     
-    static func createChatModule(using navigationController: UINavigationController, usersConnectivityDelegate: UsersConnectivityDelegate, chatRoom: ChatRoomModel) -> ChatViewController {
+    static func createChatModule(using navigationController: UINavigationController,
+                                 usersConnectivityDelegate: UsersConnectivityDelegate,
+                                 chatRoom: ChatRoomModel) -> ChatViewController {
         
         let view = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatVC") as! ChatViewController
+        
         let presenter = ChatPresenter(chatView: view)
-        let interactor = ChatInteractor(chatDelegate: usersConnectivityDelegate, chatPresenter: presenter as ChatInteractorToPresenterInterface, chatRoom: chatRoom)
+        
+        let interactor = ChatInteractor(chatDelegate: usersConnectivityDelegate,
+                                        chatPresenter: presenter as ChatInteractorToPresenterInterface,
+                                        chatRoom: chatRoom)
+        
         let router = ChatRouter(navigationController: navigationController)
         view.chatPresenter = presenter as ChatViewToPresenterInterface
         presenter.chatRouter = router

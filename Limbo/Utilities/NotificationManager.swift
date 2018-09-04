@@ -14,7 +14,33 @@ class NotificationManager: NSObject {
     
     static let shared = NotificationManager()
     
-    func presentNotification(withMessage message:MessageModel, notificationDelegate: UNUserNotificationCenterDelegate) {
+    private func createNotificationContent(forMessageModel message: MessageModel) -> UNMutableNotificationContent {
+        let content = UNMutableNotificationContent()
+        if let user = message.sender {
+            content.title = user.username
+            content.userInfo = ["chatRoomUUID": message.chatRoomUUID, "username": user.username]
+        }
+        
+        switch message.messageType {
+        case MessageType.Message.rawValue:
+            content.body = message.messageString
+        case MessageType.Photo.rawValue:
+            content.body = "Photo"
+        case MessageType.Message_Photo.rawValue:
+            content.body = message.messageString
+            content.subtitle = "Photo"
+        case MessageType.Voice_Record.rawValue:
+            content.body = "Voice Message"
+        default:
+            content.body = message.messageString
+        }
+        
+        content.sound = UNNotificationSound.default()
+        content.categoryIdentifier = Constants.Notifications.Identifiers.Message
+        return content
+    }
+    
+    func presentNotification(withMessage message: MessageModel, notificationDelegate: UNUserNotificationCenterDelegate) {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.badge, .sound, .alert], completionHandler: { granted, error in
             DispatchQueue.main.async {
@@ -23,28 +49,8 @@ class NotificationManager: NSObject {
                     return
                 }
                 UIApplication.shared.registerForRemoteNotifications()
-                let content = UNMutableNotificationContent()
-                if let user = message.sender {
-                    content.title = user.username
-                    content.userInfo = ["chatRoomUUID": message.chatRoomUUID, "username": user.username]
-                }
                 
-                switch message.messageType {
-                case MessageType.Message.rawValue:
-                    content.body = message.messageString
-                case MessageType.Photo.rawValue:
-                    content.body = "Photo"
-                case MessageType.Message_Photo.rawValue:
-                    content.body = message.messageString
-                    content.subtitle = "Photo"
-                case MessageType.Voice_Record.rawValue:
-                    content.body = "Voice Message"
-                default:
-                    content.body = message.messageString
-                }
-                
-                content.sound = UNNotificationSound.default()
-                content.categoryIdentifier = Constants.Notifications.Identifiers.Message
+                let content = self.createNotificationContent(forMessageModel: message)
                 
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
                 let request = UNNotificationRequest(identifier: Constants.Notifications.Identifiers.Message,

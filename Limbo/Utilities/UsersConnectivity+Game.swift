@@ -38,15 +38,27 @@ extension UsersConnectivity {
         let username = String(peerID.displayName.prefix(upTo:
                                     peerID.displayName.index(peerID.displayName.startIndex,
                                      offsetBy: peerID.displayName.count - 5)))
+        var gameType: Int
+        if info!["gameName"] == "Tic-Tac-Toe" {
+            gameType = RoomType.Tic_Tac_Toe.rawValue
+        }
+        else {
+            gameType = RoomType.Tunak_Tunak.rawValue
+        }
         var user: UserModel
         var chatRoom: ChatRoomModel
         let realm = try! Realm()
         if let realmUser = RealmManager.userWith(uniqueID: peerID.displayName) {
-            let chatRoom = RealmManager.chatRoom(forUUID: realmUser.compoundKey)
-            try! realm.write {
-                chatRoom?.roomType = RoomType.Game.rawValue
-                realmUser.state = info!["gameName"]!
+            if let chatRoom = RealmManager.chatRoom(forUUID: realmUser.compoundKey) {
+                try! realm.write {
+                    chatRoom.roomType = gameType
+                    realmUser.state = info!["gameName"]!
+                }
+            } else {
+                chatRoom = ChatRoomModel(user: realmUser, gameType: gameType, peerIDString: peerID.displayName)
+                RealmManager.addChatRoom(chatRoom: chatRoom)
             }
+            
             user = realmUser
             
         }
@@ -56,13 +68,7 @@ extension UsersConnectivity {
             realm.beginWrite()
             realm.add(user)
             
-            chatRoom = ChatRoomModel()
-            chatRoom.name = user.username
-            chatRoom.uuid = user.compoundKey
-            chatRoom.avatar = user.avatarString
-            chatRoom.usersChattingWith.append(user)
-            chatRoom.roomType = RoomType.Game.rawValue
-            chatRoom.usersPeerIDs.append(peerID.displayName)
+            chatRoom = ChatRoomModel(user: user, gameType: gameType, peerIDString: peerID.displayName)
             realm.add(chatRoom)
             
             try! realm.commitWrite()

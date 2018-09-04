@@ -66,8 +66,6 @@ extension UsersConnectivity {
                                           foundUserState: userState) {
             self.delegate?.didFindNewUser(user: user, peerID: peerID)
         }
-        
-        //            browser.invitePeer(peerID, to: self.session, withContext: nil, timeout: 10)
     }
     
     private func handleMessageTypeVoiceRecord(messageModel: MessageModel, peerID: MCPeerID) {
@@ -81,11 +79,13 @@ extension UsersConnectivity {
         var urlToWriteTo = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true)
         urlToWriteTo = urlToWriteTo.appendingPathComponent(messageModel.messageString, isDirectory: false)
         try? imageData.write(to: urlToWriteTo)
+        
         let realm = try! Realm()
         realm.beginWrite()
         realm.add(messageModel)
         messageModel.additionalData = nil
         try? realm.commitWrite()
+        
         if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
             let threadSafeMessage = ThreadSafeReference(to: messageModel)
             chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
@@ -96,37 +96,11 @@ extension UsersConnectivity {
         if (Constants.Curses.allCurses.contains(where: { (curse) -> Bool in
             curse.rawValue == messageModel.messageString
         })) && messageModel.sender?.state == "Ghost" {
-            let curse = Curse(rawValue: messageModel.messageString)!
-            
-            guard let user = RealmManager.currentLoggedUser() else {
-                return
-            }
-            
-            let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
-            if resultOfCurse.success {
-                UserDefaults.standard.set(peerID.displayName, forKey: Constants.UserDefaults.curseUserUniqueDeviceID)
-                UserDefaults.standard.set(messageModel.sender?.username, forKey: Constants.UserDefaults.curseUserUsername)
-                chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
-            }
-            else {
-                let remainingTime = "Someone tried to haunt you! But you are protected for " +
-                    String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.remainingTime)) + " seconds!"
-                NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion",
-                                                                   andText: remainingTime)
-                let answerMessage = MessageModel()
-                answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"
-                answerMessage.sender = user
-                answerMessage.messageType = MessageType.Message.rawValue
-                answerMessage.chatRoomUUID = self.myPeerID.displayName.appending(RealmManager.currentLoggedUser()!.username)
-                _ = self.sendMessage(messageModel: answerMessage, toPeerID: peerID)
-            }
+            self.handleCurse(messageModel: messageModel, peerID: peerID)
         }
         else {
             print(messageModel)
-            let realm = try! Realm()
-            realm.beginWrite()
-            realm.add(messageModel)
-            try? realm.commitWrite()
+            RealmManager.addNewMessage(message: messageModel)
             if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
                 let threadSafeMessage = ThreadSafeReference(to: messageModel)
                 chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
@@ -146,6 +120,33 @@ extension UsersConnectivity {
             }            
         default:
             return
+        }
+    }
+    
+    private func handleCurse(messageModel: MessageModel, peerID: MCPeerID) {
+        let curse = Curse(rawValue: messageModel.messageString)!
+        
+        guard let user = RealmManager.currentLoggedUser() else {
+            return
+        }
+        
+        let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
+        if resultOfCurse.success {
+            UserDefaults.standard.set(peerID.displayName, forKey: Constants.UserDefaults.curseUserUniqueDeviceID)
+            UserDefaults.standard.set(messageModel.sender?.username, forKey: Constants.UserDefaults.curseUserUsername)
+            chatDelegate!.didReceiveCurse(curse: curse, remainingTime: Constants.Curses.curseTime)
+        }
+        else {
+            let remainingTime = "Someone tried to haunt you! But you are protected for " +
+                String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.remainingTime)) + " seconds!"
+            NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion",
+                                                               andText: remainingTime)
+            let answerMessage = MessageModel()
+            answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"
+            answerMessage.sender = user
+            answerMessage.messageType = MessageType.Message.rawValue
+            answerMessage.chatRoomUUID = self.myPeerID.displayName.appending(RealmManager.currentLoggedUser()!.username)
+            _ = self.sendMessage(messageModel: answerMessage, toPeerID: peerID)
         }
     }
 }

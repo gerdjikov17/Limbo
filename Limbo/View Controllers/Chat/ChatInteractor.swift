@@ -45,7 +45,7 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         guard let chatRoom = self.chatRoom else { return }
         
 //        guard chatRoom.roomType == RoomType.Game.rawValue else {
-//            
+//
 //        }
         
         guard self.currentUser!.curse != Curse.Silence.rawValue else {
@@ -65,7 +65,7 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
             CurseManager.removeCurse()
             NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
         }
-        else if chatRoom.roomType == RoomType.Game.rawValue {
+        else if chatRoom.roomType == RoomType.Tic_Tac_Toe.rawValue || chatRoom.roomType == RoomType.Tunak_Tunak.rawValue {
             self.sendMessageToGame(message: message, chatRoom: chatRoom)
         }
         else {
@@ -105,7 +105,7 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         let messageModel = MessageModel(messageString: message, sender: self.currentUser!, chatRoom: chatRoom)
         RealmManager.addNewMessage(message: messageModel)
         
-        let success = self.chatDelegate!.sendJSONtoGame(dataDict: dataDict,
+        _ = self.chatDelegate!.sendJSONtoGame(dataDict: dataDict,
                                                         toPeerID: (self.chatDelegate!.getPeerIDForUID(uniqueID: chatRoom.usersPeerIDs.first!)!))
     }
     

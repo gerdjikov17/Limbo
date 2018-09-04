@@ -25,7 +25,10 @@ class NearbyDevicesCollectionViewCell: UICollectionViewCell {
         if modelView.unreadMessages! > 0 {
             self.notSeenMessagesLabel.layer.cornerRadius = self.notSeenMessagesLabel.frame.size.height / 2
             self.notSeenMessagesLabel.clipsToBounds = true
-            self.notSeenMessagesLabel.attributedText = NSAttributedString(string: String(" " + String(modelView.unreadMessages!) + " "), attributes: [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.backgroundColor: UIColor.red])
+            self.notSeenMessagesLabel.attributedText = NSAttributedString(string:
+                String(" " + String(modelView.unreadMessages!) + " "),
+                                                                          attributes:
+                [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.backgroundColor: UIColor.red])
             
         }
         else {
@@ -35,14 +38,13 @@ class NearbyDevicesCollectionViewCell: UICollectionViewCell {
     
     private func getImage(forModelView chatRoom: ChatRoomModelView) -> UIImage {
         guard let roomType = chatRoom.roomType else { return #imageLiteral(resourceName: "ghost_avatar.png") }
-        if roomType == RoomType.Game {
+        if roomType == RoomType.Tic_Tac_Toe {
             return #imageLiteral(resourceName: "tic-tac-toe.png")
-        }
-            //            to do appropriate game avatar
-        else if let defaultImage = UIImage(named: chatRoom.avatarString!) {
+        } else if roomType == RoomType.Tunak_Tunak {
+            return #imageLiteral(resourceName: "tunak-tunak.jpg")
+        } else if let defaultImage = UIImage(named: chatRoom.avatarString!) {
             return defaultImage
-        }
-        else {
+        } else {
             if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: chatRoom.avatarString!)!)) {
                 return imgurImage
             }

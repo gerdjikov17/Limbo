@@ -111,7 +111,9 @@ protocol ChatRouterInterface {
     func presentItems(forUser: UserModel, sourceView: UIView)
     func presentAlertController(alertController: UIAlertController)
     func presentAllImagesCVC(messagesHistory: Results<MessageModel>, completion: (() -> Void)?)
-    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate), completion: (() -> Void)?)
+    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate),
+                              completion: (() -> Void)?)
+    
     func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate, completion: (() -> Void)?)
     func presentAvatars(chatRoom: ChatRoomModel)
     func pushVC(vc: UIViewController)

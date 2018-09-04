@@ -47,17 +47,28 @@ class LoginViewController: UIViewController {
         backgroundView.backgroundColor = UIColor(patternImage: processedImage)
         backgroundView.contentMode = .scaleAspectFill
         
-        self.usernameTextField.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
-        self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        self.usernameTextField.attributedPlaceholder = NSAttributedString(
+            string: "Username",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        
+        self.passwordTextField.attributedPlaceholder = NSAttributedString(
+            string: "Password",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
         
         self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.2, green: 0.3, blue: 0.4, alpha: 0.5)
         
         
         self.usernameTextField.delegate = self
         self.passwordTextField.delegate = self
-        self.signUpLabel?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(LoginViewController.signUpLabelTap)))
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        self.signUpLabel?.addGestureRecognizer(UITapGestureRecognizer(target: self,
+                                                                      action: #selector(LoginViewController.signUpLabelTap)))
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow(notification:)),
+                                               name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide(notification:)),
+                                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -80,37 +91,35 @@ class LoginViewController: UIViewController {
         self.resignAllTextFields()
         let usernameString: String! = self.usernameTextField?.text
         let passwordString: String! = self.passwordTextField?.text
-        let authorization = self.authorizeUserInput(usernameString: usernameString, passwordString: passwordString)
+        let authorization = self.authoriseUserInput(usernameString: usernameString, passwordString: passwordString)
         if authorization.success {
             if let user = RealmManager.userWith(username: usernameString, password: passwordString){
                 self.loginDelegate?.didLogin(userModel: user)
                 self.presentingViewController?.dismiss(animated: true, completion: nil)
+            } else {
+                self.view.makeToast("User doesn't exist",
+                                    point: CGPoint(x: self.view.center.x, y: 100),
+                                    title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
             }
-            else {
-                self.view.makeToast("User doesn't exist", point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
-            }
-        }
-        else {
-            self.view.makeToast(authorization.message, point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+        } else {
+            self.view.makeToast(authorization.message,
+                                point: CGPoint(x: self.view.center.x, y: 100),
+                                title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
         }
     }
     
-    private func authorizeUserInput(usernameString: String, passwordString: String) -> (success: Bool, message: String) {
+    private func authoriseUserInput(usernameString: String, passwordString: String) -> (success: Bool, message: String) {
         let message: String
         
         if usernameString.count < 4 {
             message = "Username is too short"
-        }
-        else if usernameString.count > 12 {
+        } else if usernameString.count > 12 {
             message = "Username is too long"
-        }
-        else if passwordString.count < 5 {
+        } else if passwordString.count < 5 {
             message = "Password is too short"
-        }
-        else if passwordString.count > 14 {
+        } else if passwordString.count > 14 {
             message = "Password is too long"
-        }
-        else {
+        } else {
             message = ""
         }
         

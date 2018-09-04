@@ -43,16 +43,28 @@ class RegisterViewController: UIViewController {
         
         self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.2, green: 0.3, blue: 0.4, alpha: 0.5)
         
-        self.usernameTextField.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
-        self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
-        self.confirmPasswordTextField.attributedPlaceholder = NSAttributedString(string: "Confirm password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        self.usernameTextField.attributedPlaceholder = NSAttributedString(
+            string: "Username",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        
+        self.passwordTextField.attributedPlaceholder = NSAttributedString(
+            string: "Password",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        
+        self.confirmPasswordTextField.attributedPlaceholder = NSAttributedString(
+            string: "Confirm password",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
         
         self.usernameTextField.delegate = self
         self.passwordTextField.delegate = self
         self.confirmPasswordTextField.delegate = self
         self.signInLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.signInLabelTap)))
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow(notification:)),
+                                               name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide(notification:)),
+                                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -75,44 +87,45 @@ class RegisterViewController: UIViewController {
         let password: String! = self.passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         let confirmPassword: String! = self.confirmPasswordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        let authorization = self.authorizeUserInput(username: username, password: password, confirmedPassword: confirmPassword)
+        let authorization = self.authoriseUserInput(username: username, password: password, confirmedPassword: confirmPassword)
         if authorization.success {
             if RealmManager.registerUser(username: username, password: password) {
-                self.presentingViewController?.view.makeToast("Sign up successfully", point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+                self.presentingViewController?.view.makeToast("Sign up successfully",
+                                                              point: CGPoint(x: self.view.center.x, y: 100),
+                                                              title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
                 self.dismiss(animated: true, completion: nil)
-            }
-            else {
-                self.view.makeToast("User already exists", point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+            } else {
+                self.view.makeToast("User already exists",
+                                    point: CGPoint(x: self.view.center.x, y: 100),
+                                    title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
             }
             
-        }
-        else {
-            self.view.makeToast(authorization.message, point: CGPoint(x: self.view.center.x, y: 100), title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
+        } else {
+            self.view.makeToast(authorization.message,
+                                point: CGPoint(x: self.view.center.x, y: 100),
+                                title: "", image: #imageLiteral(resourceName: "ghost_avatar.png"), completion: nil)
         }
 
     }
     
-    func authorizeUserInput(username: String, password: String, confirmedPassword: String) -> (success: Bool, message: String) {
+    func authoriseUserInput(username: String,
+                            password: String,
+                            confirmedPassword: String) -> (success: Bool, message: String) {
+        
         let message: String
         if username.count < 4 {
             message = "Username is too short"
-        }
-        else if username.count > 12 {
+        } else if username.count > 12 {
             message = "Username is too long"
-        }
-        else if password.count < 5 {
+        } else if password.count < 5 {
             message = "Password is too short"
-        }
-        else if password.count > 14 {
+        } else if password.count > 14 {
             message = "Password is too long"
-        }
-        else if confirmedPassword != password {
+        } else if confirmedPassword != password {
             message = "Confirm password doesn't match"
-        }
-        else if username.contains("§") {
+        } else if username.contains("§") {
             message = "Username cannot contain §"
-        }
-        else {
+        } else {
             message = ""
         }
         

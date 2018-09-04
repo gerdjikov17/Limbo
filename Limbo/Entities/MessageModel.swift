@@ -66,7 +66,10 @@ class MessageModel: Object {
         self.messageString = messageString
         self.messageType = MessageType.Message.rawValue
         self.sender = sender
-        if chatRoom.usersChattingWith.count > 1 || chatRoom.roomType == RoomType.Game.rawValue {
+        if chatRoom.usersChattingWith.count > 1
+            || chatRoom.roomType == RoomType.Tic_Tac_Toe.rawValue
+            || chatRoom.roomType == RoomType.Tunak_Tunak.rawValue {
+            
             self.chatRoomUUID = chatRoom.uuid
         }
         else {

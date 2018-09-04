@@ -68,6 +68,16 @@ class ChatRoomModel: Object {
         self.roomType = RoomType.GroupChat.rawValue
     }
     
+    convenience init(user: UserModel, gameType: Int, peerIDString: String) {
+        self.init()
+        self.name = user.username
+        self.uuid = user.compoundKey
+        self.avatar = user.avatarString
+        self.usersChattingWith.append(user)
+        self.roomType = gameType
+        self.usersPeerIDs.append(peerIDString)
+    }
+    
     func changeAvatar(newAvatar: String) {
         let realm = try! Realm()
         try! realm.write {

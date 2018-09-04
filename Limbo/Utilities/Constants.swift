@@ -80,8 +80,10 @@ enum SystemMessage: String {
 enum RoomType: Int {
     case SingleUserChat = 0
     case GroupChat = 1
-    case Game = 2
+    case Tic_Tac_Toe = 2
     case CreateGroupChat = 3
+    case Tunak_Tunak = 4
+    
 }
 
 enum OptionsType: Int {
