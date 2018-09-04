@@ -32,7 +32,7 @@ class AllUsersTableViewController: UITableViewController {
         tableView.allowsSelection = editable
         tableView.allowsMultipleSelection = editable
         
-        self.selectedIndexes = editable ? Array() : nil
+        self.selectedIndexes = Array()
         self.tableView.reloadData()
         
         

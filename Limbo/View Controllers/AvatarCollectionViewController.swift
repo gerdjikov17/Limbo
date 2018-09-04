@@ -13,6 +13,7 @@ private let reuseIdentifier = "avatarCell"
 class AvatarCollectionViewController: UICollectionViewController {
 
     var currentUser: UserModel?
+    var chatRoom: ChatRoomModel?
     var imageStrings: [String] = Array()
     
     override func viewDidLoad() {
@@ -67,8 +68,12 @@ class AvatarCollectionViewController: UICollectionViewController {
         // MARK: UICollectionViewDelegate
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let chatRoom = self.chatRoom {
+            chatRoom.changeAvatar(newAvatar: self.imageStrings[indexPath.row])
+        } else {
+            self.currentUser?.changeAvatar(newImageString: self.imageStrings[indexPath.row])
+        }
         
-        self.currentUser?.changeAvatar(newImageString: self.imageStrings[indexPath.row])
         self.dismiss(animated: true, completion: nil)
     }
     

@@ -100,7 +100,7 @@ class ChatRouter: NSObject, ChatRouterInterface {
     }
     
     func presentAvatars(chatRoom: ChatRoomModel) {
-        let avatarChooseVC = storyboard.instantiateViewController(withIdentifier: "AvatarCollectionViewController") as! AvatarCollectionViewController_ChatRoom
+        let avatarChooseVC = storyboard.instantiateViewController(withIdentifier: "AvatarCollectionViewController") as! AvatarCollectionViewController
         avatarChooseVC.chatRoom = chatRoom
         self.navigationController.present(avatarChooseVC, animated: true, completion: nil)
         

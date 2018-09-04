@@ -91,6 +91,14 @@ class MessageModel: Object {
         }
     }
     
+    convenience init(messageString: String, sender: UserModel, chatRoomUUID: String) {
+        self.init()
+        self.messageString = messageString
+        self.messageType = MessageType.Message.rawValue
+        self.sender = sender
+        self.chatRoomUUID = chatRoomUUID
+    }
+    
     func setMessageType(messageType: MessageType) {
         let realm = try! Realm()
         realm.beginWrite()

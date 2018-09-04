@@ -141,11 +141,10 @@ extension UsersConnectivity {
                 String(Int(Constants.SpecialItems.itemTime) - Int(-resultOfCurse.remainingTime)) + " seconds!"
             NotificationManager.shared.presentItemNotification(withTitle: "Saint's Medallion",
                                                                andText: remainingTime)
-            let answerMessage = MessageModel()
-            answerMessage.messageString = "I am protected by the Saint's Medallion.\nYou FOOL!"
-            answerMessage.sender = user
-            answerMessage.messageType = MessageType.Message.rawValue
-            answerMessage.chatRoomUUID = self.myPeerID.displayName.appending(RealmManager.currentLoggedUser()!.username)
+            
+            let answer = "I am protected by the Saint's Medallion.\nYou FOOL!"
+            let uuid = RealmManager.currentLoggedUser()!.compoundKey
+            let answerMessage = MessageModel(messageString: answer, sender: user, chatRoomUUID: uuid)
             _ = self.sendMessage(messageModel: answerMessage, toPeerID: peerID)
         }
     }

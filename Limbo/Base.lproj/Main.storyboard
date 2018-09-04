@@ -1425,10 +1425,10 @@
             </objects>
             <point key="canvasLocation" x="1055" y="1790"/>
         </scene>
-        <!--Avatar Collection View Controller Chat Room-->
+        <!--Avatar Collection View Controller-->
         <scene sceneID="Rmv-sr-YQO">
             <objects>
-                <collectionViewController storyboardIdentifier="AvatarCollectionViewController" id="KDM-yy-Lm6" customClass="AvatarCollectionViewController_ChatRoom" customModule="Limbo" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="AvatarCollectionViewController" id="KDM-yy-Lm6" customClass="AvatarCollectionViewController" customModule="Limbo" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="dGC-71-ru8">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
