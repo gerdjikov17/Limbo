@@ -105,7 +105,12 @@ extension NearbyUsersRouter: NearbyUsersPresenterToRouterInterface {
         let activityIndicator = NVActivityIndicatorView(frame: imageView.frame,
                                                         type: NVActivityIndicatorType.ballSpinFadeLoader,
                                                         color: .white, padding: 0)
+        let uploadingLabel = UILabel(frame: imageView.frame)
+        uploadingLabel.textAlignment = .center
+        uploadingLabel.attributedText = NSAttributedString(string: "Uploading",
+                                                           attributes: [NSAttributedStringKey.foregroundColor : UIColor.white])
         imageView.superview?.addSubview(activityIndicator)
+        imageView.superview?.addSubview(uploadingLabel)
         imageView.superview?.bringSubview(toFront: activityIndicator)
         imageView.image = nil
         activityIndicator.startAnimating()
@@ -113,6 +118,7 @@ extension NearbyUsersRouter: NearbyUsersPresenterToRouterInterface {
     
     func removeActivityIndicator(fromImageView imageView: UIImageView) {
         DispatchQueue.main.async {
+            imageView.superview?.subviews.last!.removeFromSuperview()
             imageView.superview?.subviews.last!.removeFromSuperview()
         }
     }
