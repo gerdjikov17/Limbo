@@ -26,8 +26,7 @@ class MessageCellsManager: NSObject {
             
         case MessageType.Voice_Record.rawValue:
             let identifier = message.sender == RealmManager.currentLoggedUser() ? sentVoiceMessageCellIdentifier : receivedVoiceMessageCellIdentifier
-            let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! VoiceMessageTableViewCell
-//            cell.voiceProgressView.addGestureRecognizer(UITapGestureRecognizer(target: target, action: #selector(target.didTapOnMessage(recognizer:))))
+            let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! VoiceMessageTableViewCell  
             return cell
             
         default:

@@ -9,7 +9,6 @@
 let KEY_COORDINATES = "coordinates"
 let KEY_NAME = "name"
 let KEY_ANSWER = "answer"
-
 let QUESTION_NAME = "What is your name?"
 
 import UIKit
@@ -44,15 +43,13 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         guard message.count > 0 else { return }
         guard let chatRoom = self.chatRoom else { return }
         
-//        guard chatRoom.roomType == RoomType.Game.rawValue else {
-//
-//        }
+        let isGame = chatRoom.roomType == RoomType.Tunak_Tunak.rawValue ||
+            chatRoom.roomType == RoomType.Tic_Tac_Toe.rawValue
         
-        guard self.currentUser!.curse != Curse.Silence.rawValue else {
+        guard isGame || self.currentUser!.curse != Curse.Silence.rawValue else {
             self.chatPresenter.silencedCallBack()
             return
         }
-        
         
         let antiCurseMessage = UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse)
         let currentCurseCasterUniqueDeviceID = UserDefaults.standard.string(forKey:
@@ -63,7 +60,8 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
         }
         else if message == antiCurseMessage && chatRoom.usersChattingWith.first!.uniqueDeviceID == currentCurseCasterUniqueDeviceID{
             CurseManager.removeCurse()
-            NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell", andText: "You removed your curse with anti-spell")
+            NotificationManager.shared.presentItemNotification(withTitle: "Anti-Spell",
+                                                               andText: "You removed your curse with anti-spell")
         }
         else if chatRoom.roomType == RoomType.Tic_Tac_Toe.rawValue || chatRoom.roomType == RoomType.Tunak_Tunak.rawValue {
             self.sendMessageToGame(message: message, chatRoom: chatRoom)

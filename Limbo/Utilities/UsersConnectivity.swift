@@ -26,14 +26,14 @@ class UsersConnectivity: NSObject {
         session.delegate = self
         return session
     }()
-    
-    var delegate: NearbyUsersDelegate?
-    var chatDelegate: ChatDelegate?
     lazy var gameSession: MCSession = {
         let session = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .none)
         session.delegate = self
         return session
     }()
+    
+    var delegate: NearbyUsersDelegate?
+    var chatDelegate: ChatDelegate?
     
     //    MARK: Initialization
     
@@ -47,7 +47,13 @@ class UsersConnectivity: NSObject {
         else {
             self.myPeerID = MCPeerID(displayName: (UIDevice.current.identifierForVendor?.uuidString)!.appending(".chat"))
         }
-        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: ["username": self.userModel!.username, "state": self.userModel!.state, "avatar": self.userModel!.avatarString] as Dictionary, serviceType:Constants.MCServiceType)
+        self.serviceAdvertiser = MCNearbyServiceAdvertiser(
+            peer: self.myPeerID,
+            discoveryInfo: ["username": self.userModel!.username,
+                            "state": self.userModel!.state,
+                            "avatar": self.userModel!.avatarString] as Dictionary,
+            serviceType:Constants.MCServiceType)
+        
         self.serviceBrowser = MCNearbyServiceBrowser(peer: self.myPeerID, serviceType: Constants.MCServiceType)
         
         super.init()
@@ -65,26 +71,34 @@ class UsersConnectivity: NSObject {
                 for property in properties {
                     var discoveryInfo: Dictionary<String, String>
                     if property.name == "avatarString" {
-                        discoveryInfo = ["username": userModel.username, "state": userModel.state, "avatar": property.newValue as! String]
-                    }
-                    else if property.name == "state" {
-                        discoveryInfo = ["username": userModel.username, "state": property.newValue as! String, "avatar": userModel.avatarString]
-                    }
-                    else {
-                        discoveryInfo = ["username": userModel.username, "state": userModel.state, "avatar": userModel.avatarString]
+                        discoveryInfo = ["username": userModel.username,
+                                         "state": userModel.state,
+                                         "avatar": property.newValue as! String]
+                    } else if property.name == "state" {
+                        discoveryInfo = ["username": userModel.username,
+                                         "state": property.newValue as! String,
+                                         "avatar": userModel.avatarString]
+                    } else {
+                        discoveryInfo = ["username": userModel.username,
+                                         "state": userModel.state,
+                                         "avatar": userModel.avatarString]
                     }
                     print("setting new advertiser with discovery info = %@", discoveryInfo)
                     DispatchQueue.global(qos: .background).async {
                         self.serviceAdvertiser.stopAdvertisingPeer()
                         self.serviceBrowser.stopBrowsingForPeers()
                         
-                        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: discoveryInfo, serviceType:Constants.MCServiceType)
+                        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID,
+                                                                           discoveryInfo: discoveryInfo,
+                                                                           serviceType:Constants.MCServiceType)
                         self.serviceAdvertiser.delegate = self
                         self.serviceAdvertiser.startAdvertisingPeer()
                         sleep(2)
                         self.serviceAdvertiser.stopAdvertisingPeer()
                         sleep(2)
-                        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID, discoveryInfo: discoveryInfo, serviceType:Constants.MCServiceType)
+                        self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: self.myPeerID,
+                                                                           discoveryInfo: discoveryInfo,
+                                                                           serviceType:Constants.MCServiceType)
                         self.serviceAdvertiser.delegate = self
                         self.serviceAdvertiser.startAdvertisingPeer()
                         self.serviceBrowser.startBrowsingForPeers()
@@ -93,7 +107,6 @@ class UsersConnectivity: NSObject {
             default:
                 break
             }
-            
         })
     }
     
@@ -105,8 +118,6 @@ class UsersConnectivity: NSObject {
     }
     
     func didSignOut() {
-//        self.session = nil
-//        self.serviceAdvertiser.delegate = nil
         self.notificationToken?.invalidate()
         self.session.disconnect()
         self.serviceAdvertiser.stopAdvertisingPeer()
@@ -123,7 +134,7 @@ class UsersConnectivity: NSObject {
     }
     
     func inviteUser(peerID: MCPeerID) {
-        if peerID.displayName.contains(".game") {
+        if peerID.displayName.hasSuffix(".game") {
             self.serviceBrowser.invitePeer(peerID, to: self.gameSession, withContext: nil, timeout: 10)
         }
         else {
@@ -144,7 +155,8 @@ class UsersConnectivity: NSObject {
             if (foundUserState == "Hollow") || (foundUserState == "Dying") { return true }
             else { return false }
         case "Undead":
-            if (foundUserState == "Hollow") || (foundUserState == "Dying") || (foundUserState == "Undead") || (foundUserState == "Ghost") { return true }
+            if (foundUserState == "Hollow") || (foundUserState == "Dying") ||
+                (foundUserState == "Undead") || (foundUserState == "Ghost") { return true }
             else { return false }
         default:
             return true
@@ -156,11 +168,15 @@ class UsersConnectivity: NSObject {
 
 extension UsersConnectivity: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
-        NSLog("%@", "didNotStartAdvertisingPeer: \(error)")
+        print("%@", "didNotStartAdvertisingPeer: \(error)")
     }
     
-    func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        NSLog("%@", "didReceiveInvitationFromPeer \(peerID)")
+    func advertiser(_ advertiser: MCNearbyServiceAdvertiser,
+                    didReceiveInvitationFromPeer peerID: MCPeerID,
+                    withContext context: Data?,
+                    invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+        
+        print("%@", "didReceiveInvitationFromPeer \(peerID)")
         invitationHandler(true, self.session)
     }
     
@@ -169,11 +185,14 @@ extension UsersConnectivity: MCNearbyServiceAdvertiserDelegate {
 extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
-        NSLog("%@", "didNotStartBrowsingForPeers: \(error)")
+        print("%@", "didNotStartBrowsingForPeers: \(error)")
     }
     
-    func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
-        NSLog("%@", "foundPeer: \(peerID)")
+    func browser(_ browser: MCNearbyServiceBrowser,
+                 foundPeer peerID: MCPeerID,
+                 withDiscoveryInfo info: [String : String]?) {
+        
+        print("%@", "foundPeer: \(peerID)")
         self.foundPeers?.append(peerID)
         if peerID.displayName.hasSuffix(".game") {
             self.foundGamePeer(peerID: peerID, withDiscoveryInfo: info)
@@ -186,14 +205,17 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
 
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        NSLog("%@", "lostPeer: \(peerID)")
+        print("%@", "lostPeer: \(peerID)")
         if let index = self.foundPeers?.index(where: { iPeerID -> Bool in
             iPeerID == peerID
         }) {
             self.foundPeers?.remove(at: index)
         }
         let realm = try! Realm()
-        if let user = realm.objects(UserModel.self).filter("uniqueDeviceID == %@ AND state != %@", peerID.displayName, "Offline").filter("state != %@", "Spectre").first {
+        if let user = realm.objects(UserModel.self)
+            .filter("uniqueDeviceID == %@ AND state != %@", peerID.displayName, "Offline")
+            .filter("state != %@", "Spectre").first {
+            
             realm.beginWrite()
             user.state = "Offline"
             try! realm.commitWrite()
@@ -221,7 +243,7 @@ extension UsersConnectivity : MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        NSLog("%@", "didReceiveData: \(data)")
+        print("%@", "didReceiveData: \(data)")
         if peerID.displayName.hasSuffix(".game") {
             self.handleGameData(data: data, fromPeer: peerID)
         }
@@ -230,15 +252,21 @@ extension UsersConnectivity : MCSessionDelegate {
         }
     }
     
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
+    func session(_ session: MCSession,
+                 didReceive stream: InputStream,
+                 withName streamName: String, fromPeer peerID: MCPeerID) {
         
     }
     
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
+    func session(_ session: MCSession,
+                 didStartReceivingResourceWithName resourceName: String,
+                 fromPeer peerID: MCPeerID, with progress: Progress) {
         
     }
     
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
+    func session(_ session: MCSession,
+                 didFinishReceivingResourceWithName resourceName: String,
+                 fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
         
     }
     

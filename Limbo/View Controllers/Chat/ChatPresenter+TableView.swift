@@ -40,7 +40,7 @@ extension ChatPresenter: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let bonusHeight = self.selectedIndexPathForTimeStamp == indexPath ? 11 : 0
+        let bonusHeight = self.selectedIndexPathForTimeStamp == indexPath ? 13 : 0
         return self.messagesHeights[indexPath.row] + CGFloat(bonusHeight)
     }
 }

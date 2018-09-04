@@ -16,7 +16,8 @@ class MessageCell: UITableViewCell, SetableForMessageModel {
     
     func set(forMessageModel message: MessageModel, senderImage: UIImage?) {
         self.messageLabel.text = message.messageString
-        self.messageTimestampLabel.text = SmartFormatter.instance.formatDate(date: message.timeSent)
+        self.messageTimestampLabel.text = message.sender!.username
+            .appending(" ").appending(SmartFormatter.instance.formatDate(date: message.timeSent))
         self.messageLabel.layer.masksToBounds = true;
         self.messageLabel.layer.cornerRadius = 5
         self.senderImageView?.image = senderImage
