@@ -53,6 +53,31 @@ class ChatPresenter: NSObject {
         }
     }
     
+    func lastMessageIndex() -> Int {
+        return self.messages.count - 1
+    }
+    
+    func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage? {
+        guard message.sender != RealmManager.currentLoggedUser() else { return nil }
+        guard indexPath.row - 1 >= 0 else {
+            return properImage(imageName: message.sender!.avatarString)
+        }
+        guard self.messages[indexPath.row - 1].sender != message.sender else { return nil }
+        
+        return properImage(imageName: message.sender!.avatarString)
+    }
+    
+    func properImage(imageName: String) -> UIImage {
+        if let defaultImage = UIImage(named: imageName) {
+            return defaultImage
+        }
+        else if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: imageName)!)){
+            //            image loading not yet optimized
+            return imgurImage
+        }
+        return #imageLiteral(resourceName: "ghost_avatar.png")
+    }
+    
 }
 
 extension ChatPresenter: ChatInteractorToPresenterInterface {
@@ -101,10 +126,6 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         self.chatView.setNavigationItemName(name: self.chatInteractor!.currentRoomName())
     }
     
-    func lastMessageIndex() -> Int {
-        return self.messages.count - 1
-    }
-    
     func requestMoreMessages() {
         let countBeforeUpdate = self.messages.count
         guard countBeforeUpdate > 0 else { return }
@@ -119,28 +140,7 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         self.chatView.reloadAllData()
         self.chatView.scrollTo(indexPath: IndexPath(row: countAfterUpdate - countBeforeUpdate, section: 0), at: .top, animated: false)
     }
-    
-    func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage? {
-        guard message.sender != RealmManager.currentLoggedUser() else { return nil }
-        guard indexPath.row - 1 >= 0 else {
-            return properImage(imageName: message.sender!.avatarString)
-        }
-        guard self.messages[indexPath.row - 1].sender != message.sender else { return nil }
-        
-        return properImage(imageName: message.sender!.avatarString)
-    }
-    
-    func properImage(imageName: String) -> UIImage {
-        if let defaultImage = UIImage(named: imageName) {
-            return defaultImage
-        }
-        else if let imgurImage = try! UIImage(data: Data(contentsOf: URL(string: imageName)!)){
-//            image loading not yet optimized
-            return imgurImage
-        }
-        return #imageLiteral(resourceName: "ghost_avatar.png")
-    }
-    
+
     func sendButtonTap(message: String) {
         self.chatInteractor!.handleMessage(message: message)
     }

@@ -63,7 +63,6 @@ protocol ChatInteractorToPresenterInterface: class {
 
 protocol ChatViewToPresenterInterface {
 //    func getMessages() -> [MessageModel]
-    func lastMessageIndex() -> Int
     func requestMessages()
     func requestMoreMessages()
     
@@ -72,8 +71,6 @@ protocol ChatViewToPresenterInterface {
     func viewDidAppear()
     
     func makeTableViewScrollToLastRow(animated: Bool)
-    func image(forMessage message: MessageModel, andIndexPath indexPath: IndexPath) -> UIImage?
-    func properImage(imageName: String) -> UIImage
     
     func sendButtonTap(message: String)
     func didTapOnImage(recognizer: UITapGestureRecognizer, inTableView tableView: UITableView)
