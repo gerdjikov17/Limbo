@@ -42,7 +42,7 @@ class ChatImageViewController: UIViewController {
         
         if panGesture.state == .began {
             self.view.backgroundColor = UIColor(white: 1, alpha: 0.3)
-            originalPosition = view.center
+            originalPosition = imageView.center
             currentPositionTouched = panGesture.location(in: view)
         } else if panGesture.state == .changed {
             imageView.frame.origin = CGPoint(x: self.view.frame.origin.x, y: translation.y)
