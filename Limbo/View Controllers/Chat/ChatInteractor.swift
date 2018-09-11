@@ -115,7 +115,7 @@ class ChatInteractor: NSObject, ChatInteractorInterface {
             case .update(_, _, let insertions, _):
                 
                 if insertions.count > 0 {
-                    print("new insertion\n\n")
+                    print("new insertion\n")
                     self.chatPresenter.newMessage(message: self.messagesResults.last!)
                 }
             case .error(let error):

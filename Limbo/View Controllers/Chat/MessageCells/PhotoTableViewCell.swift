@@ -26,28 +26,33 @@ class PhotoTableViewCell: UITableViewCell, SetableForMessageModel {
     }
     
     func setCellUI(forMessageModel messageModel: MessageModel) {
-        if let image = ImageCache.shared.getImage(forKey: (messageModel.messageString as NSString)) {
-            self.sentPhotoImageView.image = image
-            print("gets data from the cache")
-        }
-        else {
-            let limboDirectory = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: false)
-            let filePath = limboDirectory.appendingPathComponent(messageModel.messageString, isDirectory: false)
-            if let imageData = try? Data(contentsOf: filePath) {
-                if let image = UIImage(data: imageData) {
-                    ImageCache.shared.cacheImage(image: image, forKey: (messageModel.messageString as NSString))
-                    self.sentPhotoImageView.image = image
-                }
-                else {
-                    self.sentPhotoImageView.image = #imageLiteral(resourceName: "notfound.png")
-                }
-            }
-            else {
-                self.sentPhotoImageView.image = #imageLiteral(resourceName: "notfound.png")
-            }
-            
-            
-        }
+        
+//        if let image = ImageCache.shared.getImage(forKey: (messageModel.messageString as NSString)) {
+//            self.sentPhotoImageView.image = image
+//            print("gets data from the cache")
+//        }
+//        else {
+//            let limboDirectory = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: false)
+//            let filePath = limboDirectory.appendingPathComponent(messageModel.messageString, isDirectory: false)
+//            if let imageData = try? Data(contentsOf: filePath) {
+//                if let image = UIImage(data: imageData) {
+//                    ImageCache.shared.cacheImage(image: image, forKey: (messageModel.messageString as NSString))
+//                    self.sentPhotoImageView.image = image
+//                }
+//                else {
+//                    self.sentPhotoImageView.image = #imageLiteral(resourceName: "notfound.png")
+//                }
+//            }
+//            else {
+//                self.sentPhotoImageView.image = #imageLiteral(resourceName: "notfound.png")
+//            }
+//
+//
+//        }
+        let limboDirectory = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: false)
+        let filePath = limboDirectory.appendingPathComponent(messageModel.messageString, isDirectory: false)
+        self.sentPhotoImageView.loadAsyncImage(fromURL: filePath)
+//        self.sentPhotoImageView.loadAsyncImage(localURL: filePath)
         self.sentPhotoTimeStampLabel.text = SmartFormatter.instance.formatDate(date: messageModel.timeSent)
     }
 

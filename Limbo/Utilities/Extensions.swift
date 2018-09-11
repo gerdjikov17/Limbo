@@ -98,3 +98,49 @@ extension FileManager {
         return documentsDirectory
     }
 }
+
+extension UIImageView {
+    func loadAsyncImage(fromURL: URL) {
+        if let cachedImage = ImageCache.shared.getImage(forKey: fromURL.absoluteString as NSString) {
+            self.image = cachedImage
+            return
+        }
+        else {
+            URLSession.shared.dataTask(with: fromURL) { (data, response, error) in
+                
+                if error != nil {
+                    DispatchQueue.main.async {
+                        self.image = #imageLiteral(resourceName: "ghost_avatar.png")
+                        return
+                    }
+                    
+                }
+                
+                DispatchQueue.main.async {
+                    let image = UIImage(data: data!)
+                    ImageCache.shared.cacheImage(image: image!, forKey: NSString(string: fromURL.absoluteString))
+                    self.image = image
+                }
+            }.resume()
+        }
+    }
+    
+    func loadAsyncImage(localURL: URL) {
+        if let image = ImageCache.shared.getImage(forKey: (localURL.absoluteString as NSString)) {
+            DispatchQueue.main.async {
+                self.image = image
+            }
+            print("gets data from the cache")
+        }
+        else {
+            if let imageData = try? Data(contentsOf: localURL) {
+                if let image = UIImage(data: imageData) {
+                    ImageCache.shared.cacheImage(image: image, forKey: (localURL.absoluteString as NSString))
+                    DispatchQueue.main.async {
+                        self.image = image
+                    }
+                }
+            }
+        }
+    }
+}

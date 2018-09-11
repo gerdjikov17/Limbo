@@ -59,12 +59,13 @@ extension ChatPresenter: ChatInteractorToPresenterInterface {
     
     func newMessage(message: MessageModel) {
         self.messages.append(message)
-        self.messagesHeights.append(heightForMessage(for: message))
+        self.messagesHeights.append(self.heightForMessage(for: message))
         print("appending message")
         let newIndexPath = IndexPath(row: self.messages.count - 1 , section: 0)
         self.chatView.insert(indexPaths: [newIndexPath])
         print("inserting row")
         self.chatView.scrollTo(indexPath: newIndexPath, at: .bottom, animated: true)
+        
     }
     
     func silencedCallBack() {
