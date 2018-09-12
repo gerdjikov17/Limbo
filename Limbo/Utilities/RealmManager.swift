@@ -118,4 +118,29 @@ class RealmManager: NSObject {
         return realm.objects(ChatRoomModel.self).filter("uuid = %@", chatRoom.uuid).first != nil
     }
     
+    static func getImagesFromMessageHistory(messageHistory: Results<MessageModel>) -> [(image: UIImage, sender: String?)] {
+        var images_senders: [(image: UIImage, sender: String?)] = Array()
+        let limboDirectory = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: false)
+        for message in messageHistory {
+            if let image = ImageCache.shared.getImage(forKey: (message.messageString as NSString)) {
+                images_senders.append((image: image, sender: message.sender?.username))
+                print("gets data from the cache")
+            }
+            else {
+                let filePath = limboDirectory.appendingPathComponent(message.messageString, isDirectory: false)
+                if let imageData = try? Data(contentsOf: filePath) {
+                    if let image = UIImage(data: imageData) {
+                        ImageCache.shared.cacheImage(image: image, forKey: (message.messageString as NSString))
+                        images_senders.append((image: image, sender: message.sender?.username))
+                    }
+                }
+            }
+        }
+        return images_senders
+    }
+    
+    static func getMessagesWithImages(forMessageHistory messageHistory: Results<MessageModel>) -> Results<MessageModel> {
+        return messageHistory.filter("messageType = %d", MessageType.Photo.rawValue)
+    }
+    
 }

@@ -40,10 +40,10 @@ class ChatRouter: NSObject, ChatRouterInterface {
         return view
     }
     
-    func presentImage(image: UIImage, sender: String) {
+    func presentImage(photoMessages: Results<MessageModel>, index: Int) {
         let chatImageVC = storyboard.instantiateViewController(withIdentifier: "chatImageVC") as! ChatImageViewController
-        chatImageVC.image = image
-        chatImageVC.senderUsername = sender
+        chatImageVC.photoMessages = photoMessages
+        chatImageVC.currentPhotoIndex = index
         self.navigationController.present(chatImageVC, animated: true, completion: nil)
     }
     

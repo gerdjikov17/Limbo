@@ -104,7 +104,7 @@ protocol ChatInteractorInterface: class {
 }
 
 protocol ChatRouterInterface {
-    func presentImage(image: UIImage, sender: String)
+    func presentImage(photoMessages: Results<MessageModel>, index: Int)
     func presentOptions(barButtonItem: UIBarButtonItem, optionsType: OptionsType, optionsDelegate: OptionsDelegate)
     func presentItems(forUser: UserModel, sourceView: UIView)
     func presentAlertController(alertController: UIAlertController)

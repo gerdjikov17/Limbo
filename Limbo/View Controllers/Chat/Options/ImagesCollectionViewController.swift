@@ -18,7 +18,7 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
     override func viewDidLoad() {
         super.viewDidLoad()
         images_Senders = Array()
-        getImagesFromMessageHistory()
+        self.images_Senders = RealmManager.getImagesFromMessageHistory(messageHistory: messagesHistory)
         self.definesPresentationContext = true
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .done, target: self, action: #selector(dismisSelf))
@@ -31,25 +31,6 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
     
     @objc func dismisSelf() {
         self.dismiss(animated: true, completion: nil)
-    }
-    
-    func getImagesFromMessageHistory() {
-        let limboDirectory = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: false)
-        for message in messagesHistory {
-            if let image = ImageCache.shared.getImage(forKey: (message.messageString as NSString)) {
-                images_Senders.append((image: image, sender: message.sender?.username))
-                print("gets data from the cache")
-            }
-            else {
-                let filePath = limboDirectory.appendingPathComponent(message.messageString, isDirectory: false)
-                if let imageData = try? Data(contentsOf: filePath) {
-                    if let image = UIImage(data: imageData) {
-                        ImageCache.shared.cacheImage(image: image, forKey: (message.messageString as NSString))
-                        images_Senders.append((image: image, sender: message.sender?.username))
-                    }
-                }
-            }
-        }
     }
 
     // MARK: UICollectionViewDataSource
@@ -73,10 +54,9 @@ class ImagesCollectionViewController: UICollectionViewController, UICollectionVi
     
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let image = images_Senders[indexPath.row].image
         let imageVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "chatImageVC") as! ChatImageViewController
-        imageVC.image = image
-        imageVC.senderUsername = images_Senders[indexPath.row].sender!
+        imageVC.currentPhotoIndex = indexPath.row
+        imageVC.photoMessages = messagesHistory
         self.present(imageVC, animated: true, completion: nil)
     }
     

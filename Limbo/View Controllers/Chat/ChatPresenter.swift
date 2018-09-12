@@ -149,14 +149,13 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         let touchPoint = recognizer.location(in: tableView)
         let indexPath: IndexPath = tableView.indexPathForRow(at: touchPoint)!
         
-        guard let cell = tableView.cellForRow(at: indexPath) as? PhotoTableViewCell else { return }
-        guard let image = cell.sentPhotoImageView.image else { return }
+        guard let messageResults = self.chatInteractor?.getMessageResults() else { return }
         
         let message = self.messages[indexPath.row]
+        let photoMessages = RealmManager.getMessagesWithImages(forMessageHistory: messageResults)
+        guard let messageIndex = photoMessages.index(of: message) else { return }
         
-        guard let sender = message.sender else { return }
-        
-        self.chatRouter?.presentImage(image: image, sender: sender.username)
+        self.chatRouter?.presentImage(photoMessages: photoMessages, index: messageIndex)
     }
     
     func didTapOnMessage(recognizer: UITapGestureRecognizer, inTableView tableView: UITableView) {
@@ -228,8 +227,10 @@ extension ChatPresenter: OptionsDelegate {
     }
     
     func showImages() {
-        self.chatRouter!.presentAllImagesCVC(messagesHistory: self.chatInteractor!.getMessageResults()!, completion: {
-            self.chatInteractor?.didStartPresentingSomeVC()
+        self.chatRouter!.presentAllImagesCVC(
+            messagesHistory: RealmManager.getMessagesWithImages(forMessageHistory: self.chatInteractor!.getMessageResults()!),
+            completion: {
+                self.chatInteractor?.didStartPresentingSomeVC()
         })
     }
     

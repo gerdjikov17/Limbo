@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class ChatImageViewController: UIViewController {
 
@@ -14,27 +15,59 @@ class ChatImageViewController: UIViewController {
     @IBOutlet weak var senderLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
-    var image: UIImage!
-    var senderUsername: String!
     var panGestureRecognizer: UIPanGestureRecognizer?
     var originalPosition: CGPoint?
     var currentPositionTouched: CGPoint?
     
+    var photoMessages: Results<MessageModel>!
+    var currentPhotoIndex: Int!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(white: 1, alpha: 0.3)
-        self.imageView.image = image
-        self.senderLabel.text = senderUsername
+        
+        setUIContent(forPhotoIndex: currentPhotoIndex)
+        
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGestureAction(_:)))
         view.addGestureRecognizer(panGestureRecognizer!)
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
+        
+        let swipeLeftGesture = UISwipeGestureRecognizer(target: self, action: #selector(swipeLeft))
+        swipeLeftGesture.direction = .left
+        view.addGestureRecognizer(swipeLeftGesture)
+        
+        let swipeRightGesture = UISwipeGestureRecognizer(target: self, action: #selector(swipeRight))
+        swipeRightGesture.direction = .right
+        view.addGestureRecognizer(swipeRightGesture)
+        
         self.scrollView.delegate = self
         // Do any additional setup after loading the view.
     }
+    
+    func setUIContent(forPhotoIndex: Int) {
+        self.imageView.loadAsyncImage(localURL: localURL(forPhotoIndex: currentPhotoIndex))
+        self.senderLabel.text = senderUsername(forPhotoIndex: currentPhotoIndex)
+    }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func localURL(forPhotoIndex: Int) -> URL {
+        return FileManager.getDocumentsDirectory()
+            .appendingPathComponent("Limbo")
+            .appendingPathComponent(photoMessages[forPhotoIndex].messageString)
+    }
+    
+    func senderUsername(forPhotoIndex: Int) -> String {
+        return photoMessages[forPhotoIndex].sender!.username
+    }
+    
+    func swipePhoto(left: Bool) {
+        if !left {
+            guard currentPhotoIndex - 1 >= 0 else { return }
+            currentPhotoIndex = currentPhotoIndex - 1
+        } else {
+            guard currentPhotoIndex + 1 < photoMessages.count else { return }
+            currentPhotoIndex = currentPhotoIndex + 1
+        }
+        setUIContent(forPhotoIndex: currentPhotoIndex)
     }
     
     @objc func panGestureAction(_ panGesture: UIPanGestureRecognizer) {
@@ -97,6 +130,36 @@ class ChatImageViewController: UIViewController {
                 self.labelBackgroundView.isHidden = true
                 self.senderLabel.isHidden = true
             })
+        }
+    }
+    
+    @objc func swipeLeft() {
+        UIView.animate(withDuration: 0.4, animations: {
+            self.imageView.frame.origin = CGPoint(
+                x: -self.view.frame.size.width,
+                y: 0
+            )
+        }) { (isCompleted) in
+            self.imageView.frame.origin = CGPoint(
+                x: 0,
+                y: 0
+            )
+            self.swipePhoto(left: true)
+        }
+    }
+    
+    @objc func swipeRight() {
+        UIView.animate(withDuration: 0.4, animations: {
+            self.imageView.frame.origin = CGPoint(
+                x: self.view.frame.size.width,
+                y: 0
+            )
+        }) { (isCompleted) in
+            self.imageView.frame.origin = CGPoint(
+                x: 0,
+                y: 0
+            )
+            self.swipePhoto(left: false)
         }
     }
 }
