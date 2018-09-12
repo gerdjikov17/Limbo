@@ -85,11 +85,29 @@ class ChatRouter: NSObject, ChatRouterInterface {
         self.navigationController?.present(navC, animated: true, completion: completion)
     }
     
-    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate), completion: (() -> Void)?) {
+    func presentGalleryVC(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate),
+                          sourceView: UIView,
+                          completion: (() -> Void)?) {
+        let galleryVC = storyboard.instantiateViewController(withIdentifier: "galleryVC") as! GalleryPopoverViewController
+        galleryVC.chatRouter = self
+        galleryVC.completion = completion
+        galleryVC.imgPickerDelegate = imgPickerDelegate
+        galleryVC.modalPresentationStyle = .popover
+        galleryVC.preferredContentSize = CGSize(width: 120, height: 70)
+        let popoverPresentationController = galleryVC.popoverPresentationController
+        popoverPresentationController?.permittedArrowDirections = .down
+        popoverPresentationController!.sourceView = sourceView
+        popoverPresentationController!.sourceRect = sourceView.bounds
+        popoverPresentationController!.delegate = self
+        self.navigationController.present(galleryVC, animated: true, completion: nil)
+        
+    }
+    
+    func presentUIImagePicker(sourceType: UIImagePickerControllerSourceType, imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate), completion: (() -> Void)?) {
         let imgPicker = UIImagePickerController()
         imgPicker.delegate = imgPickerDelegate
         imgPicker.allowsEditing = false
-        imgPicker.sourceType = .photoLibrary
+        imgPicker.sourceType = sourceType
         self.navigationController.present(imgPicker, animated: true, completion: completion)
     }
     

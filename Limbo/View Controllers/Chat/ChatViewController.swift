@@ -116,7 +116,7 @@ class ChatViewController: UIViewController {
     
     
     @IBAction func addPhotoButtonTap(_ sender: AnyObject) {
-        self.chatPresenter.didTapOnAddPhotoButton()
+        self.chatPresenter.didTapOnAddPhotoButton(sourceView: sender as! UIView)
     }
     
     @IBAction func itemsButtonTap(_ sender: AnyObject) {

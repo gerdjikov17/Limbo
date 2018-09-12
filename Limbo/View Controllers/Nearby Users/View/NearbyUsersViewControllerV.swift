@@ -11,7 +11,6 @@ import Toast_Swift
 import DZNEmptyDataSet
 import RealmSwift
 
-
 class NearbyUsersViewControllerV: UIViewController {
 
     @IBOutlet weak var nearbyUsersCollectionView: UICollectionView!

@@ -31,17 +31,17 @@ class LimboTests: XCTestCase {
     }
     
     func testThatAfterViewDidLoadATableViewIsPresent() {
-        chatViewControllerUnderTest?.view
+        _ = chatViewControllerUnderTest?.view
         XCTAssertNotNil(chatViewControllerUnderTest?.chatTableView, "a chatTableView instance should be present")
     }
     
     func testThatAfterViewDidLoadAMessageTextFieldIsPresent() {
-        chatViewControllerUnderTest?.view
+        _ = chatViewControllerUnderTest?.view
         XCTAssertNotNil(chatViewControllerUnderTest?.messageTextField, "a messageTextfield instance should be present")
     }
     
     func testThatAfterViewDidLoadAllButtonsArePresent() {
-        chatViewControllerUnderTest?.view
+        _ = chatViewControllerUnderTest?.view
         XCTAssertNotNil(chatViewControllerUnderTest?.sendButton, "a sendButton instance should be present")
         XCTAssertNotNil(chatViewControllerUnderTest?.navigationItem.rightBarButtonItems, "a rightBarButtonItems instance should be present")
     }

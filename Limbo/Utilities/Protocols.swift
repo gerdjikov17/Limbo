@@ -77,7 +77,7 @@ protocol ChatViewToPresenterInterface {
     func didTapOnMessage(recognizer: UITapGestureRecognizer, inTableView tableView: UITableView)
     func didTapOnOptionsButton(navigatoinButton: UIBarButtonItem)
     func didTapOnItemsButton(sourceView: UIView)
-    func didTapOnAddPhotoButton()
+    func didTapOnAddPhotoButton(sourceView: UIView)
     func voiceRecordButtonTap()
 }
 
@@ -109,10 +109,13 @@ protocol ChatRouterInterface {
     func presentItems(forUser: UserModel, sourceView: UIView)
     func presentAlertController(alertController: UIAlertController)
     func presentAllImagesCVC(messagesHistory: Results<MessageModel>, completion: (() -> Void)?)
-    func presentUIImagePicker(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate),
-                              completion: (() -> Void)?)
-    
+    func presentUIImagePicker(sourceType: UIImagePickerControllerSourceType,
+                              imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate),
+                              completion: (() -> Void)?) 
     func presentVoiceRecorder(voiceRecordeDelegate: VoiceRecorderInteractorDelegate, completion: (() -> Void)?)
+    func presentGalleryVC(imgPickerDelegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate),
+                          sourceView: UIView,
+                          completion: (() -> Void)?)
     func presentAvatars(chatRoom: ChatRoomModel)
     func pushVC(vc: UIViewController)
 }

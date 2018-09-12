@@ -76,6 +76,9 @@
 		06A26F5821134F650023F679 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5721134F650023F679 /* NotificationManager.swift */; };
 		06A26F5A21135E330023F679 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5921135E330023F679 /* RealmManager.swift */; };
 		06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A26F5B211496980023F679 /* ItemPopoverViewController.swift */; };
+		06B6774B21491FC900CF64B5 /* MockRealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B677422148FB5B00CF64B5 /* MockRealmManager.swift */; };
+		06B6774E214927CD00CF64B5 /* MockChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B6774D214927CD00CF64B5 /* MockChatView.swift */; };
+		06B6775021493FCB00CF64B5 /* GalleryPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B6774F21493FCB00CF64B5 /* GalleryPopoverViewController.swift */; };
 		06CADED0212ADA04005A59A2 /* ChatImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */; };
 		06CADED4212AED79005A59A2 /* notfound.png in Resources */ = {isa = PBXBuildFile; fileRef = 06CADED3212AED78005A59A2 /* notfound.png */; };
 		06CADED7212AF3D3005A59A2 /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADED6212AF3D3005A59A2 /* OptionsViewController.swift */; };
@@ -83,6 +86,9 @@
 		06CADEDB212AFA50005A59A2 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CADEDA212AFA50005A59A2 /* ImageCollectionViewCell.swift */; };
 		06EB10782147EBFB00841953 /* LimboTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EB10772147EBFB00841953 /* LimboTests.swift */; };
 		06EB108E2147F89600841953 /* MockChatPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EB108D2147F89600841953 /* MockChatPresenter.swift */; };
+		06EB1090214800ED00841953 /* MockUsersConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EB108F214800ED00841953 /* MockUsersConnectivity.swift */; };
+		06EB1092214801CB00841953 /* ChatRouterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EB1091214801CB00841953 /* ChatRouterTest.swift */; };
+		06EB1094214802AC00841953 /* ChatModuleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EB1093214802AC00841953 /* ChatModuleTest.swift */; };
 		06EF53C8213D1A4900AE93BB /* CustomEmptyDataSetDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF53C7213D1A4900AE93BB /* CustomEmptyDataSetDelegate.swift */; };
 		3FAAF040A7A67884D713FD01 /* Pods_Limbo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */; };
 /* End PBXBuildFile section */
@@ -170,6 +176,12 @@
 		06A26F5721134F650023F679 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		06A26F5921135E330023F679 /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 		06A26F5B211496980023F679 /* ItemPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPopoverViewController.swift; sourceTree = "<group>"; };
+		06B677382148F49800CF64B5 /* RealmSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		06B6773A2148F49C00CF64B5 /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		06B6773D2148F57D00CF64B5 /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		06B677422148FB5B00CF64B5 /* MockRealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRealmManager.swift; sourceTree = "<group>"; tabWidth = 4; };
+		06B6774D214927CD00CF64B5 /* MockChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChatView.swift; sourceTree = "<group>"; };
+		06B6774F21493FCB00CF64B5 /* GalleryPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryPopoverViewController.swift; sourceTree = "<group>"; };
 		06CADECF212ADA03005A59A2 /* ChatImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatImageViewController.swift; sourceTree = "<group>"; };
 		06CADED3212AED78005A59A2 /* notfound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notfound.png; sourceTree = "<group>"; };
 		06CADED6212AF3D3005A59A2 /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
@@ -179,6 +191,9 @@
 		06EB10772147EBFB00841953 /* LimboTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimboTests.swift; sourceTree = "<group>"; };
 		06EB10792147EBFB00841953 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06EB108D2147F89600841953 /* MockChatPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockChatPresenter.swift; sourceTree = "<group>"; };
+		06EB108F214800ED00841953 /* MockUsersConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUsersConnectivity.swift; sourceTree = "<group>"; };
+		06EB1091214801CB00841953 /* ChatRouterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRouterTest.swift; sourceTree = "<group>"; };
+		06EB1093214802AC00841953 /* ChatModuleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModuleTest.swift; sourceTree = "<group>"; };
 		06EF53C7213D1A4900AE93BB /* CustomEmptyDataSetDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEmptyDataSetDelegate.swift; sourceTree = "<group>"; };
 		62DB9537D81A311EB8C0824B /* Pods-Limbo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Limbo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Limbo/Pods-Limbo.debug.xcconfig"; sourceTree = "<group>"; };
 		9270B366D46D00900DB7BF1A /* Pods_Limbo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Limbo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -423,6 +438,7 @@
 				06CADED8212AF833005A59A2 /* ImagesCollectionViewController.swift */,
 				06CADEDA212AFA50005A59A2 /* ImageCollectionViewCell.swift */,
 				0652816A2133E6B8008070C8 /* VoiceRecordingViewController.swift */,
+				06B6774F21493FCB00CF64B5 /* GalleryPopoverViewController.swift */,
 			);
 			path = Options;
 			sourceTree = "<group>";
@@ -430,8 +446,13 @@
 		06EB10762147EBFB00841953 /* LimboTests */ = {
 			isa = PBXGroup;
 			children = (
-				06EB108D2147F89600841953 /* MockChatPresenter.swift */,
 				06EB10772147EBFB00841953 /* LimboTests.swift */,
+				06EB1093214802AC00841953 /* ChatModuleTest.swift */,
+				06EB1091214801CB00841953 /* ChatRouterTest.swift */,
+				06B677422148FB5B00CF64B5 /* MockRealmManager.swift */,
+				06EB108F214800ED00841953 /* MockUsersConnectivity.swift */,
+				06EB108D2147F89600841953 /* MockChatPresenter.swift */,
+				06B6774D214927CD00CF64B5 /* MockChatView.swift */,
 				06EB10792147EBFB00841953 /* Info.plist */,
 			);
 			path = LimboTests;
@@ -440,6 +461,9 @@
 		1DC3AF52497DCF1AF8048988 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06B6773D2148F57D00CF64B5 /* Realm.framework */,
+				06B6773A2148F49C00CF64B5 /* Realm.framework */,
+				06B677382148F49800CF64B5 /* RealmSwift.framework */,
 				061095BD210F178F00A23D27 /* LNRSimpleNotifications.framework */,
 				061095BB210F176400A23D27 /* AudioToolbox.framework */,
 				06262FEC210B63EB003C6A1E /* Pastel.framework */,
@@ -653,6 +677,7 @@
 				06CADEDB212AFA50005A59A2 /* ImageCollectionViewCell.swift in Sources */,
 				0618F3EC212C01F20004FDE4 /* VoiceMessageTableViewCell.swift in Sources */,
 				0652817421343190008070C8 /* NearbyUsersInteractor.swift in Sources */,
+				06B6775021493FCB00CF64B5 /* GalleryPopoverViewController.swift in Sources */,
 				0618F3F2212C3F120004FDE4 /* SmartFormatter.swift in Sources */,
 				065281622130050F008070C8 /* ChatInteractor.swift in Sources */,
 				0657906B211ACDF1005CF741 /* UsersConnectivity+Chat.swift in Sources */,
@@ -676,6 +701,7 @@
 				0618F3EE212C09DD0004FDE4 /* VoiceRecorder.swift in Sources */,
 				06A26F5C211496990023F679 /* ItemPopoverViewController.swift in Sources */,
 				0657906321198CEE005CF741 /* PastelViewManager.swift in Sources */,
+				06B6774B21491FC900CF64B5 /* MockRealmManager.swift in Sources */,
 				06CADED7212AF3D3005A59A2 /* OptionsViewController.swift in Sources */,
 				0680D58B2111F8AF00B1C926 /* ItemsViewController.swift in Sources */,
 				0652817A213565E4008070C8 /* ChatRoomModelView.swift in Sources */,
@@ -691,7 +717,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06EB1092214801CB00841953 /* ChatRouterTest.swift in Sources */,
 				06EB108E2147F89600841953 /* MockChatPresenter.swift in Sources */,
+				06EB1090214800ED00841953 /* MockUsersConnectivity.swift in Sources */,
+				06EB1094214802AC00841953 /* ChatModuleTest.swift in Sources */,
+				06B6774E214927CD00CF64B5 /* MockChatView.swift in Sources */,
 				06EB10782147EBFB00841953 /* LimboTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

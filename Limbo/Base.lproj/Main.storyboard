@@ -1200,7 +1200,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PLv-55-mdY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1879" y="-549"/>
+            <point key="canvasLocation" x="1955" y="-539"/>
         </scene>
         <!--Items View Controller-->
         <scene sceneID="Og7-E5-fiO">
@@ -1503,6 +1503,45 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YFU-mE-kE8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1879" y="1790"/>
+        </scene>
+        <!--Gallery Popover View Controller-->
+        <scene sceneID="CKx-Py-rCq">
+            <objects>
+                <viewController storyboardIdentifier="galleryVC" id="Z6c-UM-iQg" customClass="GalleryPopoverViewController" customModule="Limbo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="k0D-TW-Fxw">
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="70"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hu8-HI-HdO">
+                                <rect key="frame" x="33.333333333333336" y="0.0" width="54.000000000000007" height="30"/>
+                                <state key="normal" title="Camera"/>
+                                <connections>
+                                    <action selector="cameraButtonTap:" destination="Z6c-UM-iQg" eventType="touchUpInside" id="Tdi-3N-g0o"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NW1-WA-Kc8">
+                                <rect key="frame" x="36" y="38" width="48" height="30"/>
+                                <state key="normal" title="Gallery"/>
+                                <connections>
+                                    <action selector="galleryButonTap:" destination="Z6c-UM-iQg" eventType="touchUpInside" id="2Lx-kZ-84D"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="NW1-WA-Kc8" firstAttribute="centerX" secondItem="S07-Wm-iM9" secondAttribute="centerX" id="ag5-9i-0No"/>
+                            <constraint firstItem="hu8-HI-HdO" firstAttribute="top" secondItem="S07-Wm-iM9" secondAttribute="top" id="iRe-1p-vSy"/>
+                            <constraint firstItem="NW1-WA-Kc8" firstAttribute="top" secondItem="hu8-HI-HdO" secondAttribute="bottom" constant="8" id="jGT-jT-Sa3"/>
+                            <constraint firstItem="hu8-HI-HdO" firstAttribute="centerX" secondItem="S07-Wm-iM9" secondAttribute="centerX" id="jca-jo-5mR"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="S07-Wm-iM9"/>
+                    </view>
+                    <value key="contentSizeForViewInPopover" type="size" width="120" height="70"/>
+                    <size key="freeformSize" width="120" height="70"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g4h-vF-Vao" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2388" y="-501"/>
         </scene>
     </scenes>
     <resources>

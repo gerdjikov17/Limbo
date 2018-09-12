@@ -1,21 +1,30 @@
 //
-//  RealmManager.swift
-//  Limbo
+//  MockRealmManager.swift
+//  LimboTests
 //
-//  Created by A-Team User on 2.08.18.
+//  Created by A-Team User on 12.09.18.
 //  Copyright © 2018 A-Team User. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import RealmSwift
+//@testable import Limbo
 
-class RealmManager: NSObject {
+class MockRealmManager: NSObject {
     
-    static var realm: Realm = try! Realm()
+    static let url = FileManager.getDocumentsDirectory().appendingPathComponent("newRealm")
+    static let realmConfig = Realm.Configuration(fileURL: url, inMemoryIdentifier: "asd", syncConfiguration: nil, encryptionKey: nil, readOnly: false, schemaVersion: 1, migrationBlock: nil, deleteRealmIfMigrationNeeded: false, shouldCompactOnLaunch: nil, objectTypes: nil)
+    static var realm: Realm = try! Realm(configuration: realmConfig)
     
-//    static let url = FileManager.getDocumentsDirectory().appendingPathComponent("newRealm")
-//    static let realmConfig = Realm.Configuration(fileURL: url, inMemoryIdentifier: "asd", syncConfiguration: nil, encryptionKey: nil, readOnly: false, schemaVersion: 1, migrationBlock: nil, deleteRealmIfMigrationNeeded: false, shouldCompactOnLaunch: nil, objectTypes: nil)
-//    static var realm: Realm = try! Realm(configuration: realmConfig)
+    static func setDefaultIdentifier(identifier: String) {
+        Realm.Configuration.defaultConfiguration.inMemoryIdentifier = "asd"
+    }
+    
+    static func deleteAll() {
+        try! realm.write {
+            realm.deleteAll()
+        }
+    }
     
     static func userWithPredicate(predicate: NSPredicate) -> UserModel? {
         return realm.objects(UserModel.self).filter(predicate).first
@@ -117,5 +126,4 @@ class RealmManager: NSObject {
     static func hasChatRoomInRealm(chatRoom: ChatRoomModel) -> Bool {
         return realm.objects(ChatRoomModel.self).filter("uuid = %@", chatRoom.uuid).first != nil
     }
-    
 }

@@ -183,8 +183,8 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         self.chatRouter?.presentItems(forUser: RealmManager.currentLoggedUser()!, sourceView: sourceView)
     }
     
-    func didTapOnAddPhotoButton() {
-        self.chatRouter?.presentUIImagePicker(imgPickerDelegate: self, completion: {
+    func didTapOnAddPhotoButton(sourceView: UIView) {
+        self.chatRouter?.presentGalleryVC(imgPickerDelegate: self, sourceView: sourceView, completion: {
             self.chatInteractor?.didStartPresentingSomeVC()
         })
         
@@ -192,8 +192,7 @@ extension ChatPresenter: ChatViewToPresenterInterface {
     
     func voiceRecordButtonTap() {
         self.chatRouter?.presentVoiceRecorder(voiceRecordeDelegate: self.chatInteractor as! VoiceRecorderInteractorDelegate, completion: {
-        self.chatInteractor?.didStartPresentingSomeVC()
-            
+            self.chatInteractor?.didStartPresentingSomeVC()
         })
     }
 }
