@@ -72,7 +72,7 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
     func initProperties() {
         self.chatRooms = Array()
         self.usersConnectivity = UsersConnectivity(userModel: self.currentUser, delegate: self, peerID: nil)
-        self.usersConnectivity.setChatDelegate(newDelegate: self)
+        self.usersConnectivity.chatDelegate = self
         self.currentUser.setState(batteryLevel: UIDevice.current.batteryLevel)
         self.notificationToken = self.currentUser.observe { (objectChange) in
             self.presenter.userObjectChanged(user: self.currentUser)
