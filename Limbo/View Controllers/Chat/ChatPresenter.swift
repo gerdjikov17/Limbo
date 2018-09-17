@@ -34,9 +34,9 @@ class ChatPresenter: NSObject {
         super.init()
     }
     
-    func heightForMessage(for message: MessageModel) -> CGFloat {
+    func heightForMessage(for message: MessageModel, forViewSize size: CGSize) -> CGFloat {
         if message.messageType == MessageType.Message.rawValue {
-            return MessageCellsManager.calculateHeight(forMessage: message) + 6
+            return MessageCellsManager.calculateHeight(forMessage: message, forViewSize: size) + 6
         }
         else if message.messageType == MessageType.Voice_Record.rawValue {
             return 40
@@ -46,10 +46,10 @@ class ChatPresenter: NSObject {
         }
     }
     
-    func storeHeightForMessages(messages: [MessageModel]) {
+    func storeHeightForMessages(messages: [MessageModel], forViewSize size: CGSize) {
         self.messagesHeights = Array()
         for message in messages {
-            self.messagesHeights.append(self.heightForMessage(for: message))
+            self.messagesHeights.append(self.heightForMessage(for: message, forViewSize: size))
         }
     }
     
@@ -84,7 +84,7 @@ extension ChatPresenter: ChatInteractorToPresenterInterface {
     
     func newMessage(message: MessageModel) {
         self.messages.append(message)
-        self.messagesHeights.append(self.heightForMessage(for: message))
+        self.messagesHeights.append(self.heightForMessage(for: message, forViewSize: UIScreen.main.bounds.size))
         print("appending message")
         let newIndexPath = IndexPath(row: self.messages.count - 1 , section: 0)
         self.chatView.insert(indexPaths: [newIndexPath])
@@ -111,6 +111,10 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         self.chatInteractor?.invalidateToken()
     }
     
+    func viewWillTransition(toSize size: CGSize) {
+        self.storeHeightForMessages(messages: self.messages, forViewSize: size)
+    }
+    
     func makeTableViewScrollToLastRow(animated: Bool) {
         let indexPath = IndexPath(row: self.lastMessageIndex(), section: 0)
         if indexPath.row >= 0 {
@@ -121,7 +125,7 @@ extension ChatPresenter: ChatViewToPresenterInterface {
     func requestMessages() {
         self.messages = Array(self.chatInteractor!.getMessageResults()![startIndex...])
         
-        self.storeHeightForMessages(messages: self.messages)
+        self.storeHeightForMessages(messages: self.messages, forViewSize: UIScreen.main.bounds.size)
         
         self.chatView.setNavigationItemName(name: self.chatInteractor!.currentRoomName())
     }
@@ -133,7 +137,7 @@ extension ChatPresenter: ChatViewToPresenterInterface {
         rangeOfMessagesToShow += 50
         self.messages = Array(self.chatInteractor!.getMessageResults()![self.startIndex...])
         
-        self.storeHeightForMessages(messages: self.messages)
+        self.storeHeightForMessages(messages: self.messages, forViewSize: UIScreen.main.bounds.size)
         
         let countAfterUpdate = self.messages.count
         

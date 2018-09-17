@@ -61,6 +61,12 @@ class ChatViewController: UIViewController {
         self.chatPresenter.viewDidDisappear()
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        self.chatPresenter.viewWillTransition(toSize: size)
+    }
+    
+    
+    
     //    MARK: Keyboard Notifications
     
     @objc func keyboardWillShow(notification: Notification) {

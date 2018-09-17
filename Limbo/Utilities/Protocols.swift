@@ -68,6 +68,7 @@ protocol ChatViewToPresenterInterface {
     func viewDidDisappear()
     func viewDidLoad()
     func viewDidAppear()
+    func viewWillTransition(toSize size: CGSize)
     
     func makeTableViewScrollToLastRow(animated: Bool)
     

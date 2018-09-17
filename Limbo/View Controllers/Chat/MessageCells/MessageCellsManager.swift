@@ -34,14 +34,14 @@ class MessageCellsManager: NSObject {
         }
     }
     
-    static func calculateHeight(forMessage message: MessageModel) -> CGFloat {
+    static func calculateHeight(forMessage message: MessageModel, forViewSize size: CGSize) -> CGFloat {
         
         let messageString = message.messageString
         let attributes: [NSAttributedStringKey : Any] = [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14.0)]
         
         let attributedString: NSAttributedString = NSAttributedString(string: messageString, attributes: attributes)
         
-        let rect: CGRect = attributedString.boundingRect(with: CGSize(width: UIScreen.main.bounds.size.width - 53, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
+        let rect: CGRect = attributedString.boundingRect(with: CGSize(width: size.width - 53, height: CGFloat.greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
         
         let requredSize: CGRect = rect
         return requredSize.height + 16
