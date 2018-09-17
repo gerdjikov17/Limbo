@@ -22,10 +22,6 @@ class MockUsersConnectivity: UsersConnectivityDelegate {
         return true
     }
     
-    func setChatDelegate(newDelegate: ChatDelegate) {
-        print("setChatDelegate")
-    }
-    
     func getPeerIDForUID(uniqueID: String) -> MCPeerID? {
         print("getPeerIDForUID")
         return nil
