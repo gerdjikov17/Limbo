@@ -1400,7 +1400,6 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Qif-0i-gVC" firstAttribute="trailing" secondItem="jbi-Mz-bYz" secondAttribute="trailing" id="Beb-54-I78"/>
                             <constraint firstItem="Qif-0i-gVC" firstAttribute="top" secondItem="jbi-Mz-bYz" secondAttribute="top" id="JAd-L7-9V4"/>

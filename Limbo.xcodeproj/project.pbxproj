@@ -66,7 +66,6 @@
 		066C84A92122F6150022CA95 /* pepe5.png in Resources */ = {isa = PBXBuildFile; fileRef = 066C849D2122F6150022CA95 /* pepe5.png */; };
 		066C84AA2122F6150022CA95 /* pepe6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 066C849E2122F6150022CA95 /* pepe6.jpg */; };
 		066C84AB2122F6150022CA95 /* pepe7.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 066C849F2122F6150022CA95 /* pepe7.jpg */; };
-		066C84AC2122F6150022CA95 /* pepe8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 066C84A02122F6150022CA95 /* pepe8.jpg */; };
 		066C84AD2122F6150022CA95 /* pepe9.png in Resources */ = {isa = PBXBuildFile; fileRef = 066C84A12122F6150022CA95 /* pepe9.png */; };
 		066C84AE2122F6150022CA95 /* spongebob.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 066C84A22122F6150022CA95 /* spongebob.jpg */; };
 		066C84B2212448E10022CA95 /* PhotoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */; };
@@ -168,7 +167,6 @@
 		066C849D2122F6150022CA95 /* pepe5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pepe5.png; sourceTree = "<group>"; };
 		066C849E2122F6150022CA95 /* pepe6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pepe6.jpg; sourceTree = "<group>"; };
 		066C849F2122F6150022CA95 /* pepe7.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pepe7.jpg; sourceTree = "<group>"; };
-		066C84A02122F6150022CA95 /* pepe8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pepe8.jpg; sourceTree = "<group>"; };
 		066C84A12122F6150022CA95 /* pepe9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pepe9.png; sourceTree = "<group>"; };
 		066C84A22122F6150022CA95 /* spongebob.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spongebob.jpg; sourceTree = "<group>"; };
 		066C84B1212448E10022CA95 /* PhotoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoTableViewCell.swift; sourceTree = "<group>"; };
@@ -428,7 +426,6 @@
 				066C849D2122F6150022CA95 /* pepe5.png */,
 				066C849E2122F6150022CA95 /* pepe6.jpg */,
 				066C849F2122F6150022CA95 /* pepe7.jpg */,
-				066C84A02122F6150022CA95 /* pepe8.jpg */,
 				066C84A12122F6150022CA95 /* pepe9.png */,
 				066C84A22122F6150022CA95 /* spongebob.jpg */,
 			);
@@ -597,7 +594,6 @@
 				066C84A42122F6150022CA95 /* ghost_avatar.png in Resources */,
 				066C84AD2122F6150022CA95 /* pepe9.png in Resources */,
 				066C84792122F2BD0022CA95 /* tic-tac-toe.png in Resources */,
-				066C84AC2122F6150022CA95 /* pepe8.jpg in Resources */,
 				06579073211C8003005CF741 /* login_background.jpg in Resources */,
 				066C84A52122F6150022CA95 /* pepe.jpg in Resources */,
 				060FC53021071DE700E5D6BB /* Main.storyboard in Resources */,

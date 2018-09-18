@@ -24,7 +24,14 @@ class ChatImageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.view.backgroundColor = UIColor(white: 1, alpha: 0.3)
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurredEffectView = UIVisualEffectView(effect: blurEffect)
+        blurredEffectView.frame = scrollView.bounds
+        blurredEffectView.alpha = 0.8
+        scrollView.addSubview(blurredEffectView)
+        scrollView.bringSubview(toFront: imageView)
         
         setUIContent(forPhotoIndex: currentPhotoIndex)
         
