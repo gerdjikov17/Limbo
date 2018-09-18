@@ -125,12 +125,8 @@ class UsersConnectivity: NSObject {
     }
     
     func isPeerAGhost(peerID: MCPeerID, withUsername username: String) -> Bool {
-        if let user = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: username) {
-            return user.state == "Ghost"
-        }
-        else {
-            return false
-        }
+        guard let user = RealmManager.userWith(uniqueID: peerID.displayName, andUsername: username) else { return false }
+        return user.state == "Ghost"
     }
     
     func inviteUser(peerID: MCPeerID) {

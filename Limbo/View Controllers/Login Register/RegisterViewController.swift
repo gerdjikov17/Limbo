@@ -24,36 +24,9 @@ class RegisterViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let context = CIContext(options: nil)
-        
-        let currentFilter = CIFilter(name: "CIGaussianBlur")
-        let beginImage = CIImage(image: #imageLiteral(resourceName: "login_background.jpg"))
-        currentFilter!.setValue(beginImage, forKey: kCIInputImageKey)
-        currentFilter!.setValue(8, forKey: kCIInputRadiusKey)
-        
-        let cropFilter = CIFilter(name: "CICrop")
-        cropFilter!.setValue(currentFilter!.outputImage, forKey: kCIInputImageKey)
-        cropFilter!.setValue(CIVector(cgRect: beginImage!.extent), forKey: "inputRectangle")
-        
-        let output = cropFilter!.outputImage
-        let cgimg = context.createCGImage(output!, from: output!.extent)
-        let processedImage = UIImage(cgImage: cgimg!)
-        backgroundView.backgroundColor = UIColor(patternImage: processedImage)
-        
-        self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.2, green: 0.3, blue: 0.4, alpha: 0.5)
-        
-        self.usernameTextField.attributedPlaceholder = NSAttributedString(
-            string: "Username",
-            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
-        
-        self.passwordTextField.attributedPlaceholder = NSAttributedString(
-            string: "Password",
-            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
-        
-        self.confirmPasswordTextField.attributedPlaceholder = NSAttributedString(
-            string: "Confirm password",
-            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+
+        setupBackground()
+        setupTextFields()
         
         self.usernameTextField.delegate = self
         self.passwordTextField.delegate = self
@@ -73,6 +46,44 @@ class RegisterViewController: UIViewController {
         self.backgroundView.layer.addPulsingAnimation()
         self.backgroundView.layer.addScaleXAnimation(scaleFactor: 1.05)
         self.backgroundView.layer.addScaleYAnimation(scaleFactor: 1.05)
+    }
+    
+    //    MARK: Setup
+    
+    func setupBackground() {
+        
+        let context = CIContext(options: nil)
+        
+        let currentFilter = CIFilter(name: "CIGaussianBlur")
+        let beginImage = CIImage(image: #imageLiteral(resourceName: "login_background.jpg"))
+        currentFilter!.setValue(beginImage, forKey: kCIInputImageKey)
+        currentFilter!.setValue(8, forKey: kCIInputRadiusKey)
+        
+        let cropFilter = CIFilter(name: "CICrop")
+        cropFilter!.setValue(currentFilter!.outputImage, forKey: kCIInputImageKey)
+        cropFilter!.setValue(CIVector(cgRect: beginImage!.extent), forKey: "inputRectangle")
+        
+        let output = cropFilter!.outputImage
+        let cgimg = context.createCGImage(output!, from: output!.extent)
+        let processedImage = UIImage(cgImage: cgimg!)
+        backgroundView.backgroundColor = UIColor(patternImage: processedImage)
+        
+        self.greyContainerView.backgroundColor = UIColor(displayP3Red: 0.2, green: 0.3, blue: 0.4, alpha: 0.5)
+    }
+    
+    func setupTextFields() {
+        
+        self.usernameTextField.attributedPlaceholder = NSAttributedString(
+            string: "Username",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        
+        self.passwordTextField.attributedPlaceholder = NSAttributedString(
+            string: "Password",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
+        
+        self.confirmPasswordTextField.attributedPlaceholder = NSAttributedString(
+            string: "Confirm password",
+            attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray])
     }
     
     //    MARK: Button taps

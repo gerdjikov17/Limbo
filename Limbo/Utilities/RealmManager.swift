@@ -49,9 +49,9 @@ class RealmManager: NSObject {
     
     static func registerUser(username: String, password: String) -> Bool {
         let usernamePredicate = NSPredicate(format: "username = %@", username)
-        guard userWithPredicate(predicate: usernamePredicate) == nil else {
-            return false
-        }
+        
+        guard userWithPredicate(predicate: usernamePredicate) == nil else { return false }
+        
         realm.beginWrite()
         let user: UserModel! = UserModel(username: username, password: password)
         user.userID = realm.objects(UserModel.self).count
@@ -90,12 +90,11 @@ class RealmManager: NSObject {
     }
     
     static func itemsCountForCurrentUser() -> (candles :Int, medallions: Int) {
-        if let user = self.currentLoggedUser() {
-            let candles = user.items[SpecialItem.HolyCandle.rawValue]
-            let medallions = user.items[SpecialItem.SaintsMedallion.rawValue]
-            return(candles!, medallions!)
-        }
-        return (0, 0)
+        guard let user = self.currentLoggedUser() else { return(0, 0) }
+        
+        let candles = user.items[SpecialItem.HolyCandle.rawValue]
+        let medallions = user.items[SpecialItem.SaintsMedallion.rawValue]
+        return(candles!, medallions!)
     }
     
     static func clearUsersStates() {
@@ -128,12 +127,10 @@ class RealmManager: NSObject {
             }
             else {
                 let filePath = limboDirectory.appendingPathComponent(message.messageString, isDirectory: false)
-                if let imageData = try? Data(contentsOf: filePath) {
-                    if let image = UIImage(data: imageData) {
-                        ImageCache.shared.cacheImage(image: image, forKey: (message.messageString as NSString))
-                        images_senders.append((image: image, sender: message.sender?.username))
-                    }
-                }
+                guard let imageData = try? Data(contentsOf: filePath) else { continue }
+                guard let image = UIImage(data: imageData) else { continue }
+                ImageCache.shared.cacheImage(image: image, forKey: (message.messageString as NSString))
+                images_senders.append((image: image, sender: message.sender?.username))
             }
         }
         return images_senders

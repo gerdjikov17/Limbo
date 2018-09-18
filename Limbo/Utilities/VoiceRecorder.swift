@@ -10,6 +10,7 @@ import UIKit
 import AVKit
 
 class VoiceRecorder: NSObject {
+    
     var recordingSession: AVAudioSession!
     var audioRecorder: AVAudioRecorder?
     var delegate: VoiceRecorderInteractorDelegate?

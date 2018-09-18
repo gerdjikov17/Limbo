@@ -93,10 +93,6 @@ class AllUsersTableViewController: UITableViewController {
         
     }
     
-    @objc func dismissMe() {
-        self.navigationController?.popViewController(animated: true)
-    }
-    
     func image(forAvatarString avatarString: String) -> UIImage {
         if let defaultImage = UIImage(named: avatarString) {
             return defaultImage

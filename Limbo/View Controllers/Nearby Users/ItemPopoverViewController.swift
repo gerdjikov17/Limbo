@@ -19,20 +19,20 @@ class ItemPopoverViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if RealmManager.currentLoggedUser() != nil {
-            if let specialItem = specialItem {
-                switch specialItem.rawValue {
-                case SpecialItem.HolyCandle.rawValue :
-                    itemNameLabel.text = "Holy Candle"
-                case SpecialItem.SaintsMedallion.rawValue :
-                    itemNameLabel.text = "Saint's Medallion"
-                default:
-                    itemNameLabel.text = "Exodia"
-                }
-                itemCountLabel.text = String(0)
-                stepper.value = Double(0)
-            }
+        
+        guard RealmManager.currentLoggedUser() != nil else { return }
+        guard let specialItem = specialItem else { return }
+        
+        switch specialItem.rawValue {
+        case SpecialItem.HolyCandle.rawValue :
+            itemNameLabel.text = "Holy Candle"
+        case SpecialItem.SaintsMedallion.rawValue :
+            itemNameLabel.text = "Saint's Medallion"
+        default:
+            itemNameLabel.text = "Exodia"
         }
+        itemCountLabel.text = String(0)
+        stepper.value = Double(0)
         // Do any additional setup after loading the view.
     }
 

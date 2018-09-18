@@ -54,13 +54,9 @@ class CurseManager: NSObject {
         
         let realm = try! Realm()
         
-        guard let user = RealmManager.currentLoggedUser() else {
-            return
-        }
+        guard let user = RealmManager.currentLoggedUser() else { return }
         
-        guard user.curse != "None" else {
-            return
-        }
+        guard user.curse != "None" else { return }
         
         print("\nCurse Removed\n")
         try! realm.write {
@@ -74,11 +70,11 @@ class CurseManager: NSObject {
     
     @objc static func removeItem() {
         let realm = try! Realm()
-        if let user = RealmManager.currentLoggedUser() {
-            try! realm.write {
-                user.specialItemUsedDate = nil
-                user.specialItem = "None"
-            }
+        guard let user = RealmManager.currentLoggedUser() else { return }
+        
+        try! realm.write {
+            user.specialItemUsedDate = nil
+            user.specialItem = "None"
         }
     }
     

@@ -23,15 +23,10 @@ class CustomEmptyDataSetDelegate: NSObject, DZNEmptyDataSetSource, DZNEmptyDataS
     
     func image(forEmptyDataSet scrollView: UIScrollView!) -> UIImage! {
         let image = #imageLiteral(resourceName: "ghost_avatar.png")
-        var newWidth: CGFloat
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            newWidth = 200
-        }
-        else {
-            newWidth = 100
-        }
+        let newWidth = UIDevice.current.userInterfaceIdiom == .pad ? CGFloat(200) : CGFloat(100)
         let scale = newWidth / image.size.width
         let newHeight = image.size.height * scale
+        
         UIGraphicsBeginImageContext(CGSize(width: newWidth, height: newHeight))
         image.draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight), blendMode: .normal, alpha: 0.5)
         let newImage = UIGraphicsGetImageFromCurrentImageContext()

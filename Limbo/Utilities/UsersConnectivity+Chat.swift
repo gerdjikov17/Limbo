@@ -73,9 +73,8 @@ extension UsersConnectivity {
     }
     
     private func handleMessageTypePhoto(messageModel: MessageModel, peerID: MCPeerID) {
-        guard let imageData = messageModel.additionalData else {
-            return
-        }
+        guard let imageData = messageModel.additionalData else { return }
+        
         var urlToWriteTo = FileManager.getDocumentsDirectory().appendingPathComponent("Limbo", isDirectory: true)
         urlToWriteTo = urlToWriteTo.appendingPathComponent(messageModel.messageString, isDirectory: false)
         try? imageData.write(to: urlToWriteTo)
@@ -86,10 +85,10 @@ extension UsersConnectivity {
         messageModel.additionalData = nil
         try? realm.commitWrite()
         
-        if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
-            let threadSafeMessage = ThreadSafeReference(to: messageModel)
-            chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
-        }
+        guard let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) else { return }
+        
+        let threadSafeMessage = ThreadSafeReference(to: messageModel)
+        chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
     }
     
     private func handleMessageTypeMessage(messageModel: MessageModel, peerID: MCPeerID) {
@@ -126,9 +125,7 @@ extension UsersConnectivity {
     private func handleCurse(messageModel: MessageModel, peerID: MCPeerID) {
         let curse = Curse(rawValue: messageModel.messageString)!
         
-        guard let user = RealmManager.currentLoggedUser() else {
-            return
-        }
+        guard let user = RealmManager.currentLoggedUser() else { return }
         
         let resultOfCurse = CurseManager.applyCurse(curse: curse, toUser: user)
         if resultOfCurse.success {

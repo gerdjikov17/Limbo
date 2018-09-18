@@ -24,11 +24,10 @@ extension UsersConnectivity {
         
         print(messageModel)
         
-        if let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) {
-            let threadSafeMessage = ThreadSafeReference(to: messageModel)
-            chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
-        }
+        guard let fromPeer = self.getPeerIDForUID(uniqueID: peerID.displayName) else { return }
         
+        let threadSafeMessage = ThreadSafeReference(to: messageModel)
+        chatDelegate?.didReceiveMessage(threadSafeMessageRef: threadSafeMessage, fromPeerID: fromPeer)
         
     }
     

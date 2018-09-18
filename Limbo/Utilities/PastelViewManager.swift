@@ -27,8 +27,9 @@ class PastelViewManager: NSObject {
         collectionView.backgroundColor = .clear
         
         let gradient = CAGradientLayer()
-        gradient.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: collectionView.frame.height)
         let endColor = UIColor(red:0.02, green:0.11, blue:0.16, alpha:0.5)
+        
+        gradient.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: collectionView.frame.height)
         gradient.colors = [UIColor.clear.cgColor, endColor.cgColor, endColor.cgColor, UIColor.clear.cgColor]
         gradient.locations = [0, 0.1, 0.9, 1]
         pastelView.layer.mask = gradient
