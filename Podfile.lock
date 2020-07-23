@@ -19,7 +19,7 @@ DEPENDENCIES:
   - Toast-Swift (~> 3.0.1)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - DZNEmptyDataSet
     - NVActivityIndicatorView
     - Pastel
@@ -37,4 +37,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 839fa70e3822679274c2be53e2e704cc29832ec6
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.9.3
