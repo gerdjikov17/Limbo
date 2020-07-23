@@ -240,12 +240,15 @@ extension UsersConnectivity : MCSessionDelegate {
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         print("%@", "didReceiveData: \(data)")
-        if peerID.displayName.hasSuffix(".game") {
-            self.handleGameData(data: data, fromPeer: peerID)
+        DispatchQueue.main.async {
+            if peerID.displayName.hasSuffix(".game") {
+                self.handleGameData(data: data, fromPeer: peerID)
+            }
+            else {
+                self.handleChatData(data: data, fromPeer: peerID)
+            }
         }
-        else {
-            self.handleChatData(data: data, fromPeer: peerID)
-        }
+        
     }
     
     func session(_ session: MCSession,
