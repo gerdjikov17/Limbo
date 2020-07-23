@@ -4,11 +4,11 @@ PODS:
     - NVActivityIndicatorView/Presenter (= 4.3.0)
   - NVActivityIndicatorView/Presenter (4.3.0)
   - Pastel (0.4.0)
-  - Realm (3.7.4):
-    - Realm/Headers (= 3.7.4)
-  - Realm/Headers (3.7.4)
-  - RealmSwift (3.7.4):
-    - Realm (= 3.7.4)
+  - Realm (3.20.0):
+    - Realm/Headers (= 3.20.0)
+  - Realm/Headers (3.20.0)
+  - RealmSwift (3.20.0):
+    - Realm (= 3.20.0)
   - Toast-Swift (3.0.1)
 
 DEPENDENCIES:
@@ -31,10 +31,10 @@ SPEC CHECKSUMS:
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   NVActivityIndicatorView: 963f62bf9f993fcf23218e55958e5b1761b9504c
   Pastel: 7fa5e26123b3dbe11f7ed255654bf37100b199a5
-  Realm: a469bb59e33f9926102ccaea4349822c53b9117e
-  RealmSwift: a45861b21c180f5cf0f122144b9759fa8dde3e9e
+  Realm: 8b2ca5bc6479a91f379b6b42b5922e396cd5ba5a
+  RealmSwift: 1949ef26a279e1845bd51d591b9103adfcd121df
   Toast-Swift: ba0b01b095aada709d915f9beb1d38184a2721c3
 
-PODFILE CHECKSUM: 839fa70e3822679274c2be53e2e704cc29832ec6
+PODFILE CHECKSUM: 0d8e8201ce5d21fba21286caa65611f7214958a1
 
 COCOAPODS: 1.9.3
