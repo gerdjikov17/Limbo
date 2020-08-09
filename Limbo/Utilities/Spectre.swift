@@ -111,7 +111,9 @@ class Spectre: NSObject {
         if let max = acc.max() {
             if max > 0 {
                 
-                if (specialMessages[acc.index(of: max)!].random.components(separatedBy: " ").count - 1) <= max {
+                if (specialMessages[acc.index(of: max)!].contains(where: { (message) -> Bool in
+                    return message.components(separatedBy: " ").count - 1 <= max
+                })) {
                     return specialAnswers[acc.index(of: max)!].random
                 }
             }
