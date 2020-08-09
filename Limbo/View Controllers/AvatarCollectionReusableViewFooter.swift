@@ -73,11 +73,13 @@ class AvatarCollectionReusableViewFooter: UICollectionReusableView, UIImagePicke
             print("responseJSON = \(String(describing: json))")
             let responseData = json!["data"] as? [String: Any]
             let avatarString = responseData!["link"] as! String
-            let realm = try! Realm()
-            if let currentlyLoggedUser = RealmManager.currentLoggedUser() {
-                realm.beginWrite()
-                currentlyLoggedUser.avatarString = avatarString
-                try! realm.commitWrite()
+            DispatchQueue.main.async {
+                let realm = try! Realm()
+                if let currentlyLoggedUser = RealmManager.currentLoggedUser() {
+                    realm.beginWrite()
+                    currentlyLoggedUser.avatarString = avatarString
+                    try! realm.commitWrite()
+                }
             }
             self.imagePickingDelegate.didFinishUploadingImage()
         }

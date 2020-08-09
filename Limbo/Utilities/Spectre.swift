@@ -22,31 +22,32 @@ class Spectre: NSObject {
                                                   "magic", "pain", "forest", "troll", "eye", "flesh", "brain", "dark",
                                                   "dirty", "👻", "☠️", "💀", "🎃", "👽", "🧙‍♀️", "🧝‍♂️", "🧙‍♂️", "🕷",
                                                   "🦂", "🦇", "🦉", "🐉", "🐲", "🌙", "🌪"]
-    static let specialMessages: [String] = ["How many ghosts are around me",
-                                            "Give me the anti-spell",
-                                            "Hello Spectre",
-                                            "Hi Spectre",
-                                            "Who cursed me",
-                                            "Who is haunting me",
-                                            "What is the afterlife",
-                                            "\u{0001F44B}",
-                                            "Help me",
-                                            "How are you"]
-    static var specialAnswers: [String] {
+    static let specialMessages: [[String]] = [["How many ghosts are around me"],
+                                              ["Give me the anti-spell"],
+                                              ["Hello Spectre", "Hi Spectre"],
+                                              ["Who cursed me", "Who is haunting me"],
+                                              ["What is the afterlife", "What is the meaning of life"],
+                                              ["\u{0001F44B}"],
+                                              ["Help me"],
+                                              ["How are you", "What's up", "What is up", "whats up"]]
+    static var specialAnswers: [[String]] {
         get {
-            return [getGhostsNearby(),
-                    antiCurse,
-                    "Greetings " + (RealmManager.currentLoggedUser()?.username)!,
-                    "Greetings " + (RealmManager.currentLoggedUser()?.state)!,
-                    theLastOneWhoHaunted(),
-                    theLastOneWhoHaunted(),
-                    "All human beings have eternal life. No matter how strongly intellectuals may reject the idea," +
+            return [[getGhostsNearby()],
+                    [antiCurse],
+                    ["Greetings " + (RealmManager.currentLoggedUser()?.username)!, "Greetings " + (RealmManager.currentLoggedUser()?.state)!],
+                    [theLastOneWhoHaunted()],
+                    ["All human beings have eternal life. No matter how strongly intellectuals may reject the idea," +
                         " our souls are eternal; we are beings living in an eternal chain that consists of past," +
                         " present and future.",
-                    "\u{0001F44B}",
-                    "Ha-ha",
-                    "I am pretty dead, you ?",
-                    "I can't help you with that!"]
+                     "“To die, to sleep -" +
+                        "To sleep, perchance to dream - ay, there's the rub, " +
+                        "For in this sleep of death what dreams may come...” ― William Shakespeare, Hamlet",
+                     "“The hottest places in hell are reserved for those who, " +
+                        "in times of great moral crisis, maintain their neutrality.” ― Dante Alighieri"],
+                    ["\u{0001F44B}"],
+                    ["Ha-ha", "That's hilarious"],
+                    ["I am pretty dead, you ?", "I’m not feeling well.", "I feel great"],
+                    ["I can't help you with that!"]]
         }
     }
     static var word: String {
@@ -100,19 +101,22 @@ class Spectre: NSObject {
         }
         
         let userMessageWords = message.components(separatedBy: " ").map { word in word.lowercased() }
-        let acc = specialMessages.map { sentence -> Int in
-            let wordsSet = Set(sentence.components(separatedBy: " ").map { word in word.lowercased() } )
-            return wordsSet.intersection(userMessageWords).count
+        let acc = specialMessages.map { sentences -> Int in
+            return sentences.map { (sentence) -> Int in
+                let wordsSet = Set(sentence.components(separatedBy: " ").map { word in word.lowercased() } )
+                return wordsSet.intersection(userMessageWords).count
+            }.max() ?? 0
         }
         print(acc)
         if let max = acc.max() {
             if max > 0 {
-                if (specialMessages[acc.index(of: max)!].components(separatedBy: " ").count - 1) <= max {
-                    return specialAnswers[acc.index(of: max)!]
+                
+                if (specialMessages[acc.index(of: max)!].random.components(separatedBy: " ").count - 1) <= max {
+                    return specialAnswers[acc.index(of: max)!].random
                 }
             }
         }
-        return specialAnswers.last!
+        return specialAnswers.last?.random ?? "I can't help you with that!"
     }
     
     @objc static func removeAntiCurse() {
