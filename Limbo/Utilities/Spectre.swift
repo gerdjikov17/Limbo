@@ -1,13 +1,6 @@
-//
-//  Spectre.swift
-//  Limbo
-//
-//  Created by A-Team User on 1.08.18.
-//  Copyright © 2018 A-Team User. All rights reserved.
-//
-
 import RealmSwift
 import MultipeerConnectivity
+import Expression
 
 class Spectre: NSObject {
     
@@ -43,7 +36,7 @@ class Spectre: NSObject {
         get {
             return [getGhostsNearby(),
                     antiCurse,
-                    "Greetings " + (RealmManager.currentLoggedUser()?.state)!,
+                    "Greetings " + (RealmManager.currentLoggedUser()?.username)!,
                     "Greetings " + (RealmManager.currentLoggedUser()?.state)!,
                     theLastOneWhoHaunted(),
                     theLastOneWhoHaunted(),
@@ -101,6 +94,11 @@ class Spectre: NSObject {
     
     
     static func properAnswer(forMessage message: String) -> String {
+        
+        if let mathExpression = try? Expression(message).evaluate() {
+            return String(mathExpression)
+        }
+        
         let userMessageWords = message.components(separatedBy: " ").map { word in word.lowercased() }
         let acc = specialMessages.map { sentence -> Int in
             let wordsSet = Set(sentence.components(separatedBy: " ").map { word in word.lowercased() } )
@@ -174,14 +172,14 @@ class SpectreManager {
     
     @objc func checkForSpectres() {
         let number = drand48()
-        var chances = 0.25
+        var chances = 1.0
         if let gift = UserDefaults.standard.value(forKey: Constants.UserDefaults.gift) {
             let gift = gift as! [String: Any]
             if gift["username"] as? String == RealmManager.currentLoggedUser()?.username {
                 let date = gift["date"] as! Date
                 let oneDayTimeInterval = -86400.0
                 if date.timeIntervalSinceNow > oneDayTimeInterval {
-                    chances = 0.5
+                    chances = 1.0
                 }
             }
         }
@@ -209,7 +207,10 @@ class SpectreManager {
             messageModel.sender = RealmManager.currentLoggedUser()
             messageModel.chatRoomUUID = spectre!.compoundKey
         }
-        self.receiveMessageFromSpectre(forMessage: message)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.receiveMessageFromSpectre(forMessage: message)
+        }
     }
     
     static func receiveMessageFromSpectre(forMessage: String) {

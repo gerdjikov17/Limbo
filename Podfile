@@ -7,4 +7,5 @@ use_frameworks!
   pod 'Toast-Swift', '~> 3.0.1'
   pod "Pastel"
   pod 'NVActivityIndicatorView'
+  pod 'Expression', '~> 0.12'
 end
