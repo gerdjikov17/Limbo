@@ -22,12 +22,12 @@ class UsersConnectivity: NSObject {
     private let serviceBrowser: MCNearbyServiceBrowser
     
     lazy var session : MCSession = {
-        let session = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .none)
+        let session = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .required)
         session.delegate = self
         return session
     }()
     lazy var gameSession: MCSession = {
-        let session = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .none)
+        let session = MCSession(peer: self.myPeerID, securityIdentity: nil, encryptionPreference: .required)
         session.delegate = self
         return session
     }()
@@ -198,7 +198,6 @@ extension UsersConnectivity : MCNearbyServiceBrowserDelegate {
             self.inviteUser(peerID: peerID)
         }
     }
-
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         print("%@", "lostPeer: \(peerID)")
@@ -239,12 +238,13 @@ extension UsersConnectivity : MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        print("%@", "didReceiveData: \(data)")
-        if peerID.displayName.hasSuffix(".game") {
-            self.handleGameData(data: data, fromPeer: peerID)
-        }
-        else {
-            self.handleChatData(data: data, fromPeer: peerID)
+        DispatchQueue.main.async {
+            if peerID.displayName.hasSuffix(".game") {
+                self.handleGameData(data: data, fromPeer: peerID)
+            }
+            else {
+                self.handleChatData(data: data, fromPeer: peerID)
+            }
         }
     }
     
@@ -257,13 +257,10 @@ extension UsersConnectivity : MCSessionDelegate {
     func session(_ session: MCSession,
                  didStartReceivingResourceWithName resourceName: String,
                  fromPeer peerID: MCPeerID, with progress: Progress) {
-        
     }
     
     func session(_ session: MCSession,
                  didFinishReceivingResourceWithName resourceName: String,
                  fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
-        
     }
-    
 }

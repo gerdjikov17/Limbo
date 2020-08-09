@@ -1,14 +1,14 @@
 PODS:
   - DZNEmptyDataSet (1.8.1)
-  - NVActivityIndicatorView (4.3.0):
-    - NVActivityIndicatorView/Presenter (= 4.3.0)
-  - NVActivityIndicatorView/Presenter (4.3.0)
-  - Pastel (0.4.0)
-  - Realm (3.7.4):
-    - Realm/Headers (= 3.7.4)
-  - Realm/Headers (3.7.4)
-  - RealmSwift (3.7.4):
-    - Realm (= 3.7.4)
+  - NVActivityIndicatorView (4.8.0):
+    - NVActivityIndicatorView/Presenter (= 4.8.0)
+  - NVActivityIndicatorView/Presenter (4.8.0)
+  - Pastel (0.6.0)
+  - Realm (4.4.0):
+    - Realm/Headers (= 4.4.0)
+  - Realm/Headers (4.4.0)
+  - RealmSwift (4.4.0):
+    - Realm (= 4.4.0)
   - Toast-Swift (3.0.1)
 
 DEPENDENCIES:
@@ -19,7 +19,7 @@ DEPENDENCIES:
   - Toast-Swift (~> 3.0.1)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - DZNEmptyDataSet
     - NVActivityIndicatorView
     - Pastel
@@ -29,12 +29,12 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
-  NVActivityIndicatorView: 963f62bf9f993fcf23218e55958e5b1761b9504c
-  Pastel: 7fa5e26123b3dbe11f7ed255654bf37100b199a5
-  Realm: a469bb59e33f9926102ccaea4349822c53b9117e
-  RealmSwift: a45861b21c180f5cf0f122144b9759fa8dde3e9e
+  NVActivityIndicatorView: d24b7ebcf80af5dcd994adb650e2b6c93379270f
+  Pastel: 814f081efbe2859c37e65ee44f396e6e5be88619
+  Realm: e125f464884cda953ebefe70c671b75b03b81b9b
+  RealmSwift: 33656a42bd300959a081fc13347376bc478071af
   Toast-Swift: ba0b01b095aada709d915f9beb1d38184a2721c3
 
 PODFILE CHECKSUM: 839fa70e3822679274c2be53e2e704cc29832ec6
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.9.1

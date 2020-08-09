@@ -75,6 +75,7 @@ extension NearbyUsersRouter: NearbyUsersPresenterToRouterInterface {
     func presentLoginVC(loginDelegate: LoginDelegate) {
         let loginVC: LoginViewController = storyboard.instantiateViewController(withIdentifier: "loginVC") as! LoginViewController
         loginVC.loginDelegate = loginDelegate
+        loginVC.modalPresentationStyle = .fullScreen
         self.mainViewController.present(loginVC, animated: true, completion: nil)
     }
     
@@ -82,6 +83,7 @@ extension NearbyUsersRouter: NearbyUsersPresenterToRouterInterface {
         let avatarChooseVC = storyboard.instantiateViewController(withIdentifier: "AvatarCollectionViewController") as! AvatarCollectionViewController
         avatarChooseVC.currentUser = user
         avatarChooseVC.imagePickingDelegate = imagePickingDelegate
+        avatarChooseVC.modalPresentationStyle = .fullScreen
         self.mainViewController.present(avatarChooseVC, animated: true, completion: nil)
     }
     
