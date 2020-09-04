@@ -16,12 +16,7 @@ class Spectre: NSObject {
     static let specialAntiCurseSpell: [String] = ["ghost", "spell", "witch", "remove", "decurse", "your", "me",
                                                   "final", "monster", "branch", "wand", "touch", "kiss", "fly",
                                                   "draw", "must", "band", "broom", "hard", "barrel", "cook", "hair",
-                                                  "ludogorec", "free", "boiko borisov", "spectre", "say", "told",
-                                                  "human", "weak", "pleasure", "says", "blood", "wound", "sword",
-                                                  "queen", "king", "fire", "hot", "30 years", "forever", "baby",
-                                                  "magic", "pain", "forest", "troll", "eye", "flesh", "brain", "dark",
-                                                  "dirty", "👻", "☠️", "💀", "🎃", "👽", "🧙‍♀️", "🧝‍♂️", "🧙‍♂️", "🕷",
-                                                  "🦂", "🦇", "🦉", "🐉", "🐲", "🌙", "🌪"]
+                                                  "spectre", "say", "told"]
     static let specialMessages: [[String]] = [["How many ghosts are around me"],
                                               ["Give me the anti-spell"],
                                               ["Hello Spectre", "Hi Spectre"],
@@ -57,8 +52,8 @@ class Spectre: NSObject {
     static var antiCurse: String {
         if RealmManager.currentLoggedUser()?.curse != "None" {
             if UserDefaults.standard.string(forKey: Constants.UserDefaults.antiCurse) == nil {
-                let numberOfWords = Int.random(min: 5,
-                                               max: 12)
+                let numberOfWords = Int.random(min: 3,
+                                               max: 5)
                 let composedSentence = compose({ word },
                                                count: numberOfWords,
                                                joinBy: .space,

@@ -103,7 +103,7 @@ extension NearbyUsersInteractor: NearbyUsersPresenterToInteractorInterface {
     }
     
     func isCurrentUserBlind() -> Bool {
-        return self.currentUser.state == "Blind"
+        return self.currentUser.curse == "Blind"
     }
     
     func chatRoom(forIndexPath indexPath: IndexPath) -> ChatRoomModel {
