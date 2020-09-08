@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CommonCrypto
 import RealmSwift
 
 class RealmManager: NSObject {
@@ -16,6 +17,32 @@ class RealmManager: NSObject {
 //    static let url = FileManager.getDocumentsDirectory().appendingPathComponent("newRealm")
 //    static let realmConfig = Realm.Configuration(fileURL: url, inMemoryIdentifier: "asd", syncConfiguration: nil, encryptionKey: nil, readOnly: false, schemaVersion: 1, migrationBlock: nil, deleteRealmIfMigrationNeeded: false, shouldCompactOnLaunch: nil, objectTypes: nil)
 //    static var realm: Realm = try! Realm(configuration: realmConfig)
+    
+    class func passwordHash(password: String) -> String {
+         if let strData = password.data(using: String.Encoding.utf8) {
+             /// #define CC_SHA256_DIGEST_LENGTH     32
+             /// Creates an array of unsigned 8 bit integers that contains 32 zeros
+             var digest = [UInt8](repeating: 0, count:Int(CC_SHA256_DIGEST_LENGTH))
+      
+             /// CC_SHA256 performs digest calculation and places the result in the caller-supplied buffer for digest (md)
+             /// Takes the strData referenced value (const unsigned char *d) and hashes it into a reference to the digest parameter.
+             strData.withUnsafeBytes {
+                 // CommonCrypto
+                 // extern unsigned char *CC_SHA256(const void *data, CC_LONG len, unsigned char *md)  -|
+                 // OpenSSL                                                                             |
+                 // unsigned char *SHA256(const unsigned char *d, size_t n, unsigned char *md)        <-|
+                 CC_SHA256($0.baseAddress, UInt32(strData.count), &digest)
+             }
+      
+             var sha256String = ""
+             /// Unpack each byte in the digest array and add them to the sha256String
+             for byte in digest {
+                 sha256String += String(format:"%02x", UInt8(byte))
+            }
+             return sha256String
+         }
+         return ""
+    }
     
     static func userWithPredicate(predicate: NSPredicate) -> UserModel? {
         return realm.objects(UserModel.self).filter(predicate).first
@@ -38,7 +65,9 @@ class RealmManager: NSObject {
     }
     
     static func userWith(username: String, password: String) -> UserModel? {
-        let predicate = NSPredicate(format: "username = %@ and password = %@", username, password)
+        let hashedPassword = passwordHash(password: password)
+        print(hashedPassword)
+        let predicate = NSPredicate(format: "username = %@ and password = %@", username, hashedPassword)
         return userWithPredicate(predicate: predicate)
     }
     
@@ -53,7 +82,9 @@ class RealmManager: NSObject {
         guard userWithPredicate(predicate: usernamePredicate) == nil else { return false }
         
         realm.beginWrite()
-        let user: UserModel! = UserModel(username: username, password: password)
+        let hashedPassword = passwordHash(password: password)
+        print(hashedPassword)
+        let user: UserModel! = UserModel(username: username, password: hashedPassword)
         user.userID = realm.objects(UserModel.self).count
         realm.add(user)
         try! realm.commitWrite()
